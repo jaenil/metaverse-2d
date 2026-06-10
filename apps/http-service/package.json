@@ -20,6 +20,7 @@
     "nodemon": "^3.1.14"
   },
   "dependencies": {
+    "db": "*",
     "@types/express": "^5.0.6",
     "express": "^5.2.1",
     "typescript": "^5.9.2"

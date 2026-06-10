@@ -1,0 +1,27 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "database for project",
+  "license": "ISC",
+  "author": "jp",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.8.0"
+  },
+  "devDependencies": {
+    "prisma": "^7.8.0",
+    "typescript": "^5.9.2"
+  }
+}
