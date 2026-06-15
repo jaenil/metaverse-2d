@@ -1,6 +1,6 @@
 import { Router } from 'express' ;
-export const userRouter = Router() ;
-import { prisma } from 'db' ;
+const userRouter = Router() ;
+
 
 userRouter.post('/metadata',async (req,res)=>{
     const avatarId = req.body.avatarId ;
@@ -13,12 +13,11 @@ userRouter.post('/metadata',async (req,res)=>{
         res.status(400).json({error:'authorization token not provided by user'}) ;
         return ;
     }
-    const updateAvatar = await prisma.user.update({
-        
-    })
+    
 })
 
 userRouter.get('/metadata/bulk',(req,res)=>{
     
 })
 
+export default userRouter

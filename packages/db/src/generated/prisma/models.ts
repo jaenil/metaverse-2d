@@ -8,11 +8,11 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/User'
-export type * from './models/Space'
-export type * from './models/spaceElements'
-export type * from './models/Element'
-export type * from './models/Map'
-export type * from './models/mapElements'
-export type * from './models/Avatar'
-export type * from './commonInputTypes'
+export type * from './models/User.js'
+export type * from './models/Space.js'
+export type * from './models/spaceElements.js'
+export type * from './models/Element.js'
+export type * from './models/Map.js'
+export type * from './models/mapElements.js'
+export type * from './models/Avatar.js'
+export type * from './commonInputTypes.js'
