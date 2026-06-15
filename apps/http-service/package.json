@@ -22,7 +22,9 @@
   "dependencies": {
     "@repo/db": "*",
     "@types/express": "^5.0.6",
+    "db": "*",
     "express": "^5.2.1",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "zod": "^4.4.3"
   }
 }
