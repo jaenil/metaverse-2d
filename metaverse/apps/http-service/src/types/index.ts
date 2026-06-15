@@ -1,17 +1,17 @@
 import { z } from "zod";
 
-export const SignupScheme = z.object({
+export const SignupSchema = z.object({
     username: z.string(),
     password: z.string(),
     type: z.enum(["admin", "user"])
 });
 
-export const SigninScheme = z.object({
+export const SigninSchema = z.object({
     username: z.string(),
     password: z.string(),
 });
 
-export const UpdateMetadataScheme = z.object({
+export const UpdateMetadataSchema = z.object({
     avatarId: z.string(),
 });
 

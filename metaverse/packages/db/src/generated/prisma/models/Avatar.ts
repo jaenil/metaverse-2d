@@ -250,9 +250,9 @@ export type AvatarUncheckedUpdateManyInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type AvatarScalarRelationFilter = {
-  is?: Prisma.AvatarWhereInput
-  isNot?: Prisma.AvatarWhereInput
+export type AvatarNullableScalarRelationFilter = {
+  is?: Prisma.AvatarWhereInput | null
+  isNot?: Prisma.AvatarWhereInput | null
 }
 
 export type AvatarCountOrderByAggregateInput = {
@@ -279,10 +279,12 @@ export type AvatarCreateNestedOneWithoutUsersInput = {
   connect?: Prisma.AvatarWhereUniqueInput
 }
 
-export type AvatarUpdateOneRequiredWithoutUsersNestedInput = {
+export type AvatarUpdateOneWithoutUsersNestedInput = {
   create?: Prisma.XOR<Prisma.AvatarCreateWithoutUsersInput, Prisma.AvatarUncheckedCreateWithoutUsersInput>
   connectOrCreate?: Prisma.AvatarCreateOrConnectWithoutUsersInput
   upsert?: Prisma.AvatarUpsertWithoutUsersInput
+  disconnect?: Prisma.AvatarWhereInput | boolean
+  delete?: Prisma.AvatarWhereInput | boolean
   connect?: Prisma.AvatarWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.AvatarUpdateToOneWithWhereWithoutUsersInput, Prisma.AvatarUpdateWithoutUsersInput>, Prisma.AvatarUncheckedUpdateWithoutUsersInput>
 }

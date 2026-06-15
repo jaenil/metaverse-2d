@@ -1,6 +1,5 @@
 import { Router } from 'express' ;
-const userRouter = Router() ;
-
+export const userRouter = Router() ;
 
 userRouter.post('/metadata',async (req,res)=>{
     const avatarId = req.body.avatarId ;
@@ -20,4 +19,3 @@ userRouter.get('/metadata/bulk',(req,res)=>{
     
 })
 
-export default userRouter
