@@ -18,7 +18,7 @@ router.post('/signup', async (req, res) => {
     if (!parsedData.success) {
         return res.status(400).json({ message: "Invalid data" });
     }
-    const hashedPassword = await hash(parsedData.data.password,10)
+    const hashedPassword = await hash(parsedData.data.password)
     try{
         const user = await client.user.create({
             data:{
@@ -27,8 +27,9 @@ router.post('/signup', async (req, res) => {
                 role: parsedData.data.type == 'admin' ? "Admin" : "User",
             }
         })
-        res.json({userId:user.id})
+        res.status(200).json({userId:user.id})
     } catch(e){
+        console.error("[SIGNUP ERROR]", e)
         res.status(400).json({message:"user already exists"})
     }
 })
@@ -62,6 +63,7 @@ router.post('/signin', async (req, res) => {
         res.status(200).json({token:token})
     }
     catch(e){
+        console.error("[SIGNIN ERROR]", e)
         res.status(400).json({message:"User doesn't exist"})
     }
 })
