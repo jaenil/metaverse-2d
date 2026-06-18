@@ -236,6 +236,7 @@ export type spaceElementsOrderByWithRelationInput = {
 
 export type spaceElementsWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  spaceId_x_y?: Prisma.spaceElementsSpaceIdXYCompoundUniqueInput
   AND?: Prisma.spaceElementsWhereInput | Prisma.spaceElementsWhereInput[]
   OR?: Prisma.spaceElementsWhereInput[]
   NOT?: Prisma.spaceElementsWhereInput | Prisma.spaceElementsWhereInput[]
@@ -245,7 +246,7 @@ export type spaceElementsWhereUniqueInput = Prisma.AtLeast<{
   y?: Prisma.IntFilter<"spaceElements"> | number
   space?: Prisma.XOR<Prisma.SpaceScalarRelationFilter, Prisma.SpaceWhereInput>
   element?: Prisma.XOR<Prisma.ElementScalarRelationFilter, Prisma.ElementWhereInput>
-}, "id" | "id">
+}, "id" | "id" | "spaceId_x_y">
 
 export type spaceElementsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -333,6 +334,12 @@ export type SpaceElementsListRelationFilter = {
 
 export type spaceElementsOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type spaceElementsSpaceIdXYCompoundUniqueInput = {
+  spaceId: string
+  x: number
+  y: number
 }
 
 export type spaceElementsCountOrderByAggregateInput = {

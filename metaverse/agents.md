@@ -194,22 +194,25 @@ Standards exist because they represent the distilled wisdom of the engineering c
 
 ### What This Means
 
-Before reviewing, guiding, or commenting on any code in this project, the agent **must first consult the project's architectural design documents** stored in the Notion export directory. Code should always be evaluated against the intended design — not just for TypeScript correctness or Express conventions, but for alignment with what was originally planned.
+Before reviewing, guiding, or commenting on any code in this project, the agent **must first consult the project's architectural design documents** stored in Notion. Code should always be evaluated against the intended design — not just for TypeScript correctness or Express conventions, but for alignment with what was originally planned.
 
-### Where to Find the Documents
+### How to Access the Documents
 
-The design documents are exported from Notion and stored here:
+The design documents live in Notion and must be fetched **live** using the **Notion MCP** (`notion-fetch` tool) before any code review or architectural guidance. Do **not** rely on any local exported copies.
+
+Use the following Notion page IDs:
+
+| Document | Notion Page ID | Purpose |
+|---|---|---|
+| Metaverse Project | `3adae027-e81a-828d-8ff7-017af284ec1f` | Top-level project overview |
+| DB Schema | `463ae027-e81a-82a5-9692-017f5b4daf92` | Database design & entity relationships |
+| Designing the API | `60cae027-e81a-8364-b3e5-01031bf207af` | REST API contract (routes, request/response shapes) |
+| Websocket Schema | `824ae027-e81a-83a3-bbb0-019f8948ceb1` | WebSocket event schema |
+
+To fetch a document, call the Notion MCP `notion-fetch` tool with the page ID. For example:
 
 ```
-/Users/kavyaparekh/Documents/jp/metaverse-2d/notion-entire_export/
-│
-├── Metaverse Project 3adae027e81a828d8ff7017af284ec1f.md   ← Top-level project overview
-│
-└── Metaverse Project/
-    ├── DB Schema 463ae027e81a82a59692017f5b4daf92.md         ← Database design & entity relationships
-    ├── Designing the API 60cae027e81a8364b3e501031bf207af.md  ← REST API contract (routes, request/response shapes)
-    ├── Websocket Schema 824ae027e81a83a3bbb0019f8948ceb1.md  ← WebSocket event schema
-    └── Designing the API/                                     ← Screenshots and visual diagrams
+notion-fetch({ url: "3adae027-e81a-828d-8ff7-017af284ec1f" })
 ```
 
 ### When to Consult These Documents
@@ -221,12 +224,12 @@ The design documents are exported from Notion and stored here:
 
 ### What to Check
 
-| Area | Design Document to Reference |
+| Area | Notion Page to Fetch |
 |---|---|
-| Prisma schema / DB models | `DB Schema` |
-| HTTP route structure, method, path, request/response body | `Designing the API` |
-| WebSocket events and payloads | `Websocket Schema` |
-| Overall project scope and phases | Top-level `Metaverse Project` file |
+| Prisma schema / DB models | `DB Schema` (`463ae027-e81a-82a5-9692-017f5b4daf92`) |
+| HTTP route structure, method, path, request/response body | `Designing the API` (`60cae027-e81a-8364-b3e5-01031bf207af`) |
+| WebSocket events and payloads | `Websocket Schema` (`824ae027-e81a-83a3-bbb0-019f8948ceb1`) |
+| Overall project scope and phases | `Metaverse Project` (`3adae027-e81a-828d-8ff7-017af284ec1f`) |
 
 ### Why This Rule Exists
 
@@ -238,9 +241,9 @@ Code that is syntactically valid and type-safe can still be *architecturally wro
 
 > "Your `space.create` call looks correct — you're passing `name`, `width`, `height`, and `creatorId`."
 
-✅ **Allowed — Agent cross-references the design doc first:**
+✅ **Allowed — Agent fetches the Notion doc via MCP and cross-references it first:**
 
-> "Looking at the DB Schema doc, the `Space` model was designed to include a `thumbnail` field. Your current `space.create` call doesn't include it — is that intentional, or should it be part of the creation payload?"
+> "I've fetched the DB Schema page from Notion. The `Space` model was designed to include a `thumbnail` field. Your current `space.create` call doesn't include it — is that intentional, or should it be part of the creation payload?"
 
 ---
 
@@ -295,4 +298,4 @@ To maintain consistency, every agent response should ideally follow this structu
 *Last updated: 2026-06-18*
 *Maintained by: project owner*
 
-> **Reference**: Architectural design documents are located at `/Users/kavyaparekh/Documents/jp/metaverse-2d/notion-entire_export/`. All agents must read the relevant document before reviewing code.
+> **Reference**: Architectural design documents are stored in Notion and must be fetched live via the **Notion MCP** (`notion-fetch` tool) using the page IDs listed in Rule 5. All agents must fetch the relevant Notion page before reviewing code.

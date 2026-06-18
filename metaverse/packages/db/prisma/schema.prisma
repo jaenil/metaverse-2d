@@ -41,6 +41,7 @@ model spaceElements {
   y         Int
   space     Space  @relation(fields: [spaceId], references: [id])
   element   Element @relation(fields: [elementId], references: [id])
+  @@unique([spaceId, x, y])
 }
 
 model Element {
