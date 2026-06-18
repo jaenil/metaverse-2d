@@ -56,7 +56,7 @@ export const ModelName = {
   spaceElements: 'spaceElements',
   Element: 'Element',
   Map: 'Map',
-  mapElements: 'mapElements',
+  MapElements: 'MapElements',
   Avatar: 'Avatar'
 } as const
 
@@ -92,7 +92,8 @@ export const SpaceScalarFieldEnum = {
   name: 'name',
   width: 'width',
   height: 'height',
-  thumbnail: 'thumbnail'
+  thumbnail: 'thumbnail',
+  creatorId: 'creatorId'
 } as const
 
 export type SpaceScalarFieldEnum = (typeof SpaceScalarFieldEnum)[keyof typeof SpaceScalarFieldEnum]
@@ -113,6 +114,7 @@ export const ElementScalarFieldEnum = {
   id: 'id',
   width: 'width',
   height: 'height',
+  static: 'static',
   imageUrl: 'imageUrl'
 } as const
 
@@ -123,7 +125,8 @@ export const MapScalarFieldEnum = {
   id: 'id',
   width: 'width',
   height: 'height',
-  name: 'name'
+  name: 'name',
+  thumbnail: 'thumbnail'
 } as const
 
 export type MapScalarFieldEnum = (typeof MapScalarFieldEnum)[keyof typeof MapScalarFieldEnum]

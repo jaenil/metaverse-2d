@@ -4,7 +4,7 @@
 // biome-ignore-all lint: generated file
 // @ts-nocheck 
 /*
- * This file exports the `mapElements` model and its related types.
+ * This file exports the `MapElements` model and its related types.
  *
  * 🟢 You can import this file directly.
  */
@@ -13,10 +13,10 @@ import type * as $Enums from "../enums.js"
 import type * as Prisma from "../internal/prismaNamespace.js"
 
 /**
- * Model mapElements
+ * Model MapElements
  * 
  */
-export type mapElementsModel = runtime.Types.Result.DefaultSelection<Prisma.$mapElementsPayload>
+export type MapElementsModel = runtime.Types.Result.DefaultSelection<Prisma.$MapElementsPayload>
 
 export type AggregateMapElements = {
   _count: MapElementsCountAggregateOutputType | null
@@ -99,37 +99,37 @@ export type MapElementsCountAggregateInputType = {
 
 export type MapElementsAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which mapElements to aggregate.
+   * Filter which MapElements to aggregate.
    */
-  where?: Prisma.mapElementsWhereInput
+  where?: Prisma.MapElementsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of mapElements to fetch.
+   * Determine the order of MapElements to fetch.
    */
-  orderBy?: Prisma.mapElementsOrderByWithRelationInput | Prisma.mapElementsOrderByWithRelationInput[]
+  orderBy?: Prisma.MapElementsOrderByWithRelationInput | Prisma.MapElementsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
    * Sets the start position
    */
-  cursor?: Prisma.mapElementsWhereUniqueInput
+  cursor?: Prisma.MapElementsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` mapElements from the position of the cursor.
+   * Take `±n` MapElements from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` mapElements.
+   * Skip the first `n` MapElements.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Count returned mapElements
+   * Count returned MapElements
   **/
   _count?: true | MapElementsCountAggregateInputType
   /**
@@ -169,11 +169,11 @@ export type GetMapElementsAggregateType<T extends MapElementsAggregateArgs> = {
 
 
 
-export type mapElementsGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.mapElementsWhereInput
-  orderBy?: Prisma.mapElementsOrderByWithAggregationInput | Prisma.mapElementsOrderByWithAggregationInput[]
+export type MapElementsGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MapElementsWhereInput
+  orderBy?: Prisma.MapElementsOrderByWithAggregationInput | Prisma.MapElementsOrderByWithAggregationInput[]
   by: Prisma.MapElementsScalarFieldEnum[] | Prisma.MapElementsScalarFieldEnum
-  having?: Prisma.mapElementsScalarWhereWithAggregatesInput
+  having?: Prisma.MapElementsScalarWhereWithAggregatesInput
   take?: number
   skip?: number
   _count?: MapElementsCountAggregateInputType | true
@@ -187,8 +187,8 @@ export type MapElementsGroupByOutputType = {
   id: string
   mapId: string
   elementId: string
-  x: number | null
-  y: number | null
+  x: number
+  y: number
   _count: MapElementsCountAggregateOutputType | null
   _avg: MapElementsAvgAggregateOutputType | null
   _sum: MapElementsSumAggregateOutputType | null
@@ -196,7 +196,7 @@ export type MapElementsGroupByOutputType = {
   _max: MapElementsMaxAggregateOutputType | null
 }
 
-export type GetMapElementsGroupByPayload<T extends mapElementsGroupByArgs> = Prisma.PrismaPromise<
+export type GetMapElementsGroupByPayload<T extends MapElementsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<MapElementsGroupByOutputType, T['by']> &
       {
@@ -211,177 +211,428 @@ export type GetMapElementsGroupByPayload<T extends mapElementsGroupByArgs> = Pri
 
 
 
-export type mapElementsWhereInput = {
-  AND?: Prisma.mapElementsWhereInput | Prisma.mapElementsWhereInput[]
-  OR?: Prisma.mapElementsWhereInput[]
-  NOT?: Prisma.mapElementsWhereInput | Prisma.mapElementsWhereInput[]
-  id?: Prisma.StringFilter<"mapElements"> | string
-  mapId?: Prisma.StringFilter<"mapElements"> | string
-  elementId?: Prisma.StringFilter<"mapElements"> | string
-  x?: Prisma.IntNullableFilter<"mapElements"> | number | null
-  y?: Prisma.IntNullableFilter<"mapElements"> | number | null
+export type MapElementsWhereInput = {
+  AND?: Prisma.MapElementsWhereInput | Prisma.MapElementsWhereInput[]
+  OR?: Prisma.MapElementsWhereInput[]
+  NOT?: Prisma.MapElementsWhereInput | Prisma.MapElementsWhereInput[]
+  id?: Prisma.StringFilter<"MapElements"> | string
+  mapId?: Prisma.StringFilter<"MapElements"> | string
+  elementId?: Prisma.StringFilter<"MapElements"> | string
+  x?: Prisma.IntFilter<"MapElements"> | number
+  y?: Prisma.IntFilter<"MapElements"> | number
+  map?: Prisma.XOR<Prisma.MapScalarRelationFilter, Prisma.MapWhereInput>
+  element?: Prisma.XOR<Prisma.ElementScalarRelationFilter, Prisma.ElementWhereInput>
 }
 
-export type mapElementsOrderByWithRelationInput = {
+export type MapElementsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   mapId?: Prisma.SortOrder
   elementId?: Prisma.SortOrder
-  x?: Prisma.SortOrderInput | Prisma.SortOrder
-  y?: Prisma.SortOrderInput | Prisma.SortOrder
+  x?: Prisma.SortOrder
+  y?: Prisma.SortOrder
+  map?: Prisma.MapOrderByWithRelationInput
+  element?: Prisma.ElementOrderByWithRelationInput
 }
 
-export type mapElementsWhereUniqueInput = Prisma.AtLeast<{
+export type MapElementsWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  AND?: Prisma.mapElementsWhereInput | Prisma.mapElementsWhereInput[]
-  OR?: Prisma.mapElementsWhereInput[]
-  NOT?: Prisma.mapElementsWhereInput | Prisma.mapElementsWhereInput[]
-  mapId?: Prisma.StringFilter<"mapElements"> | string
-  elementId?: Prisma.StringFilter<"mapElements"> | string
-  x?: Prisma.IntNullableFilter<"mapElements"> | number | null
-  y?: Prisma.IntNullableFilter<"mapElements"> | number | null
+  AND?: Prisma.MapElementsWhereInput | Prisma.MapElementsWhereInput[]
+  OR?: Prisma.MapElementsWhereInput[]
+  NOT?: Prisma.MapElementsWhereInput | Prisma.MapElementsWhereInput[]
+  mapId?: Prisma.StringFilter<"MapElements"> | string
+  elementId?: Prisma.StringFilter<"MapElements"> | string
+  x?: Prisma.IntFilter<"MapElements"> | number
+  y?: Prisma.IntFilter<"MapElements"> | number
+  map?: Prisma.XOR<Prisma.MapScalarRelationFilter, Prisma.MapWhereInput>
+  element?: Prisma.XOR<Prisma.ElementScalarRelationFilter, Prisma.ElementWhereInput>
 }, "id" | "id">
 
-export type mapElementsOrderByWithAggregationInput = {
+export type MapElementsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   mapId?: Prisma.SortOrder
   elementId?: Prisma.SortOrder
-  x?: Prisma.SortOrderInput | Prisma.SortOrder
-  y?: Prisma.SortOrderInput | Prisma.SortOrder
-  _count?: Prisma.mapElementsCountOrderByAggregateInput
-  _avg?: Prisma.mapElementsAvgOrderByAggregateInput
-  _max?: Prisma.mapElementsMaxOrderByAggregateInput
-  _min?: Prisma.mapElementsMinOrderByAggregateInput
-  _sum?: Prisma.mapElementsSumOrderByAggregateInput
+  x?: Prisma.SortOrder
+  y?: Prisma.SortOrder
+  _count?: Prisma.MapElementsCountOrderByAggregateInput
+  _avg?: Prisma.MapElementsAvgOrderByAggregateInput
+  _max?: Prisma.MapElementsMaxOrderByAggregateInput
+  _min?: Prisma.MapElementsMinOrderByAggregateInput
+  _sum?: Prisma.MapElementsSumOrderByAggregateInput
 }
 
-export type mapElementsScalarWhereWithAggregatesInput = {
-  AND?: Prisma.mapElementsScalarWhereWithAggregatesInput | Prisma.mapElementsScalarWhereWithAggregatesInput[]
-  OR?: Prisma.mapElementsScalarWhereWithAggregatesInput[]
-  NOT?: Prisma.mapElementsScalarWhereWithAggregatesInput | Prisma.mapElementsScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"mapElements"> | string
-  mapId?: Prisma.StringWithAggregatesFilter<"mapElements"> | string
-  elementId?: Prisma.StringWithAggregatesFilter<"mapElements"> | string
-  x?: Prisma.IntNullableWithAggregatesFilter<"mapElements"> | number | null
-  y?: Prisma.IntNullableWithAggregatesFilter<"mapElements"> | number | null
+export type MapElementsScalarWhereWithAggregatesInput = {
+  AND?: Prisma.MapElementsScalarWhereWithAggregatesInput | Prisma.MapElementsScalarWhereWithAggregatesInput[]
+  OR?: Prisma.MapElementsScalarWhereWithAggregatesInput[]
+  NOT?: Prisma.MapElementsScalarWhereWithAggregatesInput | Prisma.MapElementsScalarWhereWithAggregatesInput[]
+  id?: Prisma.StringWithAggregatesFilter<"MapElements"> | string
+  mapId?: Prisma.StringWithAggregatesFilter<"MapElements"> | string
+  elementId?: Prisma.StringWithAggregatesFilter<"MapElements"> | string
+  x?: Prisma.IntWithAggregatesFilter<"MapElements"> | number
+  y?: Prisma.IntWithAggregatesFilter<"MapElements"> | number
 }
 
-export type mapElementsCreateInput = {
+export type MapElementsCreateInput = {
+  id?: string
+  x: number
+  y: number
+  map: Prisma.MapCreateNestedOneWithoutMapElementsInput
+  element: Prisma.ElementCreateNestedOneWithoutMapElementsInput
+}
+
+export type MapElementsUncheckedCreateInput = {
   id?: string
   mapId: string
   elementId: string
-  x?: number | null
-  y?: number | null
+  x: number
+  y: number
 }
 
-export type mapElementsUncheckedCreateInput = {
+export type MapElementsUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  x?: Prisma.IntFieldUpdateOperationsInput | number
+  y?: Prisma.IntFieldUpdateOperationsInput | number
+  map?: Prisma.MapUpdateOneRequiredWithoutMapElementsNestedInput
+  element?: Prisma.ElementUpdateOneRequiredWithoutMapElementsNestedInput
+}
+
+export type MapElementsUncheckedUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  mapId?: Prisma.StringFieldUpdateOperationsInput | string
+  elementId?: Prisma.StringFieldUpdateOperationsInput | string
+  x?: Prisma.IntFieldUpdateOperationsInput | number
+  y?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type MapElementsCreateManyInput = {
   id?: string
   mapId: string
   elementId: string
-  x?: number | null
-  y?: number | null
+  x: number
+  y: number
 }
 
-export type mapElementsUpdateInput = {
+export type MapElementsUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  x?: Prisma.IntFieldUpdateOperationsInput | number
+  y?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type MapElementsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   mapId?: Prisma.StringFieldUpdateOperationsInput | string
   elementId?: Prisma.StringFieldUpdateOperationsInput | string
-  x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  x?: Prisma.IntFieldUpdateOperationsInput | number
+  y?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
-export type mapElementsUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  mapId?: Prisma.StringFieldUpdateOperationsInput | string
-  elementId?: Prisma.StringFieldUpdateOperationsInput | string
-  x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+export type MapElementsListRelationFilter = {
+  every?: Prisma.MapElementsWhereInput
+  some?: Prisma.MapElementsWhereInput
+  none?: Prisma.MapElementsWhereInput
 }
 
-export type mapElementsCreateManyInput = {
+export type MapElementsOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type MapElementsCountOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  mapId?: Prisma.SortOrder
+  elementId?: Prisma.SortOrder
+  x?: Prisma.SortOrder
+  y?: Prisma.SortOrder
+}
+
+export type MapElementsAvgOrderByAggregateInput = {
+  x?: Prisma.SortOrder
+  y?: Prisma.SortOrder
+}
+
+export type MapElementsMaxOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  mapId?: Prisma.SortOrder
+  elementId?: Prisma.SortOrder
+  x?: Prisma.SortOrder
+  y?: Prisma.SortOrder
+}
+
+export type MapElementsMinOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  mapId?: Prisma.SortOrder
+  elementId?: Prisma.SortOrder
+  x?: Prisma.SortOrder
+  y?: Prisma.SortOrder
+}
+
+export type MapElementsSumOrderByAggregateInput = {
+  x?: Prisma.SortOrder
+  y?: Prisma.SortOrder
+}
+
+export type MapElementsCreateNestedManyWithoutElementInput = {
+  create?: Prisma.XOR<Prisma.MapElementsCreateWithoutElementInput, Prisma.MapElementsUncheckedCreateWithoutElementInput> | Prisma.MapElementsCreateWithoutElementInput[] | Prisma.MapElementsUncheckedCreateWithoutElementInput[]
+  connectOrCreate?: Prisma.MapElementsCreateOrConnectWithoutElementInput | Prisma.MapElementsCreateOrConnectWithoutElementInput[]
+  createMany?: Prisma.MapElementsCreateManyElementInputEnvelope
+  connect?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+}
+
+export type MapElementsUncheckedCreateNestedManyWithoutElementInput = {
+  create?: Prisma.XOR<Prisma.MapElementsCreateWithoutElementInput, Prisma.MapElementsUncheckedCreateWithoutElementInput> | Prisma.MapElementsCreateWithoutElementInput[] | Prisma.MapElementsUncheckedCreateWithoutElementInput[]
+  connectOrCreate?: Prisma.MapElementsCreateOrConnectWithoutElementInput | Prisma.MapElementsCreateOrConnectWithoutElementInput[]
+  createMany?: Prisma.MapElementsCreateManyElementInputEnvelope
+  connect?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+}
+
+export type MapElementsUpdateManyWithoutElementNestedInput = {
+  create?: Prisma.XOR<Prisma.MapElementsCreateWithoutElementInput, Prisma.MapElementsUncheckedCreateWithoutElementInput> | Prisma.MapElementsCreateWithoutElementInput[] | Prisma.MapElementsUncheckedCreateWithoutElementInput[]
+  connectOrCreate?: Prisma.MapElementsCreateOrConnectWithoutElementInput | Prisma.MapElementsCreateOrConnectWithoutElementInput[]
+  upsert?: Prisma.MapElementsUpsertWithWhereUniqueWithoutElementInput | Prisma.MapElementsUpsertWithWhereUniqueWithoutElementInput[]
+  createMany?: Prisma.MapElementsCreateManyElementInputEnvelope
+  set?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  disconnect?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  delete?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  connect?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  update?: Prisma.MapElementsUpdateWithWhereUniqueWithoutElementInput | Prisma.MapElementsUpdateWithWhereUniqueWithoutElementInput[]
+  updateMany?: Prisma.MapElementsUpdateManyWithWhereWithoutElementInput | Prisma.MapElementsUpdateManyWithWhereWithoutElementInput[]
+  deleteMany?: Prisma.MapElementsScalarWhereInput | Prisma.MapElementsScalarWhereInput[]
+}
+
+export type MapElementsUncheckedUpdateManyWithoutElementNestedInput = {
+  create?: Prisma.XOR<Prisma.MapElementsCreateWithoutElementInput, Prisma.MapElementsUncheckedCreateWithoutElementInput> | Prisma.MapElementsCreateWithoutElementInput[] | Prisma.MapElementsUncheckedCreateWithoutElementInput[]
+  connectOrCreate?: Prisma.MapElementsCreateOrConnectWithoutElementInput | Prisma.MapElementsCreateOrConnectWithoutElementInput[]
+  upsert?: Prisma.MapElementsUpsertWithWhereUniqueWithoutElementInput | Prisma.MapElementsUpsertWithWhereUniqueWithoutElementInput[]
+  createMany?: Prisma.MapElementsCreateManyElementInputEnvelope
+  set?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  disconnect?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  delete?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  connect?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  update?: Prisma.MapElementsUpdateWithWhereUniqueWithoutElementInput | Prisma.MapElementsUpdateWithWhereUniqueWithoutElementInput[]
+  updateMany?: Prisma.MapElementsUpdateManyWithWhereWithoutElementInput | Prisma.MapElementsUpdateManyWithWhereWithoutElementInput[]
+  deleteMany?: Prisma.MapElementsScalarWhereInput | Prisma.MapElementsScalarWhereInput[]
+}
+
+export type MapElementsCreateNestedManyWithoutMapInput = {
+  create?: Prisma.XOR<Prisma.MapElementsCreateWithoutMapInput, Prisma.MapElementsUncheckedCreateWithoutMapInput> | Prisma.MapElementsCreateWithoutMapInput[] | Prisma.MapElementsUncheckedCreateWithoutMapInput[]
+  connectOrCreate?: Prisma.MapElementsCreateOrConnectWithoutMapInput | Prisma.MapElementsCreateOrConnectWithoutMapInput[]
+  createMany?: Prisma.MapElementsCreateManyMapInputEnvelope
+  connect?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+}
+
+export type MapElementsUncheckedCreateNestedManyWithoutMapInput = {
+  create?: Prisma.XOR<Prisma.MapElementsCreateWithoutMapInput, Prisma.MapElementsUncheckedCreateWithoutMapInput> | Prisma.MapElementsCreateWithoutMapInput[] | Prisma.MapElementsUncheckedCreateWithoutMapInput[]
+  connectOrCreate?: Prisma.MapElementsCreateOrConnectWithoutMapInput | Prisma.MapElementsCreateOrConnectWithoutMapInput[]
+  createMany?: Prisma.MapElementsCreateManyMapInputEnvelope
+  connect?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+}
+
+export type MapElementsUpdateManyWithoutMapNestedInput = {
+  create?: Prisma.XOR<Prisma.MapElementsCreateWithoutMapInput, Prisma.MapElementsUncheckedCreateWithoutMapInput> | Prisma.MapElementsCreateWithoutMapInput[] | Prisma.MapElementsUncheckedCreateWithoutMapInput[]
+  connectOrCreate?: Prisma.MapElementsCreateOrConnectWithoutMapInput | Prisma.MapElementsCreateOrConnectWithoutMapInput[]
+  upsert?: Prisma.MapElementsUpsertWithWhereUniqueWithoutMapInput | Prisma.MapElementsUpsertWithWhereUniqueWithoutMapInput[]
+  createMany?: Prisma.MapElementsCreateManyMapInputEnvelope
+  set?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  disconnect?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  delete?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  connect?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  update?: Prisma.MapElementsUpdateWithWhereUniqueWithoutMapInput | Prisma.MapElementsUpdateWithWhereUniqueWithoutMapInput[]
+  updateMany?: Prisma.MapElementsUpdateManyWithWhereWithoutMapInput | Prisma.MapElementsUpdateManyWithWhereWithoutMapInput[]
+  deleteMany?: Prisma.MapElementsScalarWhereInput | Prisma.MapElementsScalarWhereInput[]
+}
+
+export type MapElementsUncheckedUpdateManyWithoutMapNestedInput = {
+  create?: Prisma.XOR<Prisma.MapElementsCreateWithoutMapInput, Prisma.MapElementsUncheckedCreateWithoutMapInput> | Prisma.MapElementsCreateWithoutMapInput[] | Prisma.MapElementsUncheckedCreateWithoutMapInput[]
+  connectOrCreate?: Prisma.MapElementsCreateOrConnectWithoutMapInput | Prisma.MapElementsCreateOrConnectWithoutMapInput[]
+  upsert?: Prisma.MapElementsUpsertWithWhereUniqueWithoutMapInput | Prisma.MapElementsUpsertWithWhereUniqueWithoutMapInput[]
+  createMany?: Prisma.MapElementsCreateManyMapInputEnvelope
+  set?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  disconnect?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  delete?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  connect?: Prisma.MapElementsWhereUniqueInput | Prisma.MapElementsWhereUniqueInput[]
+  update?: Prisma.MapElementsUpdateWithWhereUniqueWithoutMapInput | Prisma.MapElementsUpdateWithWhereUniqueWithoutMapInput[]
+  updateMany?: Prisma.MapElementsUpdateManyWithWhereWithoutMapInput | Prisma.MapElementsUpdateManyWithWhereWithoutMapInput[]
+  deleteMany?: Prisma.MapElementsScalarWhereInput | Prisma.MapElementsScalarWhereInput[]
+}
+
+export type MapElementsCreateWithoutElementInput = {
+  id?: string
+  x: number
+  y: number
+  map: Prisma.MapCreateNestedOneWithoutMapElementsInput
+}
+
+export type MapElementsUncheckedCreateWithoutElementInput = {
   id?: string
   mapId: string
+  x: number
+  y: number
+}
+
+export type MapElementsCreateOrConnectWithoutElementInput = {
+  where: Prisma.MapElementsWhereUniqueInput
+  create: Prisma.XOR<Prisma.MapElementsCreateWithoutElementInput, Prisma.MapElementsUncheckedCreateWithoutElementInput>
+}
+
+export type MapElementsCreateManyElementInputEnvelope = {
+  data: Prisma.MapElementsCreateManyElementInput | Prisma.MapElementsCreateManyElementInput[]
+  skipDuplicates?: boolean
+}
+
+export type MapElementsUpsertWithWhereUniqueWithoutElementInput = {
+  where: Prisma.MapElementsWhereUniqueInput
+  update: Prisma.XOR<Prisma.MapElementsUpdateWithoutElementInput, Prisma.MapElementsUncheckedUpdateWithoutElementInput>
+  create: Prisma.XOR<Prisma.MapElementsCreateWithoutElementInput, Prisma.MapElementsUncheckedCreateWithoutElementInput>
+}
+
+export type MapElementsUpdateWithWhereUniqueWithoutElementInput = {
+  where: Prisma.MapElementsWhereUniqueInput
+  data: Prisma.XOR<Prisma.MapElementsUpdateWithoutElementInput, Prisma.MapElementsUncheckedUpdateWithoutElementInput>
+}
+
+export type MapElementsUpdateManyWithWhereWithoutElementInput = {
+  where: Prisma.MapElementsScalarWhereInput
+  data: Prisma.XOR<Prisma.MapElementsUpdateManyMutationInput, Prisma.MapElementsUncheckedUpdateManyWithoutElementInput>
+}
+
+export type MapElementsScalarWhereInput = {
+  AND?: Prisma.MapElementsScalarWhereInput | Prisma.MapElementsScalarWhereInput[]
+  OR?: Prisma.MapElementsScalarWhereInput[]
+  NOT?: Prisma.MapElementsScalarWhereInput | Prisma.MapElementsScalarWhereInput[]
+  id?: Prisma.StringFilter<"MapElements"> | string
+  mapId?: Prisma.StringFilter<"MapElements"> | string
+  elementId?: Prisma.StringFilter<"MapElements"> | string
+  x?: Prisma.IntFilter<"MapElements"> | number
+  y?: Prisma.IntFilter<"MapElements"> | number
+}
+
+export type MapElementsCreateWithoutMapInput = {
+  id?: string
+  x: number
+  y: number
+  element: Prisma.ElementCreateNestedOneWithoutMapElementsInput
+}
+
+export type MapElementsUncheckedCreateWithoutMapInput = {
+  id?: string
   elementId: string
-  x?: number | null
-  y?: number | null
+  x: number
+  y: number
 }
 
-export type mapElementsUpdateManyMutationInput = {
+export type MapElementsCreateOrConnectWithoutMapInput = {
+  where: Prisma.MapElementsWhereUniqueInput
+  create: Prisma.XOR<Prisma.MapElementsCreateWithoutMapInput, Prisma.MapElementsUncheckedCreateWithoutMapInput>
+}
+
+export type MapElementsCreateManyMapInputEnvelope = {
+  data: Prisma.MapElementsCreateManyMapInput | Prisma.MapElementsCreateManyMapInput[]
+  skipDuplicates?: boolean
+}
+
+export type MapElementsUpsertWithWhereUniqueWithoutMapInput = {
+  where: Prisma.MapElementsWhereUniqueInput
+  update: Prisma.XOR<Prisma.MapElementsUpdateWithoutMapInput, Prisma.MapElementsUncheckedUpdateWithoutMapInput>
+  create: Prisma.XOR<Prisma.MapElementsCreateWithoutMapInput, Prisma.MapElementsUncheckedCreateWithoutMapInput>
+}
+
+export type MapElementsUpdateWithWhereUniqueWithoutMapInput = {
+  where: Prisma.MapElementsWhereUniqueInput
+  data: Prisma.XOR<Prisma.MapElementsUpdateWithoutMapInput, Prisma.MapElementsUncheckedUpdateWithoutMapInput>
+}
+
+export type MapElementsUpdateManyWithWhereWithoutMapInput = {
+  where: Prisma.MapElementsScalarWhereInput
+  data: Prisma.XOR<Prisma.MapElementsUpdateManyMutationInput, Prisma.MapElementsUncheckedUpdateManyWithoutMapInput>
+}
+
+export type MapElementsCreateManyElementInput = {
+  id?: string
+  mapId: string
+  x: number
+  y: number
+}
+
+export type MapElementsUpdateWithoutElementInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  x?: Prisma.IntFieldUpdateOperationsInput | number
+  y?: Prisma.IntFieldUpdateOperationsInput | number
+  map?: Prisma.MapUpdateOneRequiredWithoutMapElementsNestedInput
+}
+
+export type MapElementsUncheckedUpdateWithoutElementInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   mapId?: Prisma.StringFieldUpdateOperationsInput | string
-  elementId?: Prisma.StringFieldUpdateOperationsInput | string
-  x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  x?: Prisma.IntFieldUpdateOperationsInput | number
+  y?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
-export type mapElementsUncheckedUpdateManyInput = {
+export type MapElementsUncheckedUpdateManyWithoutElementInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   mapId?: Prisma.StringFieldUpdateOperationsInput | string
+  x?: Prisma.IntFieldUpdateOperationsInput | number
+  y?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type MapElementsCreateManyMapInput = {
+  id?: string
+  elementId: string
+  x: number
+  y: number
+}
+
+export type MapElementsUpdateWithoutMapInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  x?: Prisma.IntFieldUpdateOperationsInput | number
+  y?: Prisma.IntFieldUpdateOperationsInput | number
+  element?: Prisma.ElementUpdateOneRequiredWithoutMapElementsNestedInput
+}
+
+export type MapElementsUncheckedUpdateWithoutMapInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   elementId?: Prisma.StringFieldUpdateOperationsInput | string
-  x?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  y?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  x?: Prisma.IntFieldUpdateOperationsInput | number
+  y?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
-export type mapElementsCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  mapId?: Prisma.SortOrder
-  elementId?: Prisma.SortOrder
-  x?: Prisma.SortOrder
-  y?: Prisma.SortOrder
-}
-
-export type mapElementsAvgOrderByAggregateInput = {
-  x?: Prisma.SortOrder
-  y?: Prisma.SortOrder
-}
-
-export type mapElementsMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  mapId?: Prisma.SortOrder
-  elementId?: Prisma.SortOrder
-  x?: Prisma.SortOrder
-  y?: Prisma.SortOrder
-}
-
-export type mapElementsMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  mapId?: Prisma.SortOrder
-  elementId?: Prisma.SortOrder
-  x?: Prisma.SortOrder
-  y?: Prisma.SortOrder
-}
-
-export type mapElementsSumOrderByAggregateInput = {
-  x?: Prisma.SortOrder
-  y?: Prisma.SortOrder
+export type MapElementsUncheckedUpdateManyWithoutMapInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  elementId?: Prisma.StringFieldUpdateOperationsInput | string
+  x?: Prisma.IntFieldUpdateOperationsInput | number
+  y?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 
 
-export type mapElementsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type MapElementsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   mapId?: boolean
   elementId?: boolean
   x?: boolean
   y?: boolean
+  map?: boolean | Prisma.MapDefaultArgs<ExtArgs>
+  element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["mapElements"]>
 
-export type mapElementsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type MapElementsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   mapId?: boolean
   elementId?: boolean
   x?: boolean
   y?: boolean
+  map?: boolean | Prisma.MapDefaultArgs<ExtArgs>
+  element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["mapElements"]>
 
-export type mapElementsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type MapElementsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   mapId?: boolean
   elementId?: boolean
   x?: boolean
   y?: boolean
+  map?: boolean | Prisma.MapDefaultArgs<ExtArgs>
+  element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["mapElements"]>
 
-export type mapElementsSelectScalar = {
+export type MapElementsSelectScalar = {
   id?: boolean
   mapId?: boolean
   elementId?: boolean
@@ -389,33 +640,48 @@ export type mapElementsSelectScalar = {
   y?: boolean
 }
 
-export type mapElementsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "mapId" | "elementId" | "x" | "y", ExtArgs["result"]["mapElements"]>
+export type MapElementsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "mapId" | "elementId" | "x" | "y", ExtArgs["result"]["mapElements"]>
+export type MapElementsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  map?: boolean | Prisma.MapDefaultArgs<ExtArgs>
+  element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
+}
+export type MapElementsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  map?: boolean | Prisma.MapDefaultArgs<ExtArgs>
+  element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
+}
+export type MapElementsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  map?: boolean | Prisma.MapDefaultArgs<ExtArgs>
+  element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
+}
 
-export type $mapElementsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  name: "mapElements"
-  objects: {}
+export type $MapElementsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  name: "MapElements"
+  objects: {
+    map: Prisma.$MapPayload<ExtArgs>
+    element: Prisma.$ElementPayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     mapId: string
     elementId: string
-    x: number | null
-    y: number | null
+    x: number
+    y: number
   }, ExtArgs["result"]["mapElements"]>
   composites: {}
 }
 
-export type mapElementsGetPayload<S extends boolean | null | undefined | mapElementsDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$mapElementsPayload, S>
+export type MapElementsGetPayload<S extends boolean | null | undefined | MapElementsDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$MapElementsPayload, S>
 
-export type mapElementsCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<mapElementsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+export type MapElementsCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
+  Omit<MapElementsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
     select?: MapElementsCountAggregateInputType | true
   }
 
-export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['mapElements'], meta: { name: 'mapElements' } }
+export interface MapElementsDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MapElements'], meta: { name: 'MapElements' } }
   /**
    * Find zero or one MapElements that matches the filter.
-   * @param {mapElementsFindUniqueArgs} args - Arguments to find a MapElements
+   * @param {MapElementsFindUniqueArgs} args - Arguments to find a MapElements
    * @example
    * // Get one MapElements
    * const mapElements = await prisma.mapElements.findUnique({
@@ -424,12 +690,12 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    *   }
    * })
    */
-  findUnique<T extends mapElementsFindUniqueArgs>(args: Prisma.SelectSubset<T, mapElementsFindUniqueArgs<ExtArgs>>): Prisma.Prisma__mapElementsClient<runtime.Types.Result.GetResult<Prisma.$mapElementsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findUnique<T extends MapElementsFindUniqueArgs>(args: Prisma.SelectSubset<T, MapElementsFindUniqueArgs<ExtArgs>>): Prisma.Prisma__MapElementsClient<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find one MapElements that matches the filter or throw an error with `error.code='P2025'`
    * if no matches were found.
-   * @param {mapElementsFindUniqueOrThrowArgs} args - Arguments to find a MapElements
+   * @param {MapElementsFindUniqueOrThrowArgs} args - Arguments to find a MapElements
    * @example
    * // Get one MapElements
    * const mapElements = await prisma.mapElements.findUniqueOrThrow({
@@ -438,13 +704,13 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    *   }
    * })
    */
-  findUniqueOrThrow<T extends mapElementsFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, mapElementsFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__mapElementsClient<runtime.Types.Result.GetResult<Prisma.$mapElementsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findUniqueOrThrow<T extends MapElementsFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, MapElementsFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__MapElementsClient<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first MapElements that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {mapElementsFindFirstArgs} args - Arguments to find a MapElements
+   * @param {MapElementsFindFirstArgs} args - Arguments to find a MapElements
    * @example
    * // Get one MapElements
    * const mapElements = await prisma.mapElements.findFirst({
@@ -453,14 +719,14 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    *   }
    * })
    */
-  findFirst<T extends mapElementsFindFirstArgs>(args?: Prisma.SelectSubset<T, mapElementsFindFirstArgs<ExtArgs>>): Prisma.Prisma__mapElementsClient<runtime.Types.Result.GetResult<Prisma.$mapElementsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findFirst<T extends MapElementsFindFirstArgs>(args?: Prisma.SelectSubset<T, MapElementsFindFirstArgs<ExtArgs>>): Prisma.Prisma__MapElementsClient<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first MapElements that matches the filter or
    * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {mapElementsFindFirstOrThrowArgs} args - Arguments to find a MapElements
+   * @param {MapElementsFindFirstOrThrowArgs} args - Arguments to find a MapElements
    * @example
    * // Get one MapElements
    * const mapElements = await prisma.mapElements.findFirstOrThrow({
@@ -469,13 +735,13 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    *   }
    * })
    */
-  findFirstOrThrow<T extends mapElementsFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, mapElementsFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__mapElementsClient<runtime.Types.Result.GetResult<Prisma.$mapElementsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findFirstOrThrow<T extends MapElementsFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, MapElementsFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__MapElementsClient<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find zero or more MapElements that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {mapElementsFindManyArgs} args - Arguments to filter and select certain fields only.
+   * @param {MapElementsFindManyArgs} args - Arguments to filter and select certain fields only.
    * @example
    * // Get all MapElements
    * const mapElements = await prisma.mapElements.findMany()
@@ -487,11 +753,11 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    * const mapElementsWithIdOnly = await prisma.mapElements.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends mapElementsFindManyArgs>(args?: Prisma.SelectSubset<T, mapElementsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$mapElementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+  findMany<T extends MapElementsFindManyArgs>(args?: Prisma.SelectSubset<T, MapElementsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
   /**
    * Create a MapElements.
-   * @param {mapElementsCreateArgs} args - Arguments to create a MapElements.
+   * @param {MapElementsCreateArgs} args - Arguments to create a MapElements.
    * @example
    * // Create one MapElements
    * const MapElements = await prisma.mapElements.create({
@@ -501,11 +767,11 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    * })
    * 
    */
-  create<T extends mapElementsCreateArgs>(args: Prisma.SelectSubset<T, mapElementsCreateArgs<ExtArgs>>): Prisma.Prisma__mapElementsClient<runtime.Types.Result.GetResult<Prisma.$mapElementsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  create<T extends MapElementsCreateArgs>(args: Prisma.SelectSubset<T, MapElementsCreateArgs<ExtArgs>>): Prisma.Prisma__MapElementsClient<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Create many MapElements.
-   * @param {mapElementsCreateManyArgs} args - Arguments to create many MapElements.
+   * @param {MapElementsCreateManyArgs} args - Arguments to create many MapElements.
    * @example
    * // Create many MapElements
    * const mapElements = await prisma.mapElements.createMany({
@@ -515,11 +781,11 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    * })
    *     
    */
-  createMany<T extends mapElementsCreateManyArgs>(args?: Prisma.SelectSubset<T, mapElementsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  createMany<T extends MapElementsCreateManyArgs>(args?: Prisma.SelectSubset<T, MapElementsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Create many MapElements and returns the data saved in the database.
-   * @param {mapElementsCreateManyAndReturnArgs} args - Arguments to create many MapElements.
+   * @param {MapElementsCreateManyAndReturnArgs} args - Arguments to create many MapElements.
    * @example
    * // Create many MapElements
    * const mapElements = await prisma.mapElements.createManyAndReturn({
@@ -539,11 +805,11 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    * Read more here: https://pris.ly/d/null-undefined
    * 
    */
-  createManyAndReturn<T extends mapElementsCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, mapElementsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$mapElementsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+  createManyAndReturn<T extends MapElementsCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, MapElementsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Delete a MapElements.
-   * @param {mapElementsDeleteArgs} args - Arguments to delete one MapElements.
+   * @param {MapElementsDeleteArgs} args - Arguments to delete one MapElements.
    * @example
    * // Delete one MapElements
    * const MapElements = await prisma.mapElements.delete({
@@ -553,11 +819,11 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    * })
    * 
    */
-  delete<T extends mapElementsDeleteArgs>(args: Prisma.SelectSubset<T, mapElementsDeleteArgs<ExtArgs>>): Prisma.Prisma__mapElementsClient<runtime.Types.Result.GetResult<Prisma.$mapElementsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  delete<T extends MapElementsDeleteArgs>(args: Prisma.SelectSubset<T, MapElementsDeleteArgs<ExtArgs>>): Prisma.Prisma__MapElementsClient<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Update one MapElements.
-   * @param {mapElementsUpdateArgs} args - Arguments to update one MapElements.
+   * @param {MapElementsUpdateArgs} args - Arguments to update one MapElements.
    * @example
    * // Update one MapElements
    * const mapElements = await prisma.mapElements.update({
@@ -570,11 +836,11 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    * })
    * 
    */
-  update<T extends mapElementsUpdateArgs>(args: Prisma.SelectSubset<T, mapElementsUpdateArgs<ExtArgs>>): Prisma.Prisma__mapElementsClient<runtime.Types.Result.GetResult<Prisma.$mapElementsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  update<T extends MapElementsUpdateArgs>(args: Prisma.SelectSubset<T, MapElementsUpdateArgs<ExtArgs>>): Prisma.Prisma__MapElementsClient<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Delete zero or more MapElements.
-   * @param {mapElementsDeleteManyArgs} args - Arguments to filter MapElements to delete.
+   * @param {MapElementsDeleteManyArgs} args - Arguments to filter MapElements to delete.
    * @example
    * // Delete a few MapElements
    * const { count } = await prisma.mapElements.deleteMany({
@@ -584,13 +850,13 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    * })
    * 
    */
-  deleteMany<T extends mapElementsDeleteManyArgs>(args?: Prisma.SelectSubset<T, mapElementsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  deleteMany<T extends MapElementsDeleteManyArgs>(args?: Prisma.SelectSubset<T, MapElementsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more MapElements.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {mapElementsUpdateManyArgs} args - Arguments to update one or more rows.
+   * @param {MapElementsUpdateManyArgs} args - Arguments to update one or more rows.
    * @example
    * // Update many MapElements
    * const mapElements = await prisma.mapElements.updateMany({
@@ -603,11 +869,11 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    * })
    * 
    */
-  updateMany<T extends mapElementsUpdateManyArgs>(args: Prisma.SelectSubset<T, mapElementsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  updateMany<T extends MapElementsUpdateManyArgs>(args: Prisma.SelectSubset<T, MapElementsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more MapElements and returns the data updated in the database.
-   * @param {mapElementsUpdateManyAndReturnArgs} args - Arguments to update many MapElements.
+   * @param {MapElementsUpdateManyAndReturnArgs} args - Arguments to update many MapElements.
    * @example
    * // Update many MapElements
    * const mapElements = await prisma.mapElements.updateManyAndReturn({
@@ -633,11 +899,11 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    * Read more here: https://pris.ly/d/null-undefined
    * 
    */
-  updateManyAndReturn<T extends mapElementsUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, mapElementsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$mapElementsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+  updateManyAndReturn<T extends MapElementsUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, MapElementsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one MapElements.
-   * @param {mapElementsUpsertArgs} args - Arguments to update or create a MapElements.
+   * @param {MapElementsUpsertArgs} args - Arguments to update or create a MapElements.
    * @example
    * // Update or create a MapElements
    * const mapElements = await prisma.mapElements.upsert({
@@ -652,14 +918,14 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    *   }
    * })
    */
-  upsert<T extends mapElementsUpsertArgs>(args: Prisma.SelectSubset<T, mapElementsUpsertArgs<ExtArgs>>): Prisma.Prisma__mapElementsClient<runtime.Types.Result.GetResult<Prisma.$mapElementsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  upsert<T extends MapElementsUpsertArgs>(args: Prisma.SelectSubset<T, MapElementsUpsertArgs<ExtArgs>>): Prisma.Prisma__MapElementsClient<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
   /**
    * Count the number of MapElements.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {mapElementsCountArgs} args - Arguments to filter MapElements to count.
+   * @param {MapElementsCountArgs} args - Arguments to filter MapElements to count.
    * @example
    * // Count the number of MapElements
    * const count = await prisma.mapElements.count({
@@ -668,8 +934,8 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    *   }
    * })
   **/
-  count<T extends mapElementsCountArgs>(
-    args?: Prisma.Subset<T, mapElementsCountArgs>,
+  count<T extends MapElementsCountArgs>(
+    args?: Prisma.Subset<T, MapElementsCountArgs>,
   ): Prisma.PrismaPromise<
     T extends runtime.Types.Utils.Record<'select', any>
       ? T['select'] extends true
@@ -708,7 +974,7 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    * Group by MapElements.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {mapElementsGroupByArgs} args - Group by arguments.
+   * @param {MapElementsGroupByArgs} args - Group by arguments.
    * @example
    * // Group by city, order by createdAt, get count
    * const result = await prisma.user.groupBy({
@@ -723,14 +989,14 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
    * 
   **/
   groupBy<
-    T extends mapElementsGroupByArgs,
+    T extends MapElementsGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
       Prisma.Extends<'skip', Prisma.Keys<T>>,
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends Prisma.True extends HasSelectOrTake
-      ? { orderBy: mapElementsGroupByArgs['orderBy'] }
-      : { orderBy?: mapElementsGroupByArgs['orderBy'] },
+      ? { orderBy: MapElementsGroupByArgs['orderBy'] }
+      : { orderBy?: MapElementsGroupByArgs['orderBy'] },
     OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>,
     ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
@@ -779,21 +1045,23 @@ export interface mapElementsDelegate<ExtArgs extends runtime.Types.Extensions.In
           ? never
           : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
       }[OrderFields]
-  >(args: Prisma.SubsetIntersection<T, mapElementsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMapElementsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  >(args: Prisma.SubsetIntersection<T, MapElementsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMapElementsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 /**
- * Fields of the mapElements model
+ * Fields of the MapElements model
  */
-readonly fields: mapElementsFieldRefs;
+readonly fields: MapElementsFieldRefs;
 }
 
 /**
- * The delegate class that acts as a "Promise-like" for mapElements.
+ * The delegate class that acts as a "Promise-like" for MapElements.
  * Why is this prefixed with `Prisma__`?
  * Because we want to prevent naming conflicts as mentioned in
  * https://github.com/prisma/prisma-client-js/issues/707
  */
-export interface Prisma__mapElementsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+export interface Prisma__MapElementsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  map<T extends Prisma.MapDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MapDefaultArgs<ExtArgs>>): Prisma.Prisma__MapClient<runtime.Types.Result.GetResult<Prisma.$MapPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  element<T extends Prisma.ElementDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ElementDefaultArgs<ExtArgs>>): Prisma.Prisma__ElementClient<runtime.Types.Result.GetResult<Prisma.$ElementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -820,380 +1088,428 @@ export interface Prisma__mapElementsClient<T, Null = never, ExtArgs extends runt
 
 
 /**
- * Fields of the mapElements model
+ * Fields of the MapElements model
  */
-export interface mapElementsFieldRefs {
-  readonly id: Prisma.FieldRef<"mapElements", 'String'>
-  readonly mapId: Prisma.FieldRef<"mapElements", 'String'>
-  readonly elementId: Prisma.FieldRef<"mapElements", 'String'>
-  readonly x: Prisma.FieldRef<"mapElements", 'Int'>
-  readonly y: Prisma.FieldRef<"mapElements", 'Int'>
+export interface MapElementsFieldRefs {
+  readonly id: Prisma.FieldRef<"MapElements", 'String'>
+  readonly mapId: Prisma.FieldRef<"MapElements", 'String'>
+  readonly elementId: Prisma.FieldRef<"MapElements", 'String'>
+  readonly x: Prisma.FieldRef<"MapElements", 'Int'>
+  readonly y: Prisma.FieldRef<"MapElements", 'Int'>
 }
     
 
 // Custom InputTypes
 /**
- * mapElements findUnique
+ * MapElements findUnique
  */
-export type mapElementsFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type MapElementsFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the mapElements
+   * Select specific fields to fetch from the MapElements
    */
-  select?: Prisma.mapElementsSelect<ExtArgs> | null
+  select?: Prisma.MapElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the mapElements
+   * Omit specific fields from the MapElements
    */
-  omit?: Prisma.mapElementsOmit<ExtArgs> | null
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
   /**
-   * Filter, which mapElements to fetch.
+   * Choose, which related nodes to fetch as well
    */
-  where: Prisma.mapElementsWhereUniqueInput
+  include?: Prisma.MapElementsInclude<ExtArgs> | null
+  /**
+   * Filter, which MapElements to fetch.
+   */
+  where: Prisma.MapElementsWhereUniqueInput
 }
 
 /**
- * mapElements findUniqueOrThrow
+ * MapElements findUniqueOrThrow
  */
-export type mapElementsFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type MapElementsFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the mapElements
+   * Select specific fields to fetch from the MapElements
    */
-  select?: Prisma.mapElementsSelect<ExtArgs> | null
+  select?: Prisma.MapElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the mapElements
+   * Omit specific fields from the MapElements
    */
-  omit?: Prisma.mapElementsOmit<ExtArgs> | null
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
   /**
-   * Filter, which mapElements to fetch.
+   * Choose, which related nodes to fetch as well
    */
-  where: Prisma.mapElementsWhereUniqueInput
+  include?: Prisma.MapElementsInclude<ExtArgs> | null
+  /**
+   * Filter, which MapElements to fetch.
+   */
+  where: Prisma.MapElementsWhereUniqueInput
 }
 
 /**
- * mapElements findFirst
+ * MapElements findFirst
  */
-export type mapElementsFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type MapElementsFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the mapElements
+   * Select specific fields to fetch from the MapElements
    */
-  select?: Prisma.mapElementsSelect<ExtArgs> | null
+  select?: Prisma.MapElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the mapElements
+   * Omit specific fields from the MapElements
    */
-  omit?: Prisma.mapElementsOmit<ExtArgs> | null
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
   /**
-   * Filter, which mapElements to fetch.
+   * Choose, which related nodes to fetch as well
    */
-  where?: Prisma.mapElementsWhereInput
+  include?: Prisma.MapElementsInclude<ExtArgs> | null
+  /**
+   * Filter, which MapElements to fetch.
+   */
+  where?: Prisma.MapElementsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of mapElements to fetch.
+   * Determine the order of MapElements to fetch.
    */
-  orderBy?: Prisma.mapElementsOrderByWithRelationInput | Prisma.mapElementsOrderByWithRelationInput[]
+  orderBy?: Prisma.MapElementsOrderByWithRelationInput | Prisma.MapElementsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for mapElements.
+   * Sets the position for searching for MapElements.
    */
-  cursor?: Prisma.mapElementsWhereUniqueInput
+  cursor?: Prisma.MapElementsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` mapElements from the position of the cursor.
+   * Take `±n` MapElements from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` mapElements.
+   * Skip the first `n` MapElements.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of mapElements.
+   * Filter by unique combinations of MapElements.
    */
   distinct?: Prisma.MapElementsScalarFieldEnum | Prisma.MapElementsScalarFieldEnum[]
 }
 
 /**
- * mapElements findFirstOrThrow
+ * MapElements findFirstOrThrow
  */
-export type mapElementsFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type MapElementsFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the mapElements
+   * Select specific fields to fetch from the MapElements
    */
-  select?: Prisma.mapElementsSelect<ExtArgs> | null
+  select?: Prisma.MapElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the mapElements
+   * Omit specific fields from the MapElements
    */
-  omit?: Prisma.mapElementsOmit<ExtArgs> | null
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
   /**
-   * Filter, which mapElements to fetch.
+   * Choose, which related nodes to fetch as well
    */
-  where?: Prisma.mapElementsWhereInput
+  include?: Prisma.MapElementsInclude<ExtArgs> | null
+  /**
+   * Filter, which MapElements to fetch.
+   */
+  where?: Prisma.MapElementsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of mapElements to fetch.
+   * Determine the order of MapElements to fetch.
    */
-  orderBy?: Prisma.mapElementsOrderByWithRelationInput | Prisma.mapElementsOrderByWithRelationInput[]
+  orderBy?: Prisma.MapElementsOrderByWithRelationInput | Prisma.MapElementsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for mapElements.
+   * Sets the position for searching for MapElements.
    */
-  cursor?: Prisma.mapElementsWhereUniqueInput
+  cursor?: Prisma.MapElementsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` mapElements from the position of the cursor.
+   * Take `±n` MapElements from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` mapElements.
+   * Skip the first `n` MapElements.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of mapElements.
+   * Filter by unique combinations of MapElements.
    */
   distinct?: Prisma.MapElementsScalarFieldEnum | Prisma.MapElementsScalarFieldEnum[]
 }
 
 /**
- * mapElements findMany
+ * MapElements findMany
  */
-export type mapElementsFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type MapElementsFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the mapElements
+   * Select specific fields to fetch from the MapElements
    */
-  select?: Prisma.mapElementsSelect<ExtArgs> | null
+  select?: Prisma.MapElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the mapElements
+   * Omit specific fields from the MapElements
    */
-  omit?: Prisma.mapElementsOmit<ExtArgs> | null
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
   /**
-   * Filter, which mapElements to fetch.
+   * Choose, which related nodes to fetch as well
    */
-  where?: Prisma.mapElementsWhereInput
+  include?: Prisma.MapElementsInclude<ExtArgs> | null
+  /**
+   * Filter, which MapElements to fetch.
+   */
+  where?: Prisma.MapElementsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of mapElements to fetch.
+   * Determine the order of MapElements to fetch.
    */
-  orderBy?: Prisma.mapElementsOrderByWithRelationInput | Prisma.mapElementsOrderByWithRelationInput[]
+  orderBy?: Prisma.MapElementsOrderByWithRelationInput | Prisma.MapElementsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for listing mapElements.
+   * Sets the position for listing MapElements.
    */
-  cursor?: Prisma.mapElementsWhereUniqueInput
+  cursor?: Prisma.MapElementsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` mapElements from the position of the cursor.
+   * Take `±n` MapElements from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` mapElements.
+   * Skip the first `n` MapElements.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of mapElements.
+   * Filter by unique combinations of MapElements.
    */
   distinct?: Prisma.MapElementsScalarFieldEnum | Prisma.MapElementsScalarFieldEnum[]
 }
 
 /**
- * mapElements create
+ * MapElements create
  */
-export type mapElementsCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type MapElementsCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the mapElements
+   * Select specific fields to fetch from the MapElements
    */
-  select?: Prisma.mapElementsSelect<ExtArgs> | null
+  select?: Prisma.MapElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the mapElements
+   * Omit specific fields from the MapElements
    */
-  omit?: Prisma.mapElementsOmit<ExtArgs> | null
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
   /**
-   * The data needed to create a mapElements.
+   * Choose, which related nodes to fetch as well
    */
-  data: Prisma.XOR<Prisma.mapElementsCreateInput, Prisma.mapElementsUncheckedCreateInput>
+  include?: Prisma.MapElementsInclude<ExtArgs> | null
+  /**
+   * The data needed to create a MapElements.
+   */
+  data: Prisma.XOR<Prisma.MapElementsCreateInput, Prisma.MapElementsUncheckedCreateInput>
 }
 
 /**
- * mapElements createMany
+ * MapElements createMany
  */
-export type mapElementsCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type MapElementsCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to create many mapElements.
+   * The data used to create many MapElements.
    */
-  data: Prisma.mapElementsCreateManyInput | Prisma.mapElementsCreateManyInput[]
+  data: Prisma.MapElementsCreateManyInput | Prisma.MapElementsCreateManyInput[]
   skipDuplicates?: boolean
 }
 
 /**
- * mapElements createManyAndReturn
+ * MapElements createManyAndReturn
  */
-export type mapElementsCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type MapElementsCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the mapElements
+   * Select specific fields to fetch from the MapElements
    */
-  select?: Prisma.mapElementsSelectCreateManyAndReturn<ExtArgs> | null
+  select?: Prisma.MapElementsSelectCreateManyAndReturn<ExtArgs> | null
   /**
-   * Omit specific fields from the mapElements
+   * Omit specific fields from the MapElements
    */
-  omit?: Prisma.mapElementsOmit<ExtArgs> | null
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
   /**
-   * The data used to create many mapElements.
+   * The data used to create many MapElements.
    */
-  data: Prisma.mapElementsCreateManyInput | Prisma.mapElementsCreateManyInput[]
+  data: Prisma.MapElementsCreateManyInput | Prisma.MapElementsCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MapElementsIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
- * mapElements update
+ * MapElements update
  */
-export type mapElementsUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type MapElementsUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the mapElements
+   * Select specific fields to fetch from the MapElements
    */
-  select?: Prisma.mapElementsSelect<ExtArgs> | null
+  select?: Prisma.MapElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the mapElements
+   * Omit specific fields from the MapElements
    */
-  omit?: Prisma.mapElementsOmit<ExtArgs> | null
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
   /**
-   * The data needed to update a mapElements.
+   * Choose, which related nodes to fetch as well
    */
-  data: Prisma.XOR<Prisma.mapElementsUpdateInput, Prisma.mapElementsUncheckedUpdateInput>
+  include?: Prisma.MapElementsInclude<ExtArgs> | null
   /**
-   * Choose, which mapElements to update.
+   * The data needed to update a MapElements.
    */
-  where: Prisma.mapElementsWhereUniqueInput
+  data: Prisma.XOR<Prisma.MapElementsUpdateInput, Prisma.MapElementsUncheckedUpdateInput>
+  /**
+   * Choose, which MapElements to update.
+   */
+  where: Prisma.MapElementsWhereUniqueInput
 }
 
 /**
- * mapElements updateMany
+ * MapElements updateMany
  */
-export type mapElementsUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type MapElementsUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to update mapElements.
+   * The data used to update MapElements.
    */
-  data: Prisma.XOR<Prisma.mapElementsUpdateManyMutationInput, Prisma.mapElementsUncheckedUpdateManyInput>
+  data: Prisma.XOR<Prisma.MapElementsUpdateManyMutationInput, Prisma.MapElementsUncheckedUpdateManyInput>
   /**
-   * Filter which mapElements to update
+   * Filter which MapElements to update
    */
-  where?: Prisma.mapElementsWhereInput
+  where?: Prisma.MapElementsWhereInput
   /**
-   * Limit how many mapElements to update.
+   * Limit how many MapElements to update.
    */
   limit?: number
 }
 
 /**
- * mapElements updateManyAndReturn
+ * MapElements updateManyAndReturn
  */
-export type mapElementsUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type MapElementsUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the mapElements
+   * Select specific fields to fetch from the MapElements
    */
-  select?: Prisma.mapElementsSelectUpdateManyAndReturn<ExtArgs> | null
+  select?: Prisma.MapElementsSelectUpdateManyAndReturn<ExtArgs> | null
   /**
-   * Omit specific fields from the mapElements
+   * Omit specific fields from the MapElements
    */
-  omit?: Prisma.mapElementsOmit<ExtArgs> | null
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
   /**
-   * The data used to update mapElements.
+   * The data used to update MapElements.
    */
-  data: Prisma.XOR<Prisma.mapElementsUpdateManyMutationInput, Prisma.mapElementsUncheckedUpdateManyInput>
+  data: Prisma.XOR<Prisma.MapElementsUpdateManyMutationInput, Prisma.MapElementsUncheckedUpdateManyInput>
   /**
-   * Filter which mapElements to update
+   * Filter which MapElements to update
    */
-  where?: Prisma.mapElementsWhereInput
+  where?: Prisma.MapElementsWhereInput
   /**
-   * Limit how many mapElements to update.
+   * Limit how many MapElements to update.
+   */
+  limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MapElementsIncludeUpdateManyAndReturn<ExtArgs> | null
+}
+
+/**
+ * MapElements upsert
+ */
+export type MapElementsUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MapElements
+   */
+  select?: Prisma.MapElementsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MapElements
+   */
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MapElementsInclude<ExtArgs> | null
+  /**
+   * The filter to search for the MapElements to update in case it exists.
+   */
+  where: Prisma.MapElementsWhereUniqueInput
+  /**
+   * In case the MapElements found by the `where` argument doesn't exist, create a new MapElements with this data.
+   */
+  create: Prisma.XOR<Prisma.MapElementsCreateInput, Prisma.MapElementsUncheckedCreateInput>
+  /**
+   * In case the MapElements was found with the provided `where` argument, update it with this data.
+   */
+  update: Prisma.XOR<Prisma.MapElementsUpdateInput, Prisma.MapElementsUncheckedUpdateInput>
+}
+
+/**
+ * MapElements delete
+ */
+export type MapElementsDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MapElements
+   */
+  select?: Prisma.MapElementsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MapElements
+   */
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MapElementsInclude<ExtArgs> | null
+  /**
+   * Filter which MapElements to delete.
+   */
+  where: Prisma.MapElementsWhereUniqueInput
+}
+
+/**
+ * MapElements deleteMany
+ */
+export type MapElementsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Filter which MapElements to delete
+   */
+  where?: Prisma.MapElementsWhereInput
+  /**
+   * Limit how many MapElements to delete.
    */
   limit?: number
 }
 
 /**
- * mapElements upsert
+ * MapElements without action
  */
-export type mapElementsUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type MapElementsDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the mapElements
+   * Select specific fields to fetch from the MapElements
    */
-  select?: Prisma.mapElementsSelect<ExtArgs> | null
+  select?: Prisma.MapElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the mapElements
+   * Omit specific fields from the MapElements
    */
-  omit?: Prisma.mapElementsOmit<ExtArgs> | null
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
   /**
-   * The filter to search for the mapElements to update in case it exists.
+   * Choose, which related nodes to fetch as well
    */
-  where: Prisma.mapElementsWhereUniqueInput
-  /**
-   * In case the mapElements found by the `where` argument doesn't exist, create a new mapElements with this data.
-   */
-  create: Prisma.XOR<Prisma.mapElementsCreateInput, Prisma.mapElementsUncheckedCreateInput>
-  /**
-   * In case the mapElements was found with the provided `where` argument, update it with this data.
-   */
-  update: Prisma.XOR<Prisma.mapElementsUpdateInput, Prisma.mapElementsUncheckedUpdateInput>
-}
-
-/**
- * mapElements delete
- */
-export type mapElementsDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the mapElements
-   */
-  select?: Prisma.mapElementsSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the mapElements
-   */
-  omit?: Prisma.mapElementsOmit<ExtArgs> | null
-  /**
-   * Filter which mapElements to delete.
-   */
-  where: Prisma.mapElementsWhereUniqueInput
-}
-
-/**
- * mapElements deleteMany
- */
-export type mapElementsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Filter which mapElements to delete
-   */
-  where?: Prisma.mapElementsWhereInput
-  /**
-   * Limit how many mapElements to delete.
-   */
-  limit?: number
-}
-
-/**
- * mapElements without action
- */
-export type mapElementsDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the mapElements
-   */
-  select?: Prisma.mapElementsSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the mapElements
-   */
-  omit?: Prisma.mapElementsOmit<ExtArgs> | null
+  include?: Prisma.MapElementsInclude<ExtArgs> | null
 }

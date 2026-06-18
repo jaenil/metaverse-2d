@@ -12,8 +12,9 @@
 3. [Rule 2 — Detailed Explanations with Every Output](#rule-2--detailed-explanations-with-every-output)
 4. [Rule 3 — No Hallucination](#rule-3--no-hallucination)
 5. [Rule 4 — Standard Practices First](#rule-4--standard-practices-first)
-6. [General Conduct](#general-conduct)
-7. [Interaction Format](#interaction-format)
+6. [Rule 5 — Architectural Consistency with Design Documents](#rule-5--architectural-consistency-with-design-documents)
+7. [General Conduct](#general-conduct)
+8. [Interaction Format](#interaction-format)
 
 ---
 
@@ -189,6 +190,60 @@ Standards exist because they represent the distilled wisdom of the engineering c
 
 ---
 
+## Rule 5 — Architectural Consistency with Design Documents
+
+### What This Means
+
+Before reviewing, guiding, or commenting on any code in this project, the agent **must first consult the project's architectural design documents** stored in the Notion export directory. Code should always be evaluated against the intended design — not just for TypeScript correctness or Express conventions, but for alignment with what was originally planned.
+
+### Where to Find the Documents
+
+The design documents are exported from Notion and stored here:
+
+```
+/Users/kavyaparekh/Documents/jp/metaverse-2d/notion-entire_export/
+│
+├── Metaverse Project 3adae027e81a828d8ff7017af284ec1f.md   ← Top-level project overview
+│
+└── Metaverse Project/
+    ├── DB Schema 463ae027e81a82a59692017f5b4daf92.md         ← Database design & entity relationships
+    ├── Designing the API 60cae027e81a8364b3e501031bf207af.md  ← REST API contract (routes, request/response shapes)
+    ├── Websocket Schema 824ae027e81a83a3bbb0019f8948ceb1.md  ← WebSocket event schema
+    └── Designing the API/                                     ← Screenshots and visual diagrams
+```
+
+### When to Consult These Documents
+
+- **Always** when reviewing a route, schema, middleware, or database model
+- **Always** when the developer asks whether their implementation is correct
+- **Always** when the developer asks what a route or model *should* look like
+- When a discrepancy exists between what the code does and what the design specifies, **point it out explicitly**
+
+### What to Check
+
+| Area | Design Document to Reference |
+|---|---|
+| Prisma schema / DB models | `DB Schema` |
+| HTTP route structure, method, path, request/response body | `Designing the API` |
+| WebSocket events and payloads | `Websocket Schema` |
+| Overall project scope and phases | Top-level `Metaverse Project` file |
+
+### Why This Rule Exists
+
+Code that is syntactically valid and type-safe can still be *architecturally wrong* — using the wrong field names, implementing the wrong route structure, or missing relationships that were planned in the design phase. The Notion documents represent the **source of truth** for what this project is supposed to be. An agent that ignores them is flying blind.
+
+### Example
+
+❌ **Disallowed — Agent reviews code without checking the design doc:**
+
+> "Your `space.create` call looks correct — you're passing `name`, `width`, `height`, and `creatorId`."
+
+✅ **Allowed — Agent cross-references the design doc first:**
+
+> "Looking at the DB Schema doc, the `Space` model was designed to include a `thumbnail` field. Your current `space.create` call doesn't include it — is that intentional, or should it be part of the creation payload?"
+
+---
+
 ## General Conduct
 
 | Behaviour | Status |
@@ -239,3 +294,5 @@ To maintain consistency, every agent response should ideally follow this structu
 
 *Last updated: 2026-06-18*
 *Maintained by: project owner*
+
+> **Reference**: Architectural design documents are located at `/Users/kavyaparekh/Documents/jp/metaverse-2d/notion-entire_export/`. All agents must read the relevant document before reviewing code.

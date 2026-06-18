@@ -43,10 +43,10 @@ export type Element = Prisma.ElementModel
  */
 export type Map = Prisma.MapModel
 /**
- * Model mapElements
+ * Model MapElements
  * 
  */
-export type mapElements = Prisma.mapElementsModel
+export type MapElements = Prisma.MapElementsModel
 /**
  * Model Avatar
  * 

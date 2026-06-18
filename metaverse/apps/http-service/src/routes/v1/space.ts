@@ -3,7 +3,6 @@ import { CreateSpaceSchema } from '../../types/index.js';
 import client from "@repo/db" ;
 import { adminMiddleware } from '../../middleware/admin.js';
 import { userMiddleware } from '../../middleware/user.js';
-import { parse } from 'dotenv';
 export const spaceRouter = Router() ;
 
 spaceRouter.post('/',userMiddleware,async (req,res)=> {
@@ -45,15 +44,15 @@ spaceRouter.post('/',userMiddleware,async (req,res)=> {
                 const curr_space = await client.space.create({
                     data:{
                         name:parsedData.data.name,
-                        width:parsedData.data.dimensions.width,
-                        height:parsedData.data.dimensions.height,
+                        width:map.width, //if map is present we will use maps dimension only
+                        height:map.height,
                         creatorId:req.userId as string,
                     }
                 });
                 await client.spaceElements.createMany({
                     data:map.mapElements.map(e=>({
                         spaceId:curr_space.id,
-                        elementId:e.id,
+                        elementId:e.elementId,
                         x:e.x!,
                         y:e.y !
                     }))

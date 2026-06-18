@@ -66,8 +66,8 @@ model MapElements {
   id        String  @id @unique @default(cuid())
   mapId     String
   elementId String
-  x         Int?
-  y         Int?
+  x         Int
+  y         Int
   map       Map     @relation(fields: [mapId], references: [id])
   element   Element @relation(fields: [elementId], references: [id])
 }

@@ -40,6 +40,7 @@ export type ElementMinAggregateOutputType = {
   id: string | null
   width: number | null
   height: number | null
+  static: boolean | null
   imageUrl: string | null
 }
 
@@ -47,6 +48,7 @@ export type ElementMaxAggregateOutputType = {
   id: string | null
   width: number | null
   height: number | null
+  static: boolean | null
   imageUrl: string | null
 }
 
@@ -54,6 +56,7 @@ export type ElementCountAggregateOutputType = {
   id: number
   width: number
   height: number
+  static: number
   imageUrl: number
   _all: number
 }
@@ -73,6 +76,7 @@ export type ElementMinAggregateInputType = {
   id?: true
   width?: true
   height?: true
+  static?: true
   imageUrl?: true
 }
 
@@ -80,6 +84,7 @@ export type ElementMaxAggregateInputType = {
   id?: true
   width?: true
   height?: true
+  static?: true
   imageUrl?: true
 }
 
@@ -87,6 +92,7 @@ export type ElementCountAggregateInputType = {
   id?: true
   width?: true
   height?: true
+  static?: true
   imageUrl?: true
   _all?: true
 }
@@ -181,6 +187,7 @@ export type ElementGroupByOutputType = {
   id: string
   width: number
   height: number
+  static: boolean
   imageUrl: string
   _count: ElementCountAggregateOutputType | null
   _avg: ElementAvgAggregateOutputType | null
@@ -211,14 +218,20 @@ export type ElementWhereInput = {
   id?: Prisma.StringFilter<"Element"> | string
   width?: Prisma.IntFilter<"Element"> | number
   height?: Prisma.IntFilter<"Element"> | number
+  static?: Prisma.BoolFilter<"Element"> | boolean
   imageUrl?: Prisma.StringFilter<"Element"> | string
+  spaces?: Prisma.SpaceElementsListRelationFilter
+  mapElements?: Prisma.MapElementsListRelationFilter
 }
 
 export type ElementOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   width?: Prisma.SortOrder
   height?: Prisma.SortOrder
+  static?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  spaces?: Prisma.spaceElementsOrderByRelationAggregateInput
+  mapElements?: Prisma.MapElementsOrderByRelationAggregateInput
 }
 
 export type ElementWhereUniqueInput = Prisma.AtLeast<{
@@ -228,13 +241,17 @@ export type ElementWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ElementWhereInput | Prisma.ElementWhereInput[]
   width?: Prisma.IntFilter<"Element"> | number
   height?: Prisma.IntFilter<"Element"> | number
+  static?: Prisma.BoolFilter<"Element"> | boolean
   imageUrl?: Prisma.StringFilter<"Element"> | string
+  spaces?: Prisma.SpaceElementsListRelationFilter
+  mapElements?: Prisma.MapElementsListRelationFilter
 }, "id" | "id">
 
 export type ElementOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   width?: Prisma.SortOrder
   height?: Prisma.SortOrder
+  static?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   _count?: Prisma.ElementCountOrderByAggregateInput
   _avg?: Prisma.ElementAvgOrderByAggregateInput
@@ -250,6 +267,7 @@ export type ElementScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Element"> | string
   width?: Prisma.IntWithAggregatesFilter<"Element"> | number
   height?: Prisma.IntWithAggregatesFilter<"Element"> | number
+  static?: Prisma.BoolWithAggregatesFilter<"Element"> | boolean
   imageUrl?: Prisma.StringWithAggregatesFilter<"Element"> | string
 }
 
@@ -257,34 +275,47 @@ export type ElementCreateInput = {
   id?: string
   width: number
   height: number
+  static: boolean
   imageUrl: string
+  spaces?: Prisma.spaceElementsCreateNestedManyWithoutElementInput
+  mapElements?: Prisma.MapElementsCreateNestedManyWithoutElementInput
 }
 
 export type ElementUncheckedCreateInput = {
   id?: string
   width: number
   height: number
+  static: boolean
   imageUrl: string
+  spaces?: Prisma.spaceElementsUncheckedCreateNestedManyWithoutElementInput
+  mapElements?: Prisma.MapElementsUncheckedCreateNestedManyWithoutElementInput
 }
 
 export type ElementUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
+  static?: Prisma.BoolFieldUpdateOperationsInput | boolean
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  spaces?: Prisma.spaceElementsUpdateManyWithoutElementNestedInput
+  mapElements?: Prisma.MapElementsUpdateManyWithoutElementNestedInput
 }
 
 export type ElementUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
+  static?: Prisma.BoolFieldUpdateOperationsInput | boolean
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  spaces?: Prisma.spaceElementsUncheckedUpdateManyWithoutElementNestedInput
+  mapElements?: Prisma.MapElementsUncheckedUpdateManyWithoutElementNestedInput
 }
 
 export type ElementCreateManyInput = {
   id?: string
   width: number
   height: number
+  static: boolean
   imageUrl: string
 }
 
@@ -292,6 +323,7 @@ export type ElementUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
+  static?: Prisma.BoolFieldUpdateOperationsInput | boolean
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -299,13 +331,20 @@ export type ElementUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
+  static?: Prisma.BoolFieldUpdateOperationsInput | boolean
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type ElementScalarRelationFilter = {
+  is?: Prisma.ElementWhereInput
+  isNot?: Prisma.ElementWhereInput
 }
 
 export type ElementCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   width?: Prisma.SortOrder
   height?: Prisma.SortOrder
+  static?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
 }
 
@@ -318,6 +357,7 @@ export type ElementMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   width?: Prisma.SortOrder
   height?: Prisma.SortOrder
+  static?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
 }
 
@@ -325,6 +365,7 @@ export type ElementMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   width?: Prisma.SortOrder
   height?: Prisma.SortOrder
+  static?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
 }
 
@@ -333,19 +374,198 @@ export type ElementSumOrderByAggregateInput = {
   height?: Prisma.SortOrder
 }
 
+export type ElementCreateNestedOneWithoutSpacesInput = {
+  create?: Prisma.XOR<Prisma.ElementCreateWithoutSpacesInput, Prisma.ElementUncheckedCreateWithoutSpacesInput>
+  connectOrCreate?: Prisma.ElementCreateOrConnectWithoutSpacesInput
+  connect?: Prisma.ElementWhereUniqueInput
+}
+
+export type ElementUpdateOneRequiredWithoutSpacesNestedInput = {
+  create?: Prisma.XOR<Prisma.ElementCreateWithoutSpacesInput, Prisma.ElementUncheckedCreateWithoutSpacesInput>
+  connectOrCreate?: Prisma.ElementCreateOrConnectWithoutSpacesInput
+  upsert?: Prisma.ElementUpsertWithoutSpacesInput
+  connect?: Prisma.ElementWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ElementUpdateToOneWithWhereWithoutSpacesInput, Prisma.ElementUpdateWithoutSpacesInput>, Prisma.ElementUncheckedUpdateWithoutSpacesInput>
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type ElementCreateNestedOneWithoutMapElementsInput = {
+  create?: Prisma.XOR<Prisma.ElementCreateWithoutMapElementsInput, Prisma.ElementUncheckedCreateWithoutMapElementsInput>
+  connectOrCreate?: Prisma.ElementCreateOrConnectWithoutMapElementsInput
+  connect?: Prisma.ElementWhereUniqueInput
+}
+
+export type ElementUpdateOneRequiredWithoutMapElementsNestedInput = {
+  create?: Prisma.XOR<Prisma.ElementCreateWithoutMapElementsInput, Prisma.ElementUncheckedCreateWithoutMapElementsInput>
+  connectOrCreate?: Prisma.ElementCreateOrConnectWithoutMapElementsInput
+  upsert?: Prisma.ElementUpsertWithoutMapElementsInput
+  connect?: Prisma.ElementWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ElementUpdateToOneWithWhereWithoutMapElementsInput, Prisma.ElementUpdateWithoutMapElementsInput>, Prisma.ElementUncheckedUpdateWithoutMapElementsInput>
+}
+
+export type ElementCreateWithoutSpacesInput = {
+  id?: string
+  width: number
+  height: number
+  static: boolean
+  imageUrl: string
+  mapElements?: Prisma.MapElementsCreateNestedManyWithoutElementInput
+}
+
+export type ElementUncheckedCreateWithoutSpacesInput = {
+  id?: string
+  width: number
+  height: number
+  static: boolean
+  imageUrl: string
+  mapElements?: Prisma.MapElementsUncheckedCreateNestedManyWithoutElementInput
+}
+
+export type ElementCreateOrConnectWithoutSpacesInput = {
+  where: Prisma.ElementWhereUniqueInput
+  create: Prisma.XOR<Prisma.ElementCreateWithoutSpacesInput, Prisma.ElementUncheckedCreateWithoutSpacesInput>
+}
+
+export type ElementUpsertWithoutSpacesInput = {
+  update: Prisma.XOR<Prisma.ElementUpdateWithoutSpacesInput, Prisma.ElementUncheckedUpdateWithoutSpacesInput>
+  create: Prisma.XOR<Prisma.ElementCreateWithoutSpacesInput, Prisma.ElementUncheckedCreateWithoutSpacesInput>
+  where?: Prisma.ElementWhereInput
+}
+
+export type ElementUpdateToOneWithWhereWithoutSpacesInput = {
+  where?: Prisma.ElementWhereInput
+  data: Prisma.XOR<Prisma.ElementUpdateWithoutSpacesInput, Prisma.ElementUncheckedUpdateWithoutSpacesInput>
+}
+
+export type ElementUpdateWithoutSpacesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  width?: Prisma.IntFieldUpdateOperationsInput | number
+  height?: Prisma.IntFieldUpdateOperationsInput | number
+  static?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  mapElements?: Prisma.MapElementsUpdateManyWithoutElementNestedInput
+}
+
+export type ElementUncheckedUpdateWithoutSpacesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  width?: Prisma.IntFieldUpdateOperationsInput | number
+  height?: Prisma.IntFieldUpdateOperationsInput | number
+  static?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  mapElements?: Prisma.MapElementsUncheckedUpdateManyWithoutElementNestedInput
+}
+
+export type ElementCreateWithoutMapElementsInput = {
+  id?: string
+  width: number
+  height: number
+  static: boolean
+  imageUrl: string
+  spaces?: Prisma.spaceElementsCreateNestedManyWithoutElementInput
+}
+
+export type ElementUncheckedCreateWithoutMapElementsInput = {
+  id?: string
+  width: number
+  height: number
+  static: boolean
+  imageUrl: string
+  spaces?: Prisma.spaceElementsUncheckedCreateNestedManyWithoutElementInput
+}
+
+export type ElementCreateOrConnectWithoutMapElementsInput = {
+  where: Prisma.ElementWhereUniqueInput
+  create: Prisma.XOR<Prisma.ElementCreateWithoutMapElementsInput, Prisma.ElementUncheckedCreateWithoutMapElementsInput>
+}
+
+export type ElementUpsertWithoutMapElementsInput = {
+  update: Prisma.XOR<Prisma.ElementUpdateWithoutMapElementsInput, Prisma.ElementUncheckedUpdateWithoutMapElementsInput>
+  create: Prisma.XOR<Prisma.ElementCreateWithoutMapElementsInput, Prisma.ElementUncheckedCreateWithoutMapElementsInput>
+  where?: Prisma.ElementWhereInput
+}
+
+export type ElementUpdateToOneWithWhereWithoutMapElementsInput = {
+  where?: Prisma.ElementWhereInput
+  data: Prisma.XOR<Prisma.ElementUpdateWithoutMapElementsInput, Prisma.ElementUncheckedUpdateWithoutMapElementsInput>
+}
+
+export type ElementUpdateWithoutMapElementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  width?: Prisma.IntFieldUpdateOperationsInput | number
+  height?: Prisma.IntFieldUpdateOperationsInput | number
+  static?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  spaces?: Prisma.spaceElementsUpdateManyWithoutElementNestedInput
+}
+
+export type ElementUncheckedUpdateWithoutMapElementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  width?: Prisma.IntFieldUpdateOperationsInput | number
+  height?: Prisma.IntFieldUpdateOperationsInput | number
+  static?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  spaces?: Prisma.spaceElementsUncheckedUpdateManyWithoutElementNestedInput
+}
+
+
+/**
+ * Count Type ElementCountOutputType
+ */
+
+export type ElementCountOutputType = {
+  spaces: number
+  mapElements: number
+}
+
+export type ElementCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  spaces?: boolean | ElementCountOutputTypeCountSpacesArgs
+  mapElements?: boolean | ElementCountOutputTypeCountMapElementsArgs
+}
+
+/**
+ * ElementCountOutputType without action
+ */
+export type ElementCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ElementCountOutputType
+   */
+  select?: Prisma.ElementCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ElementCountOutputType without action
+ */
+export type ElementCountOutputTypeCountSpacesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.spaceElementsWhereInput
+}
+
+/**
+ * ElementCountOutputType without action
+ */
+export type ElementCountOutputTypeCountMapElementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MapElementsWhereInput
+}
 
 
 export type ElementSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   width?: boolean
   height?: boolean
+  static?: boolean
   imageUrl?: boolean
+  spaces?: boolean | Prisma.Element$spacesArgs<ExtArgs>
+  mapElements?: boolean | Prisma.Element$mapElementsArgs<ExtArgs>
+  _count?: boolean | Prisma.ElementCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["element"]>
 
 export type ElementSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   width?: boolean
   height?: boolean
+  static?: boolean
   imageUrl?: boolean
 }, ExtArgs["result"]["element"]>
 
@@ -353,6 +573,7 @@ export type ElementSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   width?: boolean
   height?: boolean
+  static?: boolean
   imageUrl?: boolean
 }, ExtArgs["result"]["element"]>
 
@@ -360,18 +581,30 @@ export type ElementSelectScalar = {
   id?: boolean
   width?: boolean
   height?: boolean
+  static?: boolean
   imageUrl?: boolean
 }
 
-export type ElementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "width" | "height" | "imageUrl", ExtArgs["result"]["element"]>
+export type ElementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "width" | "height" | "static" | "imageUrl", ExtArgs["result"]["element"]>
+export type ElementInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  spaces?: boolean | Prisma.Element$spacesArgs<ExtArgs>
+  mapElements?: boolean | Prisma.Element$mapElementsArgs<ExtArgs>
+  _count?: boolean | Prisma.ElementCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type ElementIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ElementIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $ElementPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Element"
-  objects: {}
+  objects: {
+    spaces: Prisma.$spaceElementsPayload<ExtArgs>[]
+    mapElements: Prisma.$MapElementsPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     width: number
     height: number
+    static: boolean
     imageUrl: string
   }, ExtArgs["result"]["element"]>
   composites: {}
@@ -767,6 +1000,8 @@ readonly fields: ElementFieldRefs;
  */
 export interface Prisma__ElementClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  spaces<T extends Prisma.Element$spacesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Element$spacesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  mapElements<T extends Prisma.Element$mapElementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Element$mapElementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -799,6 +1034,7 @@ export interface ElementFieldRefs {
   readonly id: Prisma.FieldRef<"Element", 'String'>
   readonly width: Prisma.FieldRef<"Element", 'Int'>
   readonly height: Prisma.FieldRef<"Element", 'Int'>
+  readonly static: Prisma.FieldRef<"Element", 'Boolean'>
   readonly imageUrl: Prisma.FieldRef<"Element", 'String'>
 }
     
@@ -816,6 +1052,10 @@ export type ElementFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Element
    */
   omit?: Prisma.ElementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ElementInclude<ExtArgs> | null
   /**
    * Filter, which Element to fetch.
    */
@@ -835,6 +1075,10 @@ export type ElementFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.ElementOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ElementInclude<ExtArgs> | null
+  /**
    * Filter, which Element to fetch.
    */
   where: Prisma.ElementWhereUniqueInput
@@ -852,6 +1096,10 @@ export type ElementFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Element
    */
   omit?: Prisma.ElementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ElementInclude<ExtArgs> | null
   /**
    * Filter, which Element to fetch.
    */
@@ -901,6 +1149,10 @@ export type ElementFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.ElementOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ElementInclude<ExtArgs> | null
+  /**
    * Filter, which Element to fetch.
    */
   where?: Prisma.ElementWhereInput
@@ -948,6 +1200,10 @@ export type ElementFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Element
    */
   omit?: Prisma.ElementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ElementInclude<ExtArgs> | null
   /**
    * Filter, which Elements to fetch.
    */
@@ -997,6 +1253,10 @@ export type ElementCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.ElementOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ElementInclude<ExtArgs> | null
+  /**
    * The data needed to create a Element.
    */
   data: Prisma.XOR<Prisma.ElementCreateInput, Prisma.ElementUncheckedCreateInput>
@@ -1044,6 +1304,10 @@ export type ElementUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Element
    */
   omit?: Prisma.ElementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ElementInclude<ExtArgs> | null
   /**
    * The data needed to update a Element.
    */
@@ -1111,6 +1375,10 @@ export type ElementUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.ElementOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ElementInclude<ExtArgs> | null
+  /**
    * The filter to search for the Element to update in case it exists.
    */
   where: Prisma.ElementWhereUniqueInput
@@ -1137,6 +1405,10 @@ export type ElementDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.ElementOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ElementInclude<ExtArgs> | null
+  /**
    * Filter which Element to delete.
    */
   where: Prisma.ElementWhereUniqueInput
@@ -1157,6 +1429,54 @@ export type ElementDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
+ * Element.spaces
+ */
+export type Element$spacesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the spaceElements
+   */
+  select?: Prisma.spaceElementsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the spaceElements
+   */
+  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.spaceElementsInclude<ExtArgs> | null
+  where?: Prisma.spaceElementsWhereInput
+  orderBy?: Prisma.spaceElementsOrderByWithRelationInput | Prisma.spaceElementsOrderByWithRelationInput[]
+  cursor?: Prisma.spaceElementsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SpaceElementsScalarFieldEnum | Prisma.SpaceElementsScalarFieldEnum[]
+}
+
+/**
+ * Element.mapElements
+ */
+export type Element$mapElementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MapElements
+   */
+  select?: Prisma.MapElementsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MapElements
+   */
+  omit?: Prisma.MapElementsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MapElementsInclude<ExtArgs> | null
+  where?: Prisma.MapElementsWhereInput
+  orderBy?: Prisma.MapElementsOrderByWithRelationInput | Prisma.MapElementsOrderByWithRelationInput[]
+  cursor?: Prisma.MapElementsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MapElementsScalarFieldEnum | Prisma.MapElementsScalarFieldEnum[]
+}
+
+/**
  * Element without action
  */
 export type ElementDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1168,4 +1488,8 @@ export type ElementDefaultArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Element
    */
   omit?: Prisma.ElementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ElementInclude<ExtArgs> | null
 }
