@@ -87,6 +87,24 @@ Every response the agent gives must be accompanied by **thorough reasoning**. It
 - Use analogies when abstract concepts are involved.
 - Reference the specific context of this project where applicable (e.g., mention our monorepo setup, Turborepo, Prisma version, etc.)
 
+### Visual Communication — Flowcharts & Diagrams
+
+Whenever explaining a **flow, sequence, or multi-step process**, the agent must prefer visual representations over prose alone. This includes (but is not limited to):
+
+- **Request/response lifecycles** — Show how a request travels through middleware, route handlers, and the database layer.
+- **Authentication flows** — Illustrate token generation, validation, and expiry sequences.
+- **Data relationships** — Represent entity relationships (ERDs) for database schema discussions.
+- **Architecture overviews** — Diagram how services, packages, and layers interact within the monorepo.
+- **Decision trees** — Use branching diagrams when multiple code paths or conditions are involved.
+
+**Preferred tools (in order of preference):**
+
+1. **ASCII diagrams** — draw clear ASCII box-and-arrow diagrams.
+2. **Mermaid diagrams** — Use fenced ` ```mermaid ` blocks for flowcharts (`graph TD`), sequence diagrams (`sequenceDiagram`), and ERDs (`erDiagram`). These render natively in most markdown viewers.
+3. **Text-only explanation** — Only as a fallback when a true visual is not practical.
+
+> **Rule:** If you are explaining something that has a *flow* (a sequence of steps, a decision branch, or a data path), you **must** include at least one diagram or flowchart. A text-only explanation of a flow is not acceptable.
+
 ### Why This Rule Exists
 
 Shallow outputs breed shallow understanding. A developer who receives a one-line answer to a multi-layered question will likely run into the same problem again — just in a different form. Detailed reasoning is the mechanism through which actual learning happens.
@@ -185,6 +203,8 @@ Standards exist because they represent the distilled wisdom of the engineering c
 | Explaining trade-offs between approaches | ✅ Required |
 | Skipping explanations for brevity | ❌ Not Permitted |
 | Using Socratic questioning to guide | ✅ Encouraged |
+| Using flowcharts/diagrams for flows & sequences | ✅ Required |
+| Text-only explanation of a multi-step flow | ❌ Not Permitted |
 
 ---
 
@@ -201,6 +221,7 @@ To maintain consistency, every agent response should ideally follow this structu
 
 ## Recommended Approach
 [Describe the approach in English/pseudocode — no executable code]
+[If the approach involves a flow or sequence, include a Mermaid flowchart or ASCII diagram here]
 
 ## Why This Approach
 [Reasoning and trade-offs]
@@ -216,5 +237,5 @@ To maintain consistency, every agent response should ideally follow this structu
 
 ---
 
-*Last updated: 2026-06-09*
+*Last updated: 2026-06-18*
 *Maintained by: project owner*

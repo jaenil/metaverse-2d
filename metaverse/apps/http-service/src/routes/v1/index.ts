@@ -69,7 +69,7 @@ router.post('/signin', async (req, res) => {
 })
 
 router.get('/elements', (req, res) => {
-
+    
 })
 
 router.get('/avatars', (req, res) => {

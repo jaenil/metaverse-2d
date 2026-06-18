@@ -17,13 +17,13 @@ export const UpdateMetadataSchema = z.object({
 
 export const CreateSpaceSchema = z.object({
     name: z.string(),
-    dimensions: z.string().regex(/^[0-9]{1,4}x[0-9]{1,4}$/),
+    dimensions: z.string().regex(/^[0-9]{1,4}x[0-9]{1,4}$/).transform(val => {const [width,height] = val.split("x"); return {width:Number(width),height:Number(height)}} ),
     mapId: z.string(),
 })
 
 export const JoinSpaceSchema = z.object({
     name: z.string(),
-    dimensions: z.string().regex(/^[0-9]{1,4}x[0-9]{1,4}$/),
+    dimensions: z.string().regex(/^[0-9]{1,4}x[0-9]{1,4}$/).transform(val => {const [width,height] = val.split("x"); return {width:Number(width),height:Number(height)}} ),
     mapId: z.string(),
 })
 
@@ -52,10 +52,20 @@ export const CreateAvatarSchema = z.object({
 
 export const CreateMapSchema = z.object({
     thumbnail: z.string(),
-    dimensions: z.string().regex(/^[0-9]{1,4}x[0-9]{1,4}$/),
+    dimensions: z.string().regex(/^[0-9]{1,4}x[0-9]{1,4}$/).transform(val => {const [width,height] = val.split("x"); return {width:Number(width),height:Number(height)}} ),
+    name: z.string(),
     defaultElements: z.array(z.object({
         elementId: z.string(),
         x: z.number(),
         y: z.number()
     }))
 })
+
+declare global{
+    namespace Express{
+        export interface Request{
+            role?:"Admin"|"User",
+            userId?:string,
+        }
+    }
+}
