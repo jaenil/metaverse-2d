@@ -1,0 +1,214 @@
+/* Must be the absolute first line in the file */
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+/* ── Design tokens: Ember & Charcoal ── */
+:root {
+  --bg:           #0c0808;   /* Deep warm charcoal */
+  --surface:      #140d0c;   /* Slightly lighter matte card */
+  --surface-elev: #1c1311;
+  --border:       #2e1f1d;
+  --muted:        #4a3330;
+  --text:         #e8dddb;   /* Warm off-white */
+  --subdued:      #8c7a77;
+
+  --accent:       #d9381e;   /* Matte Fire Red */
+  --accent-dim:   #5c180d;
+  --accent-hi:    #f25c43;
+  --accent-raw:   217, 56, 30;
+
+  --danger:       #ef4444;
+  --online:       #10b981;
+  --offline:      #8c7a77;
+
+  /* Font mappings */
+  --font-ui:      'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-retro:   'VT323', monospace;
+  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+
+  --radius-sm:    4px;
+  --radius-md:    6px;
+  --radius-lg:    8px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  background-color: var(--bg);
+  
+  /* Stacked Background Textures */
+  background-image: 
+    /* 1. Microscopic noise for texture */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"),
+    /* 2. Primary geometric diagonal lines (Red/Ember tint) */
+    repeating-linear-gradient(45deg, rgba(217, 56, 30, 0.03) 0px, rgba(217, 56, 30, 0.03) 1px, transparent 1px, transparent 50px),
+    /* 3. Secondary intersecting diagonal lines (White tint) */
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 80px),
+    /* 4. Subtle corner glow to give depth */
+    radial-gradient(circle at 100% 0%, rgba(217, 56, 30, 0.06) 0%, transparent 40%);
+    
+  color: var(--text);
+  
+  /* Base text remains clean and readable */
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ── UI Typography Targeting ── */
+/* This targets ONLY buttons, labels, and system headers */
+button, .btn-primary, .btn-ghost, .btn-danger, .back-btn, 
+label, .tag, h1, h2, h3, .admin-feedback, .ws-status, .space-id-label {
+  font-family: var(--font-retro);
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  /* Pixel fonts naturally render smaller, so we bump up the size slightly for these specific elements */
+  font-size: 115%; 
+  letter-spacing: 0.05em;
+}
+
+/* ── Shared buttons ── */
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 1.25rem;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hi);
+  box-shadow: 0 4px 12px rgba(var(--accent-raw), 0.25);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--subdued);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 1.25rem;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: rgba(var(--accent-raw), 0.04);
+}
+
+.btn-danger {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.back-btn {
+  background: var(--accent);
+  color: #ffffff;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  
+  /* Enforcing the Retro Font explicitly */
+  font-family: var(--font-retro) !important;
+  font-size: 18px; 
+  letter-spacing: 0.05em;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-btn:hover { 
+  background: var(--accent-hi); 
+  box-shadow: 0 4px 12px rgba(var(--accent-raw), 0.25);
+}
+
+/* ── Shared inputs ── */
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--subdued);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+input, select, textarea {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  padding: 0.6rem 0.8rem;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: var(--font-ui);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  background: var(--surface);
+  box-shadow: 0 0 0 2px rgba(var(--accent-raw), 0.15);
+}
+
+kbd {
+  background: var(--surface-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--subdued);
+}
+
+/* ── Custom Scrollbars ── */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-md);
+  border: 3px solid var(--bg); /* Creates a padded look */
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--subdued);
+}
+::-webkit-scrollbar-corner {
+  background: var(--bg);
+}

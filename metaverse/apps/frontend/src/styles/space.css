@@ -1,0 +1,188 @@
+.space-root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.space-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+}
+
+.space-header-info {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.space-id-label {
+  color: var(--subdued);
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+.ws-status {
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ws-status::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.ws-status.online {
+  color: var(--text);
+}
+
+.ws-status.online::before {
+  background: var(--accent);
+}
+
+.ws-status.offline {
+  color: var(--offline);
+}
+
+.ws-status.offline::before {
+  background: var(--offline);
+}
+
+.space-user-count {
+  color: var(--subdued);
+  font-size: 12px;
+}
+
+.space-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.arena-wrap {
+  flex: 1;
+  overflow: auto;
+  padding: 2rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  /* Soft, faint grid texture for the arena floor */
+  background-image:
+    linear-gradient(rgba(46, 31, 29, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46, 31, 29, 0.4) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.space-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  padding: 1.5rem;
+  overflow-y: auto;
+  background: rgba(20, 13, 12, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.space-sidebar h3 {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--subdued);
+  margin-bottom: 1rem;
+}
+
+.controls-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.controls-grid span {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.controls-note {
+  font-size: 11px;
+  color: var(--subdued);
+  margin-top: 0.75rem;
+}
+
+.pos-display {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.pos-display.dimmed {
+  color: var(--subdued);
+}
+
+.user-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-item {
+  font-size: 13px;
+  color: var(--subdued);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.user-item:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.user-item.me {
+  color: var(--text);
+  background: rgba(var(--accent-raw), 0.08);
+}
+
+.user-item.me::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.space-loading,
+.space-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  gap: 1rem;
+  color: var(--subdued);
+}
