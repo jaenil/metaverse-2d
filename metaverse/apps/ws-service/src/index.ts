@@ -1,3 +1,4 @@
+import './dotenv-setup.js';
 import { WebSocketServer } from 'ws';
 import { User } from './User.js';
 

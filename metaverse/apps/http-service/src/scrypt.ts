@@ -31,7 +31,7 @@ export const hash = async (password: string): Promise<string> => {
  */
 export const compare = async (password: string, hash: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
-    const [salt, hashKey] = hash.split('.');
+    const [salt, hashKey] = hash.split('.') as [string, string];
     // we need to pass buffer values to timingSafeEqual
     const hashKeyBuff = Buffer.from(hashKey, 'hex');
     scrypt(password, salt, keyLength, (error, derivedKey) => {
