@@ -2,7 +2,6 @@
   "name": "http",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx esbuild src/index.ts --format=esm --bundle --packages=external --outfile=dist/index.js --platform=node --tsconfig=tsconfig.json",

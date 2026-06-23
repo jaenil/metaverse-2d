@@ -94,6 +94,10 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
+.space-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 4px 12px rgba(var(--accent-raw), 0.15);
+}
 
 .space-card.live::before {
   content: '';
