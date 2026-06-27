@@ -26,7 +26,7 @@ export function AdminPage() {
   }
 
   return (
-    <div className="admin-root">
+    <div className="admin-root ember-theme">
       <header className="admin-header">
         <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
         <h2>Admin Panel</h2>

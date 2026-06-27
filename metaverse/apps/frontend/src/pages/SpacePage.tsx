@@ -76,7 +76,7 @@ export function SpacePage() {
   }
 
   return (
-    <div className="space-root">
+    <div className="space-root ember-theme">
       <header className="space-header">
         <button className="back-btn" onClick={() => navigate('/dashboard')}>
           ← Back
