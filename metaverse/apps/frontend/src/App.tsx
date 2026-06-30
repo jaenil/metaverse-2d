@@ -3,10 +3,11 @@ import { AuthPage } from './pages/AuthPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { SpacePage } from './pages/SpacePage';
 import { AdminPage } from './pages/AdminPage';
-import { HomePage } from './pages/HomePage';
+import { ProfilePage } from './pages/ProfilePage';
 import { AvatarsPage } from './pages/AvatarsPage';
 import { MapsPage } from './pages/MapsPage';
 import { LobbyPage } from './pages/LobbyPage';
+import { AppLayout } from './components/AppLayout';
 import { useAuthStore } from './store/authStore';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -21,33 +22,20 @@ export default function App() {
         <Route path="/" element={<AuthPage />} />
         <Route path="/signup" element={<AuthPage />} />
         <Route path="/signin" element={<AuthPage />} />
-        <Route
-          path="/lobby"
-          element={<ProtectedRoute><LobbyPage /></ProtectedRoute>}
-        />
-        <Route
-          path="/home-page"
-          element={<ProtectedRoute><HomePage /></ProtectedRoute>}
-        />
-        <Route
-          path="/avatars"
-          element={<ProtectedRoute><AvatarsPage /></ProtectedRoute>}
-        />
-        <Route
-          path="/maps"
-          element={<ProtectedRoute><MapsPage /></ProtectedRoute>}
-        />
-        <Route
-          path="/dashboard"
-          element={<ProtectedRoute><DashboardPage /></ProtectedRoute>}
-        />
+        {/* AppLayout handles the Sidebar and Navbar for all dashboard-related pages */}
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+          <Route path="/lobby" element={<LobbyPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/avatars" element={<AvatarsPage />} />
+          <Route path="/maps" element={<MapsPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+        </Route>
+
+        {/* SpacePage remains separate as it has a fullscreen 2D Canvas layout */}
         <Route
           path="/space/:spaceId"
           element={<ProtectedRoute><SpacePage /></ProtectedRoute>}
-        />
-        <Route
-          path="/admin"
-          element={<ProtectedRoute><AdminPage /></ProtectedRoute>}
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

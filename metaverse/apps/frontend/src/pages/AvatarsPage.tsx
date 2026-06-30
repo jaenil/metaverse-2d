@@ -59,75 +59,8 @@ export function AvatarsPage() {
   };
 
   return (
-    <div className="font-body-md text-on-background selection:bg-primary/30 selection:text-primary-fixed min-h-screen relative overflow-hidden" style={{ backgroundColor: '#0b1326' }}>
-      <div className="fixed inset-0 technical-grid pointer-events-none opacity-30"></div>
-      
-      <header className="bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 shadow-[0_4px_30px_rgba(0,0,0,0.1)] fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16">
-        <div className="font-headline-lg text-headline-lg tracking-tighter text-primary-fixed drop-shadow-[0_0_8px_rgba(192,193,255,0.5)] cursor-pointer" onClick={() => navigate('/dashboard')}>METAVERSE</div>
-        <nav className="hidden md:flex items-center gap-8 font-technical-data text-technical-data">
-          <a className="text-tertiary border-b-2 border-tertiary pb-1 hover:text-secondary-fixed-dim transition-colors duration-300 cursor-pointer" onClick={() => navigate('/avatars')}>SYSTEM_STATUS</a>
-          <a className="text-on-surface-variant hover:text-secondary-fixed-dim transition-colors duration-300 cursor-pointer" onClick={() => navigate('/maps')}>COORDINATES</a>
-          <a className="text-on-surface-variant hover:text-secondary-fixed-dim transition-colors duration-300 cursor-pointer" onClick={() => navigate('/lobby')}>TELEMETRY</a>
-        </nav>
-        <div className="flex items-center gap-4">
-          <button className="scale-95 active:scale-90 transition-transform text-tertiary">
-            <span className="material-symbols-outlined">notifications</span>
-          </button>
-          <button className="scale-95 active:scale-90 transition-transform text-tertiary" onClick={() => navigate('/home-page')}>
-            <span className="material-symbols-outlined">settings</span>
-          </button>
-          <button className="scale-95 active:scale-90 transition-transform text-tertiary" onClick={() => navigate('/')}>
-            <span className="material-symbols-outlined">power_settings_new</span>
-          </button>
-        </div>
-      </header>
-
-      <aside className="hidden lg:flex flex-col py-8 gap-y-6 bg-surface-container-low/60 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl fixed left-0 h-screen w-64 z-40 top-16">
-        <div className="px-6 space-y-1">
-          <div className="w-12 h-12 rounded-full border border-primary/30 bg-primary/10 overflow-hidden mb-4">
-            <img className="w-full h-full object-cover" alt="Operator Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxnoam9LCr7cNa3IyLnaJsrUCSHO6WvqDn98zK1zOPfk92WSSPMOo7BvKW-ZVe398Mj-ySb0ZE7868F-wI-9hgRK2KjOTZopozp9kDZV7snBmhQeuGlJ98kXrM1596ubQDs7N4g5djdb3h9BOUcGkcR_UY72YdOOs0mJSWk-jD0DPymIUs7jm46NohpD88aI4T1rJLTqBaRDMuw-FlhLfo6yc7rFUBvVD2qnE99xjHE1PEGw2ZtgmvsVyfbdeu2XWvY9rsHBZLV7E" />
-          </div>
-          <div className="font-technical-data text-technical-data text-primary font-bold">OPERATOR_01</div>
-          <div className="font-technical-data text-[10px] text-on-surface-variant opacity-60">SECTOR_7G_ALPHA</div>
-        </div>
-        <nav className="mt-4">
-          <div className="flex flex-col gap-2">
-            <a className="flex items-center gap-3 text-primary font-bold border-l-4 border-primary pl-4 bg-primary-fixed/10 py-3 translate-x-1 transition-transform duration-200 cursor-pointer" onClick={() => navigate('/avatars')}>
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>fingerprint</span>
-              <span className="font-technical-data text-technical-data">IDENTITY</span>
-            </a>
-            <a className="flex items-center gap-3 text-on-surface-variant opacity-70 hover:opacity-100 pl-4 py-3 hover:bg-surface-container-high/50 transition-all cursor-pointer" onClick={() => navigate('/dashboard')}>
-              <span className="material-symbols-outlined">inventory_2</span>
-              <span className="font-technical-data text-technical-data">INVENTORY</span>
-            </a>
-            <a className="flex items-center gap-3 text-on-surface-variant opacity-70 hover:opacity-100 pl-4 py-3 hover:bg-surface-container-high/50 transition-all cursor-pointer">
-              <span className="material-symbols-outlined">psychology</span>
-              <span className="font-technical-data text-technical-data">NEURAL_LINK</span>
-            </a>
-            <a className="flex items-center gap-3 text-on-surface-variant opacity-70 hover:opacity-100 pl-4 py-3 hover:bg-surface-container-high/50 transition-all cursor-pointer" onClick={() => navigate('/maps')}>
-              <span className="material-symbols-outlined">grid_view</span>
-              <span className="font-technical-data text-technical-data">MAP_GRID</span>
-            </a>
-            <a className="flex items-center gap-3 text-on-surface-variant opacity-70 hover:opacity-100 pl-4 py-3 hover:bg-surface-container-high/50 transition-all cursor-pointer">
-              <span className="material-symbols-outlined">terminal</span>
-              <span className="font-technical-data text-technical-data">LOGS</span>
-            </a>
-          </div>
-        </nav>
-        <div className="mt-auto px-6 border-t border-outline-variant/10 pt-6">
-          <div className="flex flex-col gap-4">
-            <a className="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant/70 hover:text-tertiary transition-all cursor-pointer">
-              <span className="material-symbols-outlined text-[18px]">help</span> HELP
-            </a>
-            <a className="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant/70 hover:text-tertiary transition-all cursor-pointer">
-              <span className="material-symbols-outlined text-[18px]">forum</span> FEEDBACK
-            </a>
-          </div>
-        </div>
-      </aside>
-
-      <main className="lg:ml-64 pt-24 pb-20 min-h-screen px-margin-mobile md:px-margin-desktop relative">
-        <div className="max-w-7xl mx-auto">
+    <>
+      <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop">
           <header className="mb-12">
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#c0c1ff]"></span>
@@ -235,18 +168,7 @@ export function AvatarsPage() {
               </button>
             </div>
           </div>
-        </div>
-      </main>
-
-      <footer className="bg-surface-container-lowest/90 border-t border-outline-variant/10 fixed bottom-0 w-full z-50 flex justify-between items-center px-margin-desktop py-4 h-14">
-        <div className="font-label-sm text-label-sm text-tertiary-fixed-dim">© 2124 METAVERSE_PROTOCOLS // ENCRYPTION_ACTIVE</div>
-        <div className="flex items-center gap-6 font-technical-data text-technical-data text-secondary">METAVERSE_NODE_492</div>
-        <div className="flex gap-6">
-          <a className="font-label-sm text-label-sm text-on-surface-variant/50 hover:text-tertiary transition-all cursor-pointer">PRIVACY_LAYER</a>
-          <a className="font-label-sm text-label-sm text-on-surface-variant/50 hover:text-tertiary transition-all cursor-pointer">LICENSE_AGREEMENT</a>
-          <a className="font-label-sm text-label-sm text-on-surface-variant/50 hover:text-tertiary transition-all cursor-pointer">DEBUG_MODE</a>
-        </div>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 }

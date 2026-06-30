@@ -26,10 +26,9 @@ export function AdminPage() {
   }
 
   return (
-    <div className="admin-root ember-theme">
-      <header className="admin-header">
-        <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
-        <h2>Admin Panel</h2>
+    <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-8 w-full admin-root ember-theme" style={{ minHeight: 'auto' }}>
+      <header className="mb-8">
+        <h2 className="font-display-2xl text-[36px] text-primary">System Administration</h2>
       </header>
 
       <div className="admin-tabs">
