@@ -8,7 +8,7 @@
     "build": "npx esbuild src/index.ts --format=esm --bundle --packages=external --outfile=dist/index.js --platform=node --tsconfig=tsconfig.json",
     "start": "node --env-file=../../.env dist/index.js",
     "dev:build": "tsc -b -w",
-    "dev:start": "nodemon dist/index.js",
+    "dev:start": "nodemon --watch src --exec \"node --env-file=../../.env\" dist/index.js",
     "dev": "concurrently \"npm run dev:build\" \"npm run dev:start\""
   },
   "keywords": [],

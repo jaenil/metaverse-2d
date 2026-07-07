@@ -1,4 +1,12 @@
 import { PrismaClient } from "./generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
-const client = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DIRECT_URL! }) });
+import pg from "pg";
+
+const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
+console.log("[DB INIT] connectionString is:", connectionString);
+const pool = new pg.Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+const client = new PrismaClient({ adapter });
+
 export default client;
+
