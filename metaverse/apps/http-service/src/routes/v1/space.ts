@@ -36,6 +36,7 @@ spaceRouter.post('/', userMiddleware, async (req, res) => {
                     mapElements: true,
                     width: true,
                     height: true,
+                    thumbnail: true,
                 }
             })
             if (!map) {
@@ -47,6 +48,7 @@ spaceRouter.post('/', userMiddleware, async (req, res) => {
                         name: parsedData.data.name,
                         width: map.width, //if map is present we will use maps dimension only
                         height: map.height,
+                        thumbnail: map.thumbnail,
                         creatorId: req.userId as string,
                     }
                 });
@@ -174,6 +176,12 @@ spaceRouter.delete('/:spaceId', userMiddleware, async (req, res) => {
         if (space?.creatorId != req.userId) {
             return res.status(403).json({ message: "Unauthorised" })
         }
+
+        // Delete all elements inside the space first to satisfy foreign key constraints
+        await client.spaceElements.deleteMany({
+            where: { spaceId }
+        });
+
         await client.space.delete({
             where: {
                 id: spaceId
@@ -182,6 +190,7 @@ spaceRouter.delete('/:spaceId', userMiddleware, async (req, res) => {
         return res.status(200).json({ message: "Space deleted successfully" })
     }
     catch (e) {
+        console.error("Space delete error", e);
         res.status(500).json({ message: "Internal server error" });
     }
 })
@@ -214,3 +223,5 @@ spaceRouter.get('/:spaceId', userMiddleware, async (req, res) => {
     })
     return res.status(200).json({ space, elements: space_elements })
 })
+
+// Trigger nodemon 2

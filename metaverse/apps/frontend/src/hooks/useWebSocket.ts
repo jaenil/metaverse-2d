@@ -31,6 +31,10 @@ export function useWebSocket({
     send({ type: 'move', payload: { x, y } });
   }, [send]);
 
+  const sendEmote = useCallback((emote: string) => {
+    send({ type: 'emote', payload: { emote } });
+  }, [send]);
+
   const connect = useCallback(() => {
     const ws = new WebSocket(WS_URL);
     wsRef.current = ws;

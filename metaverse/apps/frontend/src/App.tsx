@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthPage } from './pages/AuthPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -8,7 +9,10 @@ import { SigninPage } from './pages/SigninPage';
 import { HomePage } from './pages/HomePage';
 import { AvatarsPage } from './pages/AvatarsPage';
 import { MapsPage } from './pages/MapsPage';
+import { BackgroundFX } from './components/BackgroundFX';
 import { useAuthStore } from './store/authStore';
+import { useThemeStore } from './store/themeStore';
+import './styles/retro-fx.css';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = useAuthStore((s) => s.token);
@@ -16,8 +20,20 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const theme = useThemeStore((s) => s.theme);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
   return (
     <BrowserRouter>
+      {/* Dynamic Animated Background */}
+      <BackgroundFX />
+      
+      {/* Global Retro CRT Overlay */}
+      <div className="crt-overlay" />
+      
       <Routes>
         <Route path="/" element={<AuthPage />} />
         <Route path="/signup" element={<SignupPage />} />

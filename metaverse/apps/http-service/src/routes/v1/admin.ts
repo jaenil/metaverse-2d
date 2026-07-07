@@ -72,3 +72,48 @@ adminRouter.post('/map', adminMiddleware, async (req, res) => {
     })
     return res.json({ id: map.id })
 })
+
+adminRouter.delete('/avatar/:avatarId', adminMiddleware, async (req, res) => {
+    try {
+        const avatarId = req.params.avatarId as string;
+        
+        // 1. Remove this avatar from any users currently using it
+        await client.user.updateMany({
+            where: { avatarId },
+            data: { avatarId: null }
+        });
+
+        // 2. Delete the avatar
+        await client.avatar.delete({
+            where: { id: avatarId }
+        });
+
+        res.status(200).json({ message: "Avatar deleted" });
+    } catch (e) {
+        console.error("Avatar delete error", e);
+        res.status(500).json({ message: "Failed to delete avatar" });
+    }
+})
+
+adminRouter.delete('/map/:mapId', adminMiddleware, async (req, res) => {
+    try {
+        const mapId = req.params.mapId as string;
+
+        // 1. Delete all map elements associated with this map
+        await client.mapElements.deleteMany({
+            where: { mapId }
+        });
+
+        // 2. Delete the map itself
+        await client.map.delete({
+            where: { id: mapId }
+        });
+
+        res.status(200).json({ message: "Map deleted" });
+    } catch (e) {
+        console.error("Map delete error", e);
+        res.status(500).json({ message: "Failed to delete map" });
+    }
+})
+
+// Trigger nodemon 2

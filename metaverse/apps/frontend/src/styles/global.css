@@ -35,6 +35,36 @@
   --radius-lg:    8px;
 }
 
+[data-theme="cyberpunk"] {
+  --bg:           #050514;
+  --surface:      #0a0a20;
+  --surface-elev: #0f0f2a;
+  --border:       #20204d;
+  --muted:        #2d2d66;
+  --text:         #e0e0ff;
+  --subdued:      #8c8cba;
+
+  --accent:       #00f0ff;
+  --accent-dim:   #004d4d;
+  --accent-hi:    #66f5ff;
+  --accent-raw:   0, 240, 255;
+}
+
+[data-theme="gameboy"] {
+  --bg:           #0f380f;
+  --surface:      #1a471a;
+  --surface-elev: #245624;
+  --border:       #306230;
+  --muted:        #407740;
+  --text:         #9bbc0f;
+  --subdued:      #8bac0f;
+
+  --accent:       #8bac0f;
+  --accent-dim:   #306230;
+  --accent-hi:    #9bbc0f;
+  --accent-raw:   139, 172, 15;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -43,19 +73,7 @@
 
 html, body, #root {
   height: 100%;
-  background-color: var(--bg);
-  
-  /* Stacked Background Textures */
-  background-image: 
-    /* 1. Microscopic noise for texture */
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"),
-    /* 2. Primary geometric diagonal lines (Red/Ember tint) */
-    repeating-linear-gradient(45deg, rgba(217, 56, 30, 0.03) 0px, rgba(217, 56, 30, 0.03) 1px, transparent 1px, transparent 50px),
-    /* 3. Secondary intersecting diagonal lines (White tint) */
-    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 80px),
-    /* 4. Subtle corner glow to give depth */
-    radial-gradient(circle at 100% 0%, rgba(217, 56, 30, 0.06) 0%, transparent 40%);
-    
+  background-color: transparent;
   color: var(--text);
   
   /* Base text remains clean and readable */

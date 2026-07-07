@@ -59,8 +59,10 @@ export interface GameMap {
   id: string;
   name: string;
   thumbnail: string;
-  dimensions: string;
-  defaultElements: { elementId: string; x: number; y: number }[];
+  dimensions?: string;
+  width?: number;
+  height?: number;
+  defaultElements?: { elementId: string; x: number; y: number }[];
 }
 
 // ─── Space ───────────────────────────────────────────────────────────────────
@@ -75,7 +77,7 @@ export interface Space {
 }
 
 export interface SpaceDetail {
-  space: { width: number; height: number };
+  space: { width: number; height: number; thumbnail?: string };
   elements: SpaceElement[];
 }
 
@@ -84,7 +86,8 @@ export interface SpaceDetail {
 // Client → Server
 export type ClientMessage =
   | { type: 'join'; payload: { spaceId: string; token: string } }
-  | { type: 'move'; payload: { x: number; y: number } };
+  | { type: 'move'; payload: { x: number; y: number } }
+  | { type: 'emote'; payload: { emote: string } };
 
 // Server → Client
 export type ServerMessage =
@@ -95,10 +98,12 @@ export type ServerMessage =
         users: { userId: string; x: number; y: number }[];
       };
     }
+  | { type: 'user-join'; payload: { userId: string; x: number; y: number } }
   | { type: 'user-joined'; payload: { userId: string; x: number; y: number } }
   | { type: 'movement'; payload: { userId: string; x: number; y: number } }
   | { type: 'movement-rejected'; payload: { x: number; y: number } }
-  | { type: 'user-left'; payload: { userId: string } };
+  | { type: 'user-left'; payload: { userId: string } }
+  | { type: 'emote'; payload: { userId: string; emote: string } };
 
 // ─── Arena State ─────────────────────────────────────────────────────────────
 
@@ -107,10 +112,15 @@ export interface ArenaUser {
   x: number;
   y: number;
   avatarUrl?: string;
+  emote?: string;
+  emoteExpiresAt?: number;
 }
 
 export interface ArenaState {
   myPos: { x: number; y: number } | null;
+  myEmote?: string;
+  myEmoteExpiresAt?: number;
   users: Map<string, ArenaUser>;
   connected: boolean;
+  myAvatarUrl?: string; // added manually if needed
 }

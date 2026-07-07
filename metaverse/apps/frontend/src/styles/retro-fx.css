@@ -1,0 +1,120 @@
+/* ── retro-fx.css ────────────────────────────────────────────────────────────
+   Global Retro UI Enhancements: Custom Cursor, CRT Overlay, Glitch Hover
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Custom Pixel Art Cursor ──────────────────────────────────────────────── */
+body {
+  /* Default pointer: a white pixel arrow with a black outline */
+  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 2v14l4-4 4 8 2-1-4-8 5-1L4 2z" fill="%23FFFFFF" stroke="%23000000" stroke-width="1.5" stroke-linejoin="round"/></svg>'), auto !important;
+}
+
+/* For clickable elements, use a little hand cursor */
+a, button, [role="button"], input[type="submit"], select, .clickable {
+  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 0v4H4v8h4v4h8v-4h4V4h-4V0H8zm4 4h4v8h-4V4z" fill="%23D9381E" opacity="0.8"/><rect x="8" y="4" width="8" height="12" fill="%23FFFFFF"/><path d="M6 12h2v4H6zm10 0h2v4h-2z" fill="%23FFFFFF"/></svg>'), pointer !important;
+}
+
+/* ── Global CRT Overlay ──────────────────────────────────────────────────── */
+/* 
+  We use a pointer-events: none overlay to simulate a CRT screen. 
+  It adds scanlines, a subtle curve (vignette), and slight color separation on the edges.
+*/
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+  /* Sublte vignette / shadow around the screen edges */
+  background: radial-gradient(
+    circle at center,
+    transparent 50%,
+    rgba(0, 0, 0, 0.4) 120%
+  );
+}
+
+.crt-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  );
+  background-size: 100% 4px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.crt-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(var(--accent-raw), 0.02);
+  opacity: 0;
+  animation: crt-flicker 0.15s infinite;
+  pointer-events: none;
+}
+
+@keyframes crt-flicker {
+  0% { opacity: 0.02; }
+  50% { opacity: 0.04; }
+  100% { opacity: 0.01; }
+}
+
+/* ── Glitch Hover Effect for Buttons ──────────────────────────────────────── */
+.glitch-hover {
+  position: relative;
+  overflow: hidden;
+}
+
+.glitch-hover::before,
+.glitch-hover::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: inherit;
+  color: inherit;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.glitch-hover:hover::before {
+  animation: glitch-anim-1 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  color: #0ff;
+  left: 2px;
+  opacity: 0.8;
+  z-index: 1;
+}
+
+.glitch-hover:hover::after {
+  animation: glitch-anim-2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  color: #f0f;
+  left: -2px;
+  opacity: 0.8;
+  z-index: 1;
+}
+
+@keyframes glitch-anim-1 {
+  0% { clip-path: polygon(0 0, 100% 0, 100% 10%, 0 10%); transform: translate(-2px, 2px); }
+  20% { clip-path: polygon(0 20%, 100% 20%, 100% 30%, 0 30%); transform: translate(2px, -2px); }
+  40% { clip-path: polygon(0 40%, 100% 40%, 100% 50%, 0 50%); transform: translate(-2px, -2px); }
+  60% { clip-path: polygon(0 60%, 100% 60%, 100% 70%, 0 70%); transform: translate(2px, 2px); }
+  80% { clip-path: polygon(0 80%, 100% 80%, 100% 90%, 0 90%); transform: translate(2px, -2px); }
+  100% { clip-path: polygon(0 0, 0 0, 0 0, 0 0); transform: translate(0); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip-path: polygon(0 10%, 100% 10%, 100% 20%, 0 20%); transform: translate(2px, -2px); }
+  20% { clip-path: polygon(0 30%, 100% 30%, 100% 40%, 0 40%); transform: translate(-2px, 2px); }
+  40% { clip-path: polygon(0 50%, 100% 50%, 100% 60%, 0 60%); transform: translate(2px, 2px); }
+  60% { clip-path: polygon(0 70%, 100% 70%, 100% 80%, 0 80%); transform: translate(-2px, -2px); }
+  80% { clip-path: polygon(0 90%, 100% 90%, 100% 100%, 0 100%); transform: translate(-2px, 2px); }
+  100% { clip-path: polygon(0 0, 0 0, 0 0, 0 0); transform: translate(0); }
+}

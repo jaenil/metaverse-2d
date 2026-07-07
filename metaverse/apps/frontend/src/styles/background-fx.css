@@ -1,0 +1,66 @@
+/* ── background-fx.css ───────────────────────────────────────────────────────
+   Animated Synthwave Grid and Global Canvas rules
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Container for all background layers */
+.bg-fx-container {
+  position: fixed;
+  inset: 0;
+  z-index: -10; /* Far behind everything */
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--bg);
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(45deg, rgba(var(--accent-raw), 0.03) 0px, rgba(var(--accent-raw), 0.03) 1px, transparent 1px, transparent 50px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 80px),
+    radial-gradient(circle at 100% 0%, rgba(var(--accent-raw), 0.06) 0%, transparent 40%);
+}
+
+/* The Canvas for Particles, Matrix Rain, and Cursor Glow */
+.bg-fx-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6; /* Slight transparency so it blends */
+}
+
+/* ── 3D Synthwave Grid Floor ─────────────────────────────────────────────── */
+/* We create a flat div, tilt it back with 3D transform, and animate its background */
+.synthwave-grid-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: -50%;
+  width: 200%;
+  height: 60vh; /* Takes up bottom half of screen */
+  perspective: 400px;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 60%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 60%);
+}
+
+.synthwave-grid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200%; /* Extra height to allow scrolling */
+  transform-origin: bottom center;
+  transform: rotateX(75deg) translateY(0);
+  background-image: 
+    linear-gradient(rgba(var(--accent-raw), 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--accent-raw), 0.3) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-scroll 3s linear infinite;
+}
+
+@keyframes grid-scroll {
+  0% {
+    transform: rotateX(75deg) translateY(0);
+  }
+  100% {
+    transform: rotateX(75deg) translateY(50px); /* Matches background-size to loop smoothly */
+  }
+}

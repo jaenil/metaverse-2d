@@ -124,6 +124,17 @@ export class User{
                         }
                     })
                 }
+                break;
+            case "emote":
+                if(!this.spaceId) return;
+                RoomManager.getInstance().broadcast({
+                    type:"emote",
+                    payload:{
+                        userId:this.id,
+                        emote:parsedData.payload.emote
+                    }
+                }, this, this.spaceId);
+                break;
         }
     }
     destroy(){

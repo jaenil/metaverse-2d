@@ -76,11 +76,17 @@ export const adminCreateMap = (data: {
   defaultElements: { elementId: string; x: number; y: number }[];
 }) => client.post<{ id: string }>('/admin/map', data);
 
+export const adminDeleteMap = (mapId: string) =>
+  client.delete(`/admin/map/${mapId}`);
+
 export const adminCreateAvatar = (data: { imageUrl: string; name: string }) =>
   client.post<{ avatarId: string }>('/admin/avatar', data);
 
+export const adminDeleteAvatar = (avatarId: string) =>
+  client.delete(`/admin/avatar/${avatarId}`);
+
 export const getElements = () =>
-  client.get<{ elements: Element[] }>('/admin/elements');
+  client.get<{ elements: Element[] }>('/elements');
 
 export const getMaps = () =>
-  client.get<{ maps: GameMap[] }>('/admin/maps');
+  client.get<{ maps: GameMap[] }>('/maps');
