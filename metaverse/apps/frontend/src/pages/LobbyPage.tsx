@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 export function LobbyPage() {
-  const navigate = useNavigate();
   const [selectedNode, setSelectedNode] = useState('NODE_7A');
 
   const nodes = [

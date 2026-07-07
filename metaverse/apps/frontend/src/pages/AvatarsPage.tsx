@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const AVATARS = [
   {
@@ -48,7 +47,6 @@ const TIERS: Record<string, string> = { 'A': 'ALPHA', 'B': 'BETA', 'C': 'GAMMA',
 const MODULES: Record<string, string> = { 'A': 'V-AXIS 0.9', 'B': 'ORBIT-7', 'C': 'BIO-SYNTH', 'D': 'CORE-LOGIC' };
 
 export function AvatarsPage() {
-  const navigate = useNavigate();
   const [selected, setSelected] = useState(AVATARS[0]);
   const [fade, setFade] = useState(false);
 

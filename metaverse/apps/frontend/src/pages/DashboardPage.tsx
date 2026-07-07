@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllSpaces, createSpace, deleteSpace, getMaps } from '../api';
-import { useAuthStore } from '../store/authStore';
+
 import type { Space, GameMap } from '../types';
 
 export function DashboardPage() {
@@ -15,7 +15,7 @@ export function DashboardPage() {
   const [newDimensions, setNewDimensions] = useState('100x100');
   const [selectedMap, setSelectedMap] = useState('');
 
-  const { clearAuth } = useAuthStore();
+
   const navigate = useNavigate();
 
   async function loadSpaces() {
@@ -59,11 +59,7 @@ export function DashboardPage() {
     await loadSpaces();
   }
 
-  function handleLogout() {
-    clearAuth();
-    navigate('/');
-  }
-
+  // removed handleLogout
   return (
     <>
       <div className="max-w-7xl mx-auto px-8 md:px-16">

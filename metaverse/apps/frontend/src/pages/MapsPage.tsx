@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 const MAPS = [
   {
@@ -38,7 +37,6 @@ const MAPS = [
 ];
 
 export function MapsPage() {
-  const navigate = useNavigate();
   const [selected, setSelected] = useState(MAPS[0]);
 
   return (
