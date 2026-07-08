@@ -100,7 +100,13 @@ router.get('/maps', async (req, res) => {
             width: true,
             height: true,
             name: true,
-            thumbnail: true
+            thumbnail: true,
+            creator: {                  // <-- Add this nested select
+            select: {
+                id: true,
+                username: true
+            }
+        }
         }
     })
     res.status(200).json({ maps: maps });

@@ -85,6 +85,7 @@ adminRouter.post('/map', adminMiddleware, async (req, res) => {
             width: parsedData.data.dimensions.width,
             height: parsedData.data.dimensions.height,
             thumbnail: parsedData.data.thumbnail,
+            creatorId: req.userId as string,
             mapElements:{
                 create: parsedData.data.defaultElements.map((el) => ({
                     elementId:el.elementId,

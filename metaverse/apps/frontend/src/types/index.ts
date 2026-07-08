@@ -63,6 +63,7 @@ export interface GameMap {
   width?: number;
   height?: number;
   defaultElements?: { elementId: string; x: number; y: number }[];
+  creator?: { id: string; username: string };
 }
 
 // ─── Space ───────────────────────────────────────────────────────────────────
