@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signin } from '../api';
@@ -117,8 +118,13 @@ export function SigninPage() {
       const userId = res.data.userId ?? '';
       setAuth(res.data.token, userId, 'user');
       navigate('/dashboard');
-    } catch {
-      setError('Network error. Is the backend running?');
+    } catch (error) {
+      if(axios.isAxiosError(error) && error.response){
+        const message =error.response.data?.message;
+        setError(message);
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
