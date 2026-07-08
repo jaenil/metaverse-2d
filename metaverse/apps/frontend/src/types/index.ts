@@ -78,7 +78,7 @@ export interface Space {
 }
 
 export interface SpaceDetail {
-  space: { width: number; height: number; thumbnail?: string };
+  space: { width: number; height: number; thumbnail?: string; creatorId: string; weather: string; timeOfDay: string; };
   elements: SpaceElement[];
 }
 
@@ -88,7 +88,8 @@ export interface SpaceDetail {
 export type ClientMessage =
   | { type: 'join'; payload: { spaceId: string; token: string } }
   | { type: 'move'; payload: { x: number; y: number } }
-  | { type: 'emote'; payload: { emote: string } };
+  | { type: 'emote'; payload: { emote: string } }
+  | { type: 'update-settings'; payload: { weather: string; timeOfDay: string } };
 
 // Server → Client
 export type ServerMessage =
@@ -104,7 +105,8 @@ export type ServerMessage =
   | { type: 'movement'; payload: { userId: string; x: number; y: number } }
   | { type: 'movement-rejected'; payload: { x: number; y: number } }
   | { type: 'user-left'; payload: { userId: string } }
-  | { type: 'emote'; payload: { userId: string; emote: string } };
+  | { type: 'emote'; payload: { userId: string; emote: string } }
+  | { type: 'settings-changed'; payload: { weather: string; timeOfDay: string } };
 
 // ─── Arena State ─────────────────────────────────────────────────────────────
 

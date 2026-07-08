@@ -984,7 +984,9 @@ export const SpaceScalarFieldEnum = {
   width: 'width',
   height: 'height',
   thumbnail: 'thumbnail',
-  creatorId: 'creatorId'
+  creatorId: 'creatorId',
+  timeOfDay: 'timeOfDay',
+  weather: 'weather'
 } as const
 
 export type SpaceScalarFieldEnum = (typeof SpaceScalarFieldEnum)[keyof typeof SpaceScalarFieldEnum]

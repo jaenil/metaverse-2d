@@ -9,30 +9,35 @@ userRouter.post('/metadata',userMiddleware, async (req,res)=>{
     if(!parsedData.success){
         return res.status(400).json({message:"Invalid input"}) ;
     }
-    if(!req.userId){
-        return res.status(403).json({message:"Unauthorized"}) ;
-    }
-    // Validate that the avatar actually exists before linking it to the user
-    const avatarExists = await client.avatar.findUnique({
-        where: { id: parsedData.data.avatarId }
-    })
-    if(!avatarExists){
-        return res.status(400).json({message:"Avatar not found"}) ;
-    }
-    await client.user.update({
-        where:{
-            id:req.userId
-        },
-        data:{
-            avatarId:parsedData.data.avatarId
+    
+    try {
+        if(!req.userId){
+            return res.status(403).json({message:"Unauthorized"}) ;
         }
-    })
-    return res.status(200).json({message:"metadata updated"}) ;
+        // Validate that the avatar actually exists before linking it to the user
+        const avatarExists = await client.avatar.findUnique({
+            where: { id: parsedData.data.avatarId }
+        })
+        if(!avatarExists){
+            return res.status(400).json({message:"Avatar not found"}) ;
+        }
+        await client.user.update({
+            where:{
+                id:req.userId
+            },
+            data:{
+                avatarId:parsedData.data.avatarId
+            }
+        })
+        return res.status(200).json({message:"metadata updated"}) ;
+    } catch (e: any) {
+        console.error("Metadata update error:", e);
+        return res.status(500).json({message: "Internal server error", error: e.message});
+    }
 })
 
 userRouter.get('/metadata/bulk',async (req,res)=>{
-    const userIdString = (req.query.ids ??"[]") as string ;
-    const userIds = (userIdString).slice(1,userIdString?.length-1).split(",") ;
+    const userIds = (req.query.ids as string ?? "[]").replace(/[\[\]]/g, '').split(",").filter(id => id.length > 0);
     const metadata = await client.user.findMany({
         where:{
             id:{

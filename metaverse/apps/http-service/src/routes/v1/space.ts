@@ -99,7 +99,7 @@ spaceRouter.post('/element', userMiddleware, async (req, res) => {
     const space = await client.space.findUnique({
         where: {
             id: parsedData.data.spaceId,
-            //creatorId: req.userId!
+            creatorId: req.userId!
         }, select: {
             width: true,
             height: true
@@ -158,7 +158,7 @@ spaceRouter.delete('/element', userMiddleware, async (req, res) => {
         }
     })
     if (!space) return res.status(404).json({ message: "space not found" });
-    //if (space.creatorId != req.userId) return res.status(403).json({ message: "Unauthorised" });
+    if (space.creatorId != req.userId) return res.status(403).json({ message: "Unauthorised" });
     try {
         const element = await client.spaceElements.delete({
             where: {
@@ -221,6 +221,9 @@ spaceRouter.get('/:spaceId', userMiddleware, async (req, res) => {
             width: true,
             height: true,
             thumbnail: true,
+            creatorId:true,
+            timeOfDay:true,
+            weather:true,
         }
     })
     if (!space) {

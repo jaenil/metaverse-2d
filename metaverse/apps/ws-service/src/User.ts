@@ -66,7 +66,9 @@ export class User{
                             id:usr.id,
                             x:usr.x,
                             y:usr.y 
-                        })) ?? []
+                        })) ?? [] ,
+                        weather: space.weather,
+                        timeOfDay: space.timeOfDay
                     }
                 })
                 RoomManager.getInstance().addUser(spaceId,this) ;
@@ -144,6 +146,49 @@ export class User{
                     }
                 }, this, this.spaceId);
                 break;
+            case "update-settings":
+                /*
+                TODO:
+                Validate the input payload.
+                Fetch the space and ensure this.id === space.creatorId.
+                Use client.space.update() to save.
+                Use RoomManager.getInstance().broadcast() to send the settings-changed event. Tip: Include the current settings in the space-joined payload when a user first connects!
+                */
+                {if(!this.spaceId) return;
+                const space = await client.space.findUnique({
+                    where:{
+                        id:this.spaceId
+                    }
+                })
+                if(!space) return;
+                if(space.creatorId!==this.id) {
+                    this.send({type:"event-rejected"});
+                    return;
+                }
+                const updatedSpace = await client.space.update({
+                    where:{
+                        id:this.spaceId
+                    },
+                    data:{
+                        name:parsedData.payload.name,
+                        width:parsedData.payload.width,
+                        height:parsedData.payload.height,
+                        thumbnail:parsedData.payload.thumbnail,
+                        timeOfDay:parsedData.payload.timeOfDay,
+                        weather:parsedData.payload.weather
+                    }
+                })
+                const broadcastPayload = {
+                    type: "settings-changed",
+                    payload: {
+                        weather: parsedData.payload.weather,
+                        timeOfDay: parsedData.payload.timeOfDay
+                    }
+                };
+                RoomManager.getInstance().broadcast(broadcastPayload, this, this.spaceId);
+                this.send(broadcastPayload);
+                break;
+            }
         }
     }
     destroy(){

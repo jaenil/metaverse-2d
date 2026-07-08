@@ -15,7 +15,7 @@ export function SpacePage() {
   const { spaceId } = useParams<{ spaceId: string }>();
   const navigate = useNavigate();
   const { token, userId } = useAuthStore();
-
+  
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const [elements, setElements] = useState<SpaceElement[]>([]);
@@ -26,6 +26,7 @@ export function SpacePage() {
   const [availableElements, setAvailableElements] = useState<Element[]>([]);
   const [selectedElement, setSelectedElement] = useState<Element | null>(null);
   
+  const [isCreator, setIsCreator] = useState(false);
   // null when there's no error, a string when there is one
   const [placementError, setPlacementError] = useState<string | null>(null);
 
@@ -39,8 +40,8 @@ export function SpacePage() {
   const [showEmotes, setShowEmotes] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [weather, setWeather] = useState<'none' | 'rain' | 'snow'>('none');
-  const [timeOfDay, setTimeOfDay] = useState<'day' | 'night'>('day');
+  const [draftWeather, setDraftWeather] = useState<'none' | 'rain' | 'snow'>('none');
+  const [draftTimeOfDay, setDraftTimeOfDay] = useState<'day' | 'night'>('day');
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -80,6 +81,14 @@ export function SpacePage() {
     setMyEmote
   } = useArena(userId ?? '');
 
+  const { weather = 'none', timeOfDay = 'day' } = arenaState;
+
+  const openSettings = () => {
+    setDraftWeather((weather || 'none') as any);
+    setDraftTimeOfDay((timeOfDay || 'day') as any);
+    setShowSettings(true);
+  };
+
   // Fetch space details (dimensions + elements)
   useEffect(() => {
     if (!spaceId) return;
@@ -89,6 +98,9 @@ export function SpacePage() {
           width: res.data.space.width,
           height: res.data.space.height,
         });
+        if(res.data.space.creatorId == userId){
+          setIsCreator(true);
+        }
         setThumbnail(res.data.space.thumbnail || null);
         setElements(res.data.elements.map((e: any) => ({
           id: e.id,
@@ -106,7 +118,7 @@ export function SpacePage() {
     });
   }, [spaceId]);
 
-  const { sendMove, sendEmote } = useWebSocket({
+  const { sendMove, sendEmote, sendSettingsUpdate } = useWebSocket({
     spaceId: spaceId ?? '',
     token: token ?? '',
     onMessage: handleMessage,
@@ -290,10 +302,13 @@ export function SpacePage() {
               </div>
             )}
           </div>
-          <div className="action-slot clickable glitch-hover" data-text="Settings" onClick={() => setShowSettings(true)}>
+          {isCreator && (
+            <div className="action-slot clickable glitch-hover" data-text="Settings" onClick={openSettings}>
             <span className="slot-icon">⚙</span>
             <span className="slot-label">Settings</span>
           </div>
+          )
+          }
         </div>
 
         {/* Settings Modal */}
@@ -323,22 +338,31 @@ export function SpacePage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Time of Day</label>
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button onClick={() => setTimeOfDay('day')} style={{ flex: 1, padding: '0.5rem', background: timeOfDay === 'day' ? 'var(--accent)' : '#000', color: timeOfDay === 'day' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Day</button>
-                    <button onClick={() => setTimeOfDay('night')} style={{ flex: 1, padding: '0.5rem', background: timeOfDay === 'night' ? 'var(--accent)' : '#000', color: timeOfDay === 'night' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Night</button>
+                    <button onClick={() => setDraftTimeOfDay('day')} style={{ flex: 1, padding: '0.5rem', background: draftTimeOfDay === 'day' ? 'var(--accent)' : '#000', color: draftTimeOfDay === 'day' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Day</button>
+                    <button onClick={() => setDraftTimeOfDay('night')} style={{ flex: 1, padding: '0.5rem', background: draftTimeOfDay === 'night' ? 'var(--accent)' : '#000', color: draftTimeOfDay === 'night' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Night</button>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Weather</label>
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button onClick={() => setWeather('none')} style={{ flex: 1, padding: '0.5rem', background: weather === 'none' ? 'var(--accent)' : '#000', color: weather === 'none' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Clear</button>
-                    <button onClick={() => setWeather('rain')} style={{ flex: 1, padding: '0.5rem', background: weather === 'rain' ? 'var(--accent)' : '#000', color: weather === 'rain' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Rain</button>
-                    <button onClick={() => setWeather('snow')} style={{ flex: 1, padding: '0.5rem', background: weather === 'snow' ? 'var(--accent)' : '#000', color: weather === 'snow' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Snow</button>
+                    <button onClick={() => setDraftWeather('none')} style={{ flex: 1, padding: '0.5rem', background: draftWeather === 'none' ? 'var(--accent)' : '#000', color: draftWeather === 'none' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Clear</button>
+                    <button onClick={() => setDraftWeather('rain')} style={{ flex: 1, padding: '0.5rem', background: draftWeather === 'rain' ? 'var(--accent)' : '#000', color: draftWeather === 'rain' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Rain</button>
+                    <button onClick={() => setDraftWeather('snow')} style={{ flex: 1, padding: '0.5rem', background: draftWeather === 'snow' ? 'var(--accent)' : '#000', color: draftWeather === 'snow' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Snow</button>
                   </div>
                 </div>
               </div>
 
               <div style={{ height: '1px', background: 'var(--border)' }} />
+
+              <button 
+                onClick={() => {
+                  sendSettingsUpdate(draftWeather, draftTimeOfDay);
+                  setShowSettings(false);
+                }} 
+                style={{ padding: '0.75rem', background: 'var(--accent)', border: 'none', color: '#000', cursor: 'pointer', fontWeight: 'bold' }}>
+                SAVE SETTINGS
+              </button>
 
               <button onClick={() => navigate('/dashboard')} style={{ padding: '0.75rem', background: 'transparent', border: '1px solid #d9381e', color: '#d9381e', cursor: 'pointer', fontWeight: 'bold' }}>
                 LEAVE SPACE

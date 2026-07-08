@@ -30,6 +30,15 @@ export function useWebSocket({
   const sendMove = useCallback((x: number, y: number) => {
     send({ type: 'move', payload: { x, y } });
   }, [send]);
+// Add this inside the hook, similar to how sendMove is defined
+  const sendSettingsUpdate = useCallback((weather: string, timeOfDay: string) => {
+      send({
+              type: 'update-settings',
+              payload: { weather, timeOfDay }
+          })
+      }, [send]);
+
+
 
   const sendEmote = useCallback((emote: string) => {
     send({ type: 'emote', payload: { emote } });
@@ -82,5 +91,5 @@ export function useWebSocket({
     };
   }, [connect]);
 
-  return { sendMove, sendEmote };
+  return { sendMove, sendEmote,sendSettingsUpdate };
 }

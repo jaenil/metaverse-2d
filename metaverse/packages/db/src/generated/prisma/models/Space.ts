@@ -43,6 +43,8 @@ export type SpaceMinAggregateOutputType = {
   height: number | null
   thumbnail: string | null
   creatorId: string | null
+  timeOfDay: string | null
+  weather: string | null
 }
 
 export type SpaceMaxAggregateOutputType = {
@@ -52,6 +54,8 @@ export type SpaceMaxAggregateOutputType = {
   height: number | null
   thumbnail: string | null
   creatorId: string | null
+  timeOfDay: string | null
+  weather: string | null
 }
 
 export type SpaceCountAggregateOutputType = {
@@ -61,6 +65,8 @@ export type SpaceCountAggregateOutputType = {
   height: number
   thumbnail: number
   creatorId: number
+  timeOfDay: number
+  weather: number
   _all: number
 }
 
@@ -82,6 +88,8 @@ export type SpaceMinAggregateInputType = {
   height?: true
   thumbnail?: true
   creatorId?: true
+  timeOfDay?: true
+  weather?: true
 }
 
 export type SpaceMaxAggregateInputType = {
@@ -91,6 +99,8 @@ export type SpaceMaxAggregateInputType = {
   height?: true
   thumbnail?: true
   creatorId?: true
+  timeOfDay?: true
+  weather?: true
 }
 
 export type SpaceCountAggregateInputType = {
@@ -100,6 +110,8 @@ export type SpaceCountAggregateInputType = {
   height?: true
   thumbnail?: true
   creatorId?: true
+  timeOfDay?: true
+  weather?: true
   _all?: true
 }
 
@@ -196,6 +208,8 @@ export type SpaceGroupByOutputType = {
   height: number
   thumbnail: string | null
   creatorId: string
+  timeOfDay: string
+  weather: string
   _count: SpaceCountAggregateOutputType | null
   _avg: SpaceAvgAggregateOutputType | null
   _sum: SpaceSumAggregateOutputType | null
@@ -228,6 +242,8 @@ export type SpaceWhereInput = {
   height?: Prisma.IntFilter<"Space"> | number
   thumbnail?: Prisma.StringNullableFilter<"Space"> | string | null
   creatorId?: Prisma.StringFilter<"Space"> | string
+  timeOfDay?: Prisma.StringFilter<"Space"> | string
+  weather?: Prisma.StringFilter<"Space"> | string
   creator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   elements?: Prisma.SpaceElementsListRelationFilter
 }
@@ -239,6 +255,8 @@ export type SpaceOrderByWithRelationInput = {
   height?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
   creatorId?: Prisma.SortOrder
+  timeOfDay?: Prisma.SortOrder
+  weather?: Prisma.SortOrder
   creator?: Prisma.UserOrderByWithRelationInput
   elements?: Prisma.spaceElementsOrderByRelationAggregateInput
 }
@@ -253,6 +271,8 @@ export type SpaceWhereUniqueInput = Prisma.AtLeast<{
   height?: Prisma.IntFilter<"Space"> | number
   thumbnail?: Prisma.StringNullableFilter<"Space"> | string | null
   creatorId?: Prisma.StringFilter<"Space"> | string
+  timeOfDay?: Prisma.StringFilter<"Space"> | string
+  weather?: Prisma.StringFilter<"Space"> | string
   creator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   elements?: Prisma.SpaceElementsListRelationFilter
 }, "id" | "id">
@@ -264,6 +284,8 @@ export type SpaceOrderByWithAggregationInput = {
   height?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
   creatorId?: Prisma.SortOrder
+  timeOfDay?: Prisma.SortOrder
+  weather?: Prisma.SortOrder
   _count?: Prisma.SpaceCountOrderByAggregateInput
   _avg?: Prisma.SpaceAvgOrderByAggregateInput
   _max?: Prisma.SpaceMaxOrderByAggregateInput
@@ -281,6 +303,8 @@ export type SpaceScalarWhereWithAggregatesInput = {
   height?: Prisma.IntWithAggregatesFilter<"Space"> | number
   thumbnail?: Prisma.StringNullableWithAggregatesFilter<"Space"> | string | null
   creatorId?: Prisma.StringWithAggregatesFilter<"Space"> | string
+  timeOfDay?: Prisma.StringWithAggregatesFilter<"Space"> | string
+  weather?: Prisma.StringWithAggregatesFilter<"Space"> | string
 }
 
 export type SpaceCreateInput = {
@@ -289,6 +313,8 @@ export type SpaceCreateInput = {
   width: number
   height: number
   thumbnail?: string | null
+  timeOfDay?: string
+  weather?: string
   creator: Prisma.UserCreateNestedOneWithoutSpacesInput
   elements?: Prisma.spaceElementsCreateNestedManyWithoutSpaceInput
 }
@@ -300,6 +326,8 @@ export type SpaceUncheckedCreateInput = {
   height: number
   thumbnail?: string | null
   creatorId: string
+  timeOfDay?: string
+  weather?: string
   elements?: Prisma.spaceElementsUncheckedCreateNestedManyWithoutSpaceInput
 }
 
@@ -309,6 +337,8 @@ export type SpaceUpdateInput = {
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeOfDay?: Prisma.StringFieldUpdateOperationsInput | string
+  weather?: Prisma.StringFieldUpdateOperationsInput | string
   creator?: Prisma.UserUpdateOneRequiredWithoutSpacesNestedInput
   elements?: Prisma.spaceElementsUpdateManyWithoutSpaceNestedInput
 }
@@ -320,6 +350,8 @@ export type SpaceUncheckedUpdateInput = {
   height?: Prisma.IntFieldUpdateOperationsInput | number
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
+  timeOfDay?: Prisma.StringFieldUpdateOperationsInput | string
+  weather?: Prisma.StringFieldUpdateOperationsInput | string
   elements?: Prisma.spaceElementsUncheckedUpdateManyWithoutSpaceNestedInput
 }
 
@@ -330,6 +362,8 @@ export type SpaceCreateManyInput = {
   height: number
   thumbnail?: string | null
   creatorId: string
+  timeOfDay?: string
+  weather?: string
 }
 
 export type SpaceUpdateManyMutationInput = {
@@ -338,6 +372,8 @@ export type SpaceUpdateManyMutationInput = {
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeOfDay?: Prisma.StringFieldUpdateOperationsInput | string
+  weather?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SpaceUncheckedUpdateManyInput = {
@@ -347,6 +383,8 @@ export type SpaceUncheckedUpdateManyInput = {
   height?: Prisma.IntFieldUpdateOperationsInput | number
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
+  timeOfDay?: Prisma.StringFieldUpdateOperationsInput | string
+  weather?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SpaceListRelationFilter = {
@@ -366,6 +404,8 @@ export type SpaceCountOrderByAggregateInput = {
   height?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
   creatorId?: Prisma.SortOrder
+  timeOfDay?: Prisma.SortOrder
+  weather?: Prisma.SortOrder
 }
 
 export type SpaceAvgOrderByAggregateInput = {
@@ -380,6 +420,8 @@ export type SpaceMaxOrderByAggregateInput = {
   height?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
   creatorId?: Prisma.SortOrder
+  timeOfDay?: Prisma.SortOrder
+  weather?: Prisma.SortOrder
 }
 
 export type SpaceMinOrderByAggregateInput = {
@@ -389,6 +431,8 @@ export type SpaceMinOrderByAggregateInput = {
   height?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
   creatorId?: Prisma.SortOrder
+  timeOfDay?: Prisma.SortOrder
+  weather?: Prisma.SortOrder
 }
 
 export type SpaceSumOrderByAggregateInput = {
@@ -471,6 +515,8 @@ export type SpaceCreateWithoutCreatorInput = {
   width: number
   height: number
   thumbnail?: string | null
+  timeOfDay?: string
+  weather?: string
   elements?: Prisma.spaceElementsCreateNestedManyWithoutSpaceInput
 }
 
@@ -480,6 +526,8 @@ export type SpaceUncheckedCreateWithoutCreatorInput = {
   width: number
   height: number
   thumbnail?: string | null
+  timeOfDay?: string
+  weather?: string
   elements?: Prisma.spaceElementsUncheckedCreateNestedManyWithoutSpaceInput
 }
 
@@ -519,6 +567,8 @@ export type SpaceScalarWhereInput = {
   height?: Prisma.IntFilter<"Space"> | number
   thumbnail?: Prisma.StringNullableFilter<"Space"> | string | null
   creatorId?: Prisma.StringFilter<"Space"> | string
+  timeOfDay?: Prisma.StringFilter<"Space"> | string
+  weather?: Prisma.StringFilter<"Space"> | string
 }
 
 export type SpaceCreateWithoutElementsInput = {
@@ -527,6 +577,8 @@ export type SpaceCreateWithoutElementsInput = {
   width: number
   height: number
   thumbnail?: string | null
+  timeOfDay?: string
+  weather?: string
   creator: Prisma.UserCreateNestedOneWithoutSpacesInput
 }
 
@@ -537,6 +589,8 @@ export type SpaceUncheckedCreateWithoutElementsInput = {
   height: number
   thumbnail?: string | null
   creatorId: string
+  timeOfDay?: string
+  weather?: string
 }
 
 export type SpaceCreateOrConnectWithoutElementsInput = {
@@ -561,6 +615,8 @@ export type SpaceUpdateWithoutElementsInput = {
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeOfDay?: Prisma.StringFieldUpdateOperationsInput | string
+  weather?: Prisma.StringFieldUpdateOperationsInput | string
   creator?: Prisma.UserUpdateOneRequiredWithoutSpacesNestedInput
 }
 
@@ -571,6 +627,8 @@ export type SpaceUncheckedUpdateWithoutElementsInput = {
   height?: Prisma.IntFieldUpdateOperationsInput | number
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creatorId?: Prisma.StringFieldUpdateOperationsInput | string
+  timeOfDay?: Prisma.StringFieldUpdateOperationsInput | string
+  weather?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SpaceCreateManyCreatorInput = {
@@ -579,6 +637,8 @@ export type SpaceCreateManyCreatorInput = {
   width: number
   height: number
   thumbnail?: string | null
+  timeOfDay?: string
+  weather?: string
 }
 
 export type SpaceUpdateWithoutCreatorInput = {
@@ -587,6 +647,8 @@ export type SpaceUpdateWithoutCreatorInput = {
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeOfDay?: Prisma.StringFieldUpdateOperationsInput | string
+  weather?: Prisma.StringFieldUpdateOperationsInput | string
   elements?: Prisma.spaceElementsUpdateManyWithoutSpaceNestedInput
 }
 
@@ -596,6 +658,8 @@ export type SpaceUncheckedUpdateWithoutCreatorInput = {
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeOfDay?: Prisma.StringFieldUpdateOperationsInput | string
+  weather?: Prisma.StringFieldUpdateOperationsInput | string
   elements?: Prisma.spaceElementsUncheckedUpdateManyWithoutSpaceNestedInput
 }
 
@@ -605,6 +669,8 @@ export type SpaceUncheckedUpdateManyWithoutCreatorInput = {
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeOfDay?: Prisma.StringFieldUpdateOperationsInput | string
+  weather?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -645,6 +711,8 @@ export type SpaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   height?: boolean
   thumbnail?: boolean
   creatorId?: boolean
+  timeOfDay?: boolean
+  weather?: boolean
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   elements?: boolean | Prisma.Space$elementsArgs<ExtArgs>
   _count?: boolean | Prisma.SpaceCountOutputTypeDefaultArgs<ExtArgs>
@@ -657,6 +725,8 @@ export type SpaceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   height?: boolean
   thumbnail?: boolean
   creatorId?: boolean
+  timeOfDay?: boolean
+  weather?: boolean
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["space"]>
 
@@ -667,6 +737,8 @@ export type SpaceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   height?: boolean
   thumbnail?: boolean
   creatorId?: boolean
+  timeOfDay?: boolean
+  weather?: boolean
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["space"]>
 
@@ -677,9 +749,11 @@ export type SpaceSelectScalar = {
   height?: boolean
   thumbnail?: boolean
   creatorId?: boolean
+  timeOfDay?: boolean
+  weather?: boolean
 }
 
-export type SpaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "width" | "height" | "thumbnail" | "creatorId", ExtArgs["result"]["space"]>
+export type SpaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "width" | "height" | "thumbnail" | "creatorId" | "timeOfDay" | "weather", ExtArgs["result"]["space"]>
 export type SpaceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   elements?: boolean | Prisma.Space$elementsArgs<ExtArgs>
@@ -705,6 +779,8 @@ export type $SpacePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     height: number
     thumbnail: string | null
     creatorId: string
+    timeOfDay: string
+    weather: string
   }, ExtArgs["result"]["space"]>
   composites: {}
 }
@@ -1136,6 +1212,8 @@ export interface SpaceFieldRefs {
   readonly height: Prisma.FieldRef<"Space", 'Int'>
   readonly thumbnail: Prisma.FieldRef<"Space", 'String'>
   readonly creatorId: Prisma.FieldRef<"Space", 'String'>
+  readonly timeOfDay: Prisma.FieldRef<"Space", 'String'>
+  readonly weather: Prisma.FieldRef<"Space", 'String'>
 }
     
 

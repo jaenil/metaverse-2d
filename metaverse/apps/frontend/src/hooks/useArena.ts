@@ -9,6 +9,8 @@ interface ArenaState {
   myEmoteExpiresAt?: number;
   users: Map<string, ArenaUser>;
   connected: boolean;
+  weather?: 'none' | 'rain' | 'snow';
+  timeOfDay?: 'day' | 'night';
 }
 
 export function useArena(_myUserId: string) {
@@ -24,7 +26,7 @@ export function useArena(_myUserId: string) {
   const handleMessage = useCallback((msg: ServerMessage) => {
     switch (msg.type) {
       case 'space-joined': {
-        const { spawn, users } = msg.payload;
+        const { spawn, users, weather, timeOfDay } = msg.payload as any;
         myPosRef.current = spawn;
         const userMap = new Map<string, ArenaUser>();
         // Backend sends { id, x, y } in space-joined
@@ -36,6 +38,8 @@ export function useArena(_myUserId: string) {
           myPos: spawn,
           users: userMap,
           connected: true,
+          weather,
+          timeOfDay
         });
         break;
       }
@@ -93,6 +97,15 @@ export function useArena(_myUserId: string) {
           }
           return { ...prev, users: next };
         });
+        break;
+      }
+      case 'settings-changed': {
+        const payload = msg.payload as any;
+        setState(prev => ({
+          ...prev,
+          weather: payload.weather,
+          timeOfDay: payload.timeOfDay
+        }));
         break;
       }
     }
