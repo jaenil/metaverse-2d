@@ -42,6 +42,14 @@ export function SpacePage() {
   const [weather, setWeather] = useState<'none' | 'rain' | 'snow'>('none');
   const [timeOfDay, setTimeOfDay] = useState<'day' | 'night'>('day');
 
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowSettings(false);
+    };
+    if (showSettings) window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [showSettings]);
+
   const handleCopy = async () => {
     if (!spaceId) return;
     try {
@@ -192,7 +200,7 @@ export function SpacePage() {
     return null;
   }
 
-  if (spaceLoading) {
+  if (spaceLoading || !arenaState.myPos) {
     return (
       <div className="space-loading">
         <div className="glitch-text" data-text="INITIALIZING...">INITIALIZING...</div>

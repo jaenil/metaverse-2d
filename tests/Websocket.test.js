@@ -41,6 +41,8 @@ describe("Websocket tests", () => {
     let userToken;
     let userId;
     let spaceId;
+    let globalElementId;
+    let globalMapId;
     let ws1;
     let ws2;
     let ws1Messages = [];
@@ -58,7 +60,9 @@ describe("Websocket tests", () => {
         userToken = ut;
         userId = uid;
 
-        const { mapId } = await createMapWithElements(adminToken);
+        const { mapId, element1Id } = await createMapWithElements(adminToken);
+        globalElementId = element1Id;
+        globalMapId = mapId;
 
         const spaceResponse = await axios.post(
             `${BACKEND_URL}/api/v1/space`,
@@ -141,6 +145,105 @@ describe("Websocket tests", () => {
         expect(message.type).toBe("movement-rejected");
         expect(message.payload.x).toBe(adminX);
         expect(message.payload.y).toBe(adminY);
+    });
+
+    test("User should not be able to move into a static element", async () => {
+        // Create a 2x1 space
+        const spaceResponse = await axios.post(
+            `${BACKEND_URL}/api/v1/space`,
+            { name: "Tiny Element Space", dimensions: "2x1", mapId: globalMapId },
+            { headers: { authorization: `Bearer ${adminToken}` } }
+        );
+        const tinySpaceId = spaceResponse.data.spaceId;
+
+        // Add a static element at (1,0)
+        await axios.post(
+            `${BACKEND_URL}/api/v1/space/element`,
+            { elementId: globalElementId, x: 1, y: 0, spaceId: tinySpaceId },
+            { headers: { authorization: `Bearer ${adminToken}` } }
+        );
+
+        const wsC = new WebSocket(WS_URL);
+        const wsCMsgs = [];
+        wsC.on("message", (event) => wsCMsgs.push(JSON.parse(event.toString())));
+        await new Promise((r) => wsC.on("open", r));
+
+        wsC.send(JSON.stringify({ type: "join", payload: { spaceId: tinySpaceId, token: adminToken } }));
+        const msgC = await waitForAndPopLatestMessage(wsCMsgs);
+        let cx = msgC.payload.spawn.x;
+
+        const wsD = new WebSocket(WS_URL);
+        const wsDMsgs = [];
+        wsD.on("message", (event) => wsDMsgs.push(JSON.parse(event.toString())));
+        await new Promise((r) => wsD.on("open", r));
+        wsD.send(JSON.stringify({ type: "join", payload: { spaceId: tinySpaceId, token: userToken } }));
+        await waitForAndPopLatestMessage(wsDMsgs); // space-joined
+        await waitForAndPopLatestMessage(wsCMsgs); // user-join
+
+        // If it spawned on (1,0)
+        if (cx === 1) {
+            wsC.send(JSON.stringify({ type: "move", payload: { x: 0, y: 0 } }));
+            await waitForAndPopLatestMessage(wsDMsgs); // consume movement
+            cx = 0;
+        }
+
+        // Now cx is 0. Try to move to (1,0) where the element is!
+        wsC.send(JSON.stringify({ type: "move", payload: { x: 1, y: 0 } }));
+        const rejectMsg = await waitForAndPopLatestMessage(wsCMsgs);
+        expect(rejectMsg.type).toBe("movement-rejected");
+
+        wsC.close();
+        wsD.close();
+    });
+
+    test("User should not be able to move into another user", async () => {
+        // Create a tiny 2x1 space
+        const spaceResponse = await axios.post(
+            `${BACKEND_URL}/api/v1/space`,
+            { name: "Tiny User Space", dimensions: "2x1", mapId: globalMapId },
+            { headers: { authorization: `Bearer ${adminToken}` } }
+        );
+        const tinySpaceId = spaceResponse.data.spaceId;
+
+        const wsA = new WebSocket(WS_URL);
+        const wsAMsgs = [];
+        wsA.on("message", (event) => wsAMsgs.push(JSON.parse(event.toString())));
+        await new Promise((r) => wsA.on("open", r));
+
+        wsA.send(JSON.stringify({ type: "join", payload: { spaceId: tinySpaceId, token: adminToken } }));
+        const msgA = await waitForAndPopLatestMessage(wsAMsgs);
+        let ax = msgA.payload.spawn.x;
+        let ay = msgA.payload.spawn.y;
+
+        const wsB = new WebSocket(WS_URL);
+        const wsBMsgs = [];
+        wsB.on("message", (event) => wsBMsgs.push(JSON.parse(event.toString())));
+        await new Promise((r) => wsB.on("open", r));
+
+        wsB.send(JSON.stringify({ type: "join", payload: { spaceId: tinySpaceId, token: userToken } }));
+        const msgB = await waitForAndPopLatestMessage(wsBMsgs);
+        let bx = msgB.payload.spawn.x;
+        let by = msgB.payload.spawn.y;
+
+        // consume the user-join from wsA
+        await waitForAndPopLatestMessage(wsAMsgs);
+
+        // If they spawned on the same spot, move one of them
+        if (ax === bx) {
+            let nextX = ax === 0 ? 1 : 0;
+            wsA.send(JSON.stringify({ type: "move", payload: { x: nextX, y: ay } }));
+            // wsB receives movement, pop it
+            await waitForAndPopLatestMessage(wsBMsgs);
+            ax = nextX;
+        }
+
+        // They are now adjacent. A tries to move into B.
+        wsA.send(JSON.stringify({ type: "move", payload: { x: bx, y: by } }));
+        const rejectMsg = await waitForAndPopLatestMessage(wsAMsgs);
+        expect(rejectMsg.type).toBe("movement-rejected");
+
+        wsA.close();
+        wsB.close();
     });
 
     test("Correct movement should be broadcasted to the other sockets in the room", async () => {

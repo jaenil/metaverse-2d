@@ -188,7 +188,16 @@ export function ArenaCanvas({
           const dx = lx - ru.x;
           const dy = ly - ru.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist > 0.01) {
+          
+          if (dist > 2) {
+            // Teleport threshold: if distance > 2 tiles, snap immediately
+            ru.x = lx;
+            ru.y = ly;
+            ru.vx = 0;
+            ru.walkCycle = 0;
+            ru.lastLogicalX = lx;
+            ru.lastLogicalY = ly;
+          } else if (dist > 0.01) {
             ru.vx = dx * 12 * dt;
             ru.x += ru.vx;
             ru.y += dy * 12 * dt;
@@ -223,7 +232,15 @@ export function ArenaCanvas({
           const dx = u.x - ru.x;
           const dy = u.y - ru.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist > 0.01) {
+
+          if (dist > 2) {
+            ru.x = u.x;
+            ru.y = u.y;
+            ru.vx = 0;
+            ru.walkCycle = 0;
+            ru.lastLogicalX = u.x;
+            ru.lastLogicalY = u.y;
+          } else if (dist > 0.01) {
             ru.vx = dx * 12 * dt;
             ru.x += ru.vx;
             ru.y += dy * 12 * dt;
@@ -258,6 +275,9 @@ export function ArenaCanvas({
       if (myRender) {
         camX -= myRender.x * TILE + TILE / 2;
         camY -= myRender.y * TILE + TILE / 2;
+      } else if (myPosRef.current) {
+        camX -= myPosRef.current.x * TILE + TILE / 2;
+        camY -= myPosRef.current.y * TILE + TILE / 2;
       }
       camPosRef.current.x = camX;
       camPosRef.current.y = camY;
