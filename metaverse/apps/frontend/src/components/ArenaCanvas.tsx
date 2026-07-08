@@ -10,7 +10,13 @@ const GRID_ACCENT = '#2e1f1d';
 const STATIC_FILL   = '#1c1311';
 const STATIC_BORDER = '#2e1f1d';
 const MY_COLOR    = '#d9381e';
-const OTHER_COLOR = '#60a5fa';
+
+function hashColor(id: string) {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = id.charCodeAt(i) + ((hash << 5) - hash);
+  const h = Math.abs(hash) % 360;
+  return `hsl(${h}, 70%, 60%)`;
+}
 
 interface ArenaCanvasProps {
   width: number;
@@ -26,12 +32,16 @@ interface ArenaCanvasProps {
   onMove: (x: number, y: number) => void;
   onCanvasClick?: (x: number, y: number) => void;
   connected: boolean;
+  weather: 'none' | 'rain' | 'snow';
+  timeOfDay: 'day' | 'night';
 }
 
 // Visual state for interpolation
 interface RenderUser {
   x: number;
   y: number;
+  vx: number;
+  facing: number;
   walkCycle: number;
   lastLogicalX: number;
   lastLogicalY: number;
@@ -64,8 +74,11 @@ export function ArenaCanvas({
   onMove,
   onCanvasClick,
   connected,
+  weather,
+  timeOfDay,
 }: ArenaCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const lightCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const bgImageRef = useRef<HTMLImageElement | null>(null);
   const camPosRef = useRef({ x: 0, y: 0 });
   const myPosRef  = useRef(myPos);
@@ -144,6 +157,12 @@ export function ArenaCanvas({
       }
     }
 
+    // Weather particles
+    interface WeatherParticle {
+      x: number; y: number; vx: number; vy: number; type: 'rain' | 'snow'; life: number;
+    }
+    const weatherParticles: WeatherParticle[] = [];
+
     function draw(time: number) {
       if (!ctx || !canvas) return;
       const dt = Math.min((time - lastTime) / 1000, 0.1);
@@ -151,6 +170,8 @@ export function ArenaCanvas({
 
       const sw = canvas.width;
       const sh = canvas.height;
+
+      ctx.imageSmoothingEnabled = false;
 
       // ── 1. Update Render State (Lerp) ──
       const activeIds = new Set<string>();
@@ -161,16 +182,19 @@ export function ArenaCanvas({
         let ru = renderState.get(myUserId);
         const { x: lx, y: ly } = myPosRef.current;
         if (!ru) {
-          ru = { x: lx, y: ly, walkCycle: 0, lastLogicalX: lx, lastLogicalY: ly };
+          ru = { x: lx, y: ly, vx: 0, facing: 1, walkCycle: 0, lastLogicalX: lx, lastLogicalY: ly };
           renderState.set(myUserId, ru);
         } else {
           const dx = lx - ru.x;
           const dy = ly - ru.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist > 0.01) {
-            ru.x += dx * 12 * dt;
+            ru.vx = dx * 12 * dt;
+            ru.x += ru.vx;
             ru.y += dy * 12 * dt;
             ru.walkCycle += dist * 8 * dt; // bobbing speed
+            if (ru.vx > 0.1) ru.facing = 1;
+            if (ru.vx < -0.1) ru.facing = -1;
             if (ru.lastLogicalX !== lx || ru.lastLogicalY !== ly) {
               spawnDust(ru.x, ru.y, 'rgba(var(--accent-raw),0.4)');
               ru.lastLogicalX = lx;
@@ -193,16 +217,19 @@ export function ArenaCanvas({
         activeIds.add(u.userId);
         let ru = renderState.get(u.userId);
         if (!ru) {
-          ru = { x: u.x, y: u.y, walkCycle: 0, lastLogicalX: u.x, lastLogicalY: u.y, avatarUrl: u.avatarUrl };
+          ru = { x: u.x, y: u.y, vx: 0, facing: 1, walkCycle: 0, lastLogicalX: u.x, lastLogicalY: u.y, avatarUrl: u.avatarUrl };
           renderState.set(u.userId, ru);
         } else {
           const dx = u.x - ru.x;
           const dy = u.y - ru.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist > 0.01) {
-            ru.x += dx * 12 * dt;
+            ru.vx = dx * 12 * dt;
+            ru.x += ru.vx;
             ru.y += dy * 12 * dt;
             ru.walkCycle += dist * 8 * dt;
+            if (ru.vx > 0.1) ru.facing = 1;
+            if (ru.vx < -0.1) ru.facing = -1;
             if (ru.lastLogicalX !== u.x || ru.lastLogicalY !== u.y) {
               spawnDust(ru.x, ru.y, 'rgba(96,165,250,0.4)');
               ru.lastLogicalX = u.x;
@@ -294,6 +321,62 @@ export function ArenaCanvas({
       }
       ctx.globalAlpha = 1.0;
 
+      // ── 4b. Draw Weather ──
+      const MAX_WEATHER = 200;
+      if (weather === 'rain' && weatherParticles.length < MAX_WEATHER) {
+        for (let i = 0; i < 5; i++) {
+          weatherParticles.push({
+            x: -camX + Math.random() * sw * 1.5 - sw * 0.25,
+            y: -camY - 50 - Math.random() * 200,
+            vx: 80 + Math.random() * 40,
+            vy: 600 + Math.random() * 200,
+            type: 'rain',
+            life: 1
+          });
+        }
+      } else if (weather === 'snow' && weatherParticles.length < MAX_WEATHER) {
+        for (let i = 0; i < 2; i++) {
+          weatherParticles.push({
+            x: -camX + Math.random() * sw * 1.5 - sw * 0.25,
+            y: -camY - 50 - Math.random() * 200,
+            vx: Math.random() * 20 - 10,
+            vy: 80 + Math.random() * 60,
+            type: 'snow',
+            life: Math.random() * Math.PI * 2 // use life for sine wave phase
+          });
+        }
+      }
+
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      for (let i = weatherParticles.length - 1; i >= 0; i--) {
+        const wp = weatherParticles[i]!;
+        wp.x += wp.vx * dt;
+        wp.y += wp.vy * dt;
+        if (wp.type === 'snow') {
+          wp.life += dt * 2;
+          wp.x += Math.sin(wp.life) * 30 * dt;
+        }
+
+        if (wp.y > -camY + sh + 50 || wp.x < -camX - 100 || wp.x > -camX + sw + 100 || weather === 'none') {
+          weatherParticles.splice(i, 1);
+          continue;
+        }
+
+        if (wp.type === 'rain') {
+          ctx.strokeStyle = 'rgba(150, 200, 255, 0.5)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(wp.x, wp.y);
+          ctx.lineTo(wp.x - wp.vx * 0.05, wp.y - wp.vy * 0.05);
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.beginPath();
+          ctx.arc(wp.x, wp.y, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
       // ── 5. Static Elements ──
       elements.forEach((el) => {
         const px = el.x * TILE;
@@ -337,11 +420,61 @@ export function ArenaCanvas({
       renderState.forEach((ru, id) => {
         if (id === myUserId) return;
         const img = getCachedImage(ru.avatarUrl);
-        drawPixelAvatar(ctx, ru.x, ru.y, ru.walkCycle, OTHER_COLOR, id.slice(-4), false, img, ru.emote, ru.emoteExpiresAt);
+        drawPixelAvatar(ctx, ru.x, ru.y, ru.walkCycle, ru.vx, ru.facing, hashColor(id), id.slice(-4), false, img, ru.emote, ru.emoteExpiresAt);
       });
       if (myRender) {
         const img = getCachedImage(myRender.avatarUrl);
-        drawPixelAvatar(ctx, myRender.x, myRender.y, myRender.walkCycle, MY_COLOR, 'YOU', true, img, myRender.emote, myRender.emoteExpiresAt);
+        drawPixelAvatar(ctx, myRender.x, myRender.y, myRender.walkCycle, myRender.vx, myRender.facing, MY_COLOR, 'YOU', true, img, myRender.emote, myRender.emoteExpiresAt);
+      }
+
+      // ── 6.5 Dynamic Lighting (Day/Night) ──
+      if (timeOfDay === 'night') {
+        if (!lightCanvasRef.current) {
+          lightCanvasRef.current = document.createElement('canvas');
+        }
+        const lcanvas = lightCanvasRef.current;
+        if (lcanvas.width !== sw || lcanvas.height !== sh) {
+          lcanvas.width = sw;
+          lcanvas.height = sh;
+        }
+        const lctx = lcanvas.getContext('2d');
+        if (lctx) {
+          // Fill screen with deep night color
+          lctx.globalCompositeOperation = 'source-over';
+          lctx.fillStyle = 'rgba(5, 5, 20, 0.85)';
+          lctx.fillRect(0, 0, sw, sh);
+
+          // Punch holes for light
+          lctx.globalCompositeOperation = 'destination-out';
+
+          // Light for my player
+          if (myRender) {
+            const sx = (myRender.x * TILE + TILE / 2) + camX;
+            const sy = (myRender.y * TILE + TILE / 2) + camY;
+            const grad = lctx.createRadialGradient(sx, sy, 0, sx, sy, 220);
+            grad.addColorStop(0, 'rgba(0,0,0,1)');
+            grad.addColorStop(0.5, 'rgba(0,0,0,0.6)');
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            lctx.fillStyle = grad;
+            lctx.beginPath(); lctx.arc(sx, sy, 220, 0, Math.PI * 2); lctx.fill();
+          }
+
+          // Light for other players (smaller)
+          renderState.forEach((ru, id) => {
+            if (id === myUserId) return;
+            const ox = (ru.x * TILE + TILE / 2) + camX;
+            const oy = (ru.y * TILE + TILE / 2) + camY;
+            const grad = lctx.createRadialGradient(ox, oy, 0, ox, oy, 120);
+            grad.addColorStop(0, 'rgba(0,0,0,0.8)');
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            lctx.fillStyle = grad;
+            lctx.beginPath(); lctx.arc(ox, oy, 120, 0, Math.PI * 2); lctx.fill();
+          });
+
+          // Draw the lighting layer over the game
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.drawImage(lcanvas, -camX, -camY);
+        }
       }
 
       ctx.restore();
@@ -373,7 +506,7 @@ export function ArenaCanvas({
 
     raf = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(raf);
-  }, [logicalWidth, logicalHeight, elements, myUserId, connected]);
+  }, [logicalWidth, logicalHeight, elements, myUserId, connected, weather, timeOfDay]);
 
   // ── Pixel-art avatar renderer ──
   function drawPixelAvatar(
@@ -381,6 +514,8 @@ export function ArenaCanvas({
     gx: number,
     gy: number,
     walkCycle: number,
+    vx: number,
+    facing: number,
     color: string,
     label: string,
     isMe: boolean,
@@ -393,15 +528,25 @@ export function ArenaCanvas({
     const S = TILE * 0.28;
     const bob = Math.sin(walkCycle * Math.PI * 2) * (S * 0.15); // bounce offset
 
-    if (isMe) {
-      ctx.beginPath();
-      ctx.arc(cx, cy - S * 0.4, S * 2.0, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(var(--accent-raw),0.06)`;
-      ctx.fill();
-    }
+    // Drop Shadow (Grounded)
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + S * 1.5, S * 1.4, S * 0.6, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-    ctx.shadowColor = color;
-    ctx.shadowBlur = isMe ? 12 : 6;
+    ctx.save();
+    
+    // Move to center of avatar base
+    ctx.translate(cx, cy);
+
+    // Momentum tilt (max +/- 0.15 rads)
+    const tilt = Math.max(-0.15, Math.min(0.15, vx * 0.4));
+    ctx.rotate(tilt);
+    
+    // Directional facing
+    ctx.scale(facing, 1);
+
+    let topY = -S * 2.0 + bob;
 
     // Body parts
     const headW = S * 1.6;
@@ -416,17 +561,27 @@ export function ArenaCanvas({
     const legY = bodyY + bodyH;
     const legH = S * 0.85;
 
-    let topY = headY;
-
     if (img && img.complete && img.naturalHeight !== 0) {
       // Draw image sprite instead of block character
       const spriteW = TILE * 1.2;
       const spriteH = TILE * 1.2;
-      const drawY = cy - spriteH + bob + S * 0.5;
-      ctx.drawImage(img, cx - spriteW / 2, drawY, spriteW, spriteH);
+      const drawY = -spriteH + bob + S * 0.5;
+      ctx.drawImage(img, -spriteW / 2, drawY, spriteW, spriteH);
       topY = drawY;
     } else {
-      // Fallback: draw blocky character
+      // Fallback: draw blocky character relative to 0,0
+      const headW = S * 1.6;
+      const headH = S * 1.4;
+      const headX = -headW / 2;
+      const headY = -S * 2.0 + bob;
+
+      const bodyW = S * 1.2;
+      const bodyH = S * 1.4;
+      const bodyX = -bodyW / 2;
+      const bodyY = headY + headH;
+      const legY = bodyY + bodyH;
+      const legH = S * 0.85;
+
       // Torso
       ctx.fillStyle = color;
       ctx.fillRect(Math.round(bodyX), Math.round(bodyY), Math.round(bodyW), Math.round(bodyH));
@@ -448,15 +603,17 @@ export function ArenaCanvas({
       const leg1Bob = Math.max(0, Math.sin(walkCycle * Math.PI * 2) * (S * 0.3));
       const leg2Bob = Math.max(0, Math.sin(walkCycle * Math.PI * 2 + Math.PI) * (S * 0.3));
 
-      ctx.fillStyle = '#4a3330';
+      ctx.fillStyle = '#1c1311'; // darker legs
       ctx.fillRect(Math.round(bodyX), Math.round(legY - leg1Bob), Math.round(legW), Math.round(legH));
       ctx.fillRect(Math.round(bodyX + bodyW - legW), Math.round(legY - leg2Bob), Math.round(legW), Math.round(legH));
+      
+      topY = headY;
     }
 
-    ctx.shadowBlur = 0;
+    ctx.restore();
 
-    // Label tag
-    const tagY = topY - 14;
+    // Label tag (UI elements remain un-rotated and un-flipped)
+    const tagY = cy + topY - 14;
     const tagPad = 4;
     ctx.font = `bold ${Math.max(8, Math.round(TILE * 0.22))}px monospace`;
     ctx.textAlign = 'center';

@@ -261,24 +261,35 @@ const [joinSpaceId, setJoinSpaceId] = useState('');
               const col2 = SPRITE_COLORS[(idx + 2) % SPRITE_COLORS.length]!;
               return (
                 <div className="space-card" key={space.id}>
-                  {/* Pixel art preview */}
+                  {/* Preview */}
                   <div className="space-card-preview">
-                    <div className="preview-tile solid" style={{ left: '20%', top: '40%' }} />
-                    <div className="preview-tile solid" style={{ left: '75%', top: '60%' }} />
-                    <div className="preview-tile solid" style={{ left: '88%', top: '30%' }} />
-                    <div
-                      className="preview-tile glow"
-                      style={{ left: `${cfg.glowTile.x}%`, top: `${cfg.glowTile.y}%` }}
-                    />
-                    {cfg.sprites.map((s, si) => (
-                      <div
-                        key={si}
-                        className="preview-sprite"
-                        style={{ left: `${s.x}%`, top: `${s.y}%` }}
-                      >
-                        <PixelSpriteSmall color={si === 0 ? col1 : col2} />
-                      </div>
-                    ))}
+                    <div className="space-card-overlay">Enter Space →</div>
+                    {space.thumbnail ? (
+                      <img 
+                        src={space.thumbnail} 
+                        alt={space.name} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'relative', zIndex: 1 }} 
+                      />
+                    ) : (
+                      <>
+                        <div className="preview-tile solid" style={{ left: '20%', top: '40%' }} />
+                        <div className="preview-tile solid" style={{ left: '75%', top: '60%' }} />
+                        <div className="preview-tile solid" style={{ left: '88%', top: '30%' }} />
+                        <div
+                          className="preview-tile glow"
+                          style={{ left: `${cfg.glowTile.x}%`, top: `${cfg.glowTile.y}%` }}
+                        />
+                        {cfg.sprites.map((s, si) => (
+                          <div
+                            key={si}
+                            className="preview-sprite"
+                            style={{ left: `${s.x}%`, top: `${s.y}%` }}
+                          >
+                            <PixelSpriteSmall color={si === 0 ? col1 : col2} />
+                          </div>
+                        ))}
+                      </>
+                    )}
                   </div>
 
                   {/* Card body */}

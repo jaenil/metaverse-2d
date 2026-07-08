@@ -129,9 +129,9 @@ export function SignupPage() {
       }
       setAuth(signinRes.data.token, res.data.userId, userType);
       navigate('/dashboard');
-    } catch (error) {
-      if(axios.isAxiosError(error) && error.response){
-        const message =error.response.data?.message;
+    } catch (err) {
+      if(axios.isAxiosError(err) && err.response){
+        const message = err.response.data?.message;
         setError(message);
       } else {
         setError('An unexpected error occurred. Please try again.');

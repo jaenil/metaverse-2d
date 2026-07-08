@@ -226,9 +226,9 @@
 }
 
 .space-card:hover {
-  border-color: var(--muted);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(var(--accent-raw), 0.2), 0 0 0 1px rgba(var(--accent-raw), 0.5);
 }
 
 /* Pixel art arena preview */
@@ -242,6 +242,28 @@
     linear-gradient(90deg, rgba(46, 31, 29, 0.4) 1px, transparent 1px);
   background-size: 24px 24px;
   flex-shrink: 0;
+}
+
+/* Premium Hover Overlay */
+.space-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(2px);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-family: var(--font-retro);
+  font-size: 1.3rem;
+  color: var(--accent-hi);
+  letter-spacing: 0.05em;
+  pointer-events: none;
+}
+.space-card:hover .space-card-overlay {
+  opacity: 1;
 }
 
 /* Scanline overlay on preview */
@@ -341,7 +363,8 @@
 .space-card-id {
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--muted);
+  color: var(--text);
+  opacity: 0.45;
 }
 
 /* Card action row */
@@ -480,7 +503,7 @@
   box-shadow:
     0 0 0 1px rgba(var(--accent-raw), 0.06),
     0 24px 70px rgba(0, 0, 0, 0.6);
-  animation: modal-in 0.2s ease;
+  animation: modal-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   position: relative;
   overflow: hidden;
 }
@@ -495,8 +518,9 @@
 }
 
 @keyframes modal-in {
-  from { opacity: 0; transform: scale(0.96) translateY(10px); }
-  to   { opacity: 1; transform: scale(1)    translateY(0); }
+  0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+  60% { opacity: 1; transform: scale(1.02) translateY(-5px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .modal-header {

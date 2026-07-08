@@ -28,6 +28,30 @@ export function SpacePage() {
   
   const [showEmotes, setShowEmotes] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [weather, setWeather] = useState<'none' | 'rain' | 'snow'>('none');
+  const [timeOfDay, setTimeOfDay] = useState<'day' | 'night'>('day');
+
+  const handleCopy = async () => {
+    if (!spaceId) return;
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(spaceId);
+      } else {
+        // Fallback for non-HTTPS or local contexts where clipboard API might be blocked
+        const el = document.createElement('textarea');
+        el.value = spaceId;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy", err);
+    }
+  };
 
   const {
     state: arenaState,
@@ -225,10 +249,31 @@ export function SpacePage() {
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <input type="text" readOnly value={spaceId} style={{ flex: 1, padding: '0.5rem', background: '#000', border: '1px solid var(--border)', color: 'var(--text-main)' }} />
                   <button 
-                    onClick={() => navigator.clipboard.writeText(spaceId!)}
-                    style={{ padding: '0.5rem 1rem', background: 'var(--accent)', border: 'none', color: '#000', cursor: 'pointer', fontWeight: 'bold' }}>
-                    COPY
+                    onClick={handleCopy}
+                    style={{ padding: '0.5rem 1rem', background: copied ? 'var(--online)' : 'var(--accent)', border: 'none', color: '#000', cursor: 'pointer', fontWeight: 'bold', transition: 'background 0.2s' }}>
+                    {copied ? 'COPIED!' : 'COPY'}
                   </button>
+                </div>
+              </div>
+
+              <div style={{ height: '1px', background: 'var(--border)' }} />
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Time of Day</label>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button onClick={() => setTimeOfDay('day')} style={{ flex: 1, padding: '0.5rem', background: timeOfDay === 'day' ? 'var(--accent)' : '#000', color: timeOfDay === 'day' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Day</button>
+                    <button onClick={() => setTimeOfDay('night')} style={{ flex: 1, padding: '0.5rem', background: timeOfDay === 'night' ? 'var(--accent)' : '#000', color: timeOfDay === 'night' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Night</button>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Weather</label>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button onClick={() => setWeather('none')} style={{ flex: 1, padding: '0.5rem', background: weather === 'none' ? 'var(--accent)' : '#000', color: weather === 'none' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Clear</button>
+                    <button onClick={() => setWeather('rain')} style={{ flex: 1, padding: '0.5rem', background: weather === 'rain' ? 'var(--accent)' : '#000', color: weather === 'rain' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Rain</button>
+                    <button onClick={() => setWeather('snow')} style={{ flex: 1, padding: '0.5rem', background: weather === 'snow' ? 'var(--accent)' : '#000', color: weather === 'snow' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Snow</button>
+                  </div>
                 </div>
               </div>
 
@@ -350,6 +395,8 @@ export function SpacePage() {
             onMove={handleMove}
             onCanvasClick={handleCanvasClick}
             connected={arenaState.connected}
+            weather={weather}
+            timeOfDay={timeOfDay}
           />
         )}
       </div>

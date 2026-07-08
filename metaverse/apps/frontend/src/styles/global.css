@@ -55,7 +55,7 @@
   --surface:      #2d1b4e;
   --surface-elev: #432c7a;
   --border:       #7928ca;
-  --muted:        #4a3330;
+  --muted:        #4c2a7a;
   --text:         #f8f8ff;
   --subdued:      #b39bc8;
 
@@ -110,6 +110,11 @@ html, body, #root {
   font-family: var(--font-ui);
   font-size: 14px;
   line-height: 1.6;
+}
+
+/* Smooth Theme Transitions */
+html, body, #root, .dash-root, .dash-header, .space-card, .modal-card, .admin-sidebar, .admin-content, .space-card-preview, .space-card-body, .admin-stat-card, input, select, button {
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
 }
 
 /* ── UI Typography Targeting ── */

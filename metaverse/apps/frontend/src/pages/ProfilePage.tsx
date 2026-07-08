@@ -12,6 +12,7 @@ export function ProfilePage() {
   const [nickname, setNickname] = useState('User');
   const [sellerName, setSellerName] = useState('User');
   const [avatars, setAvatars] = useState<Avatar[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedAvatarId, setSelectedAvatarId] = useState<string | null>(null);
 
   const { clearAuth } = useAuthStore();
@@ -21,7 +22,8 @@ export function ProfilePage() {
   useEffect(() => {
     getAvailableAvatars().then(res => {
       if (res.status === 200) setAvatars(res.data.avatars);
-    }).catch(() => {});
+      setLoading(false);
+    }).catch(() => { setLoading(false); });
   }, []);
 
   async function handleSelectAvatar(avatarId: string) {
@@ -107,13 +109,19 @@ export function ProfilePage() {
           </div>
 
           {/* Avatar Panel */}
-          {avatars.length > 0 && (
-            <div className="space-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', cursor: 'default', border: '1px solid var(--border)' }}>
-              <h3 style={{ fontFamily: 'var(--font-retro)', letterSpacing: '0.05em', color: 'var(--fg)', margin: 0 }}>Choose Avatar</h3>
-              <p style={{ color: 'var(--subdued)', fontSize: '0.85rem', marginTop: '-0.5rem' }}>Select your appearance in the metaverse.</p>
-              
-              <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem', flexWrap: 'wrap' }}>
-                {avatars.map(av => (
+          <div className="space-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', cursor: 'default', border: '1px solid var(--border)' }}>
+            <h3 style={{ fontFamily: 'var(--font-retro)', letterSpacing: '0.05em', color: 'var(--text)', margin: 0 }}>Choose Avatar</h3>
+            <p style={{ color: 'var(--subdued)', fontSize: '0.85rem', marginTop: '-0.5rem' }}>Select your appearance in the metaverse.</p>
+            
+            <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem', flexWrap: 'wrap' }}>
+              {loading ? (
+                [1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="dash-skeleton" style={{ width: '64px', height: '64px', borderRadius: '8px', flexShrink: 0 }}>
+                    <div className="dash-skeleton-inner" />
+                  </div>
+                ))
+              ) : avatars.length > 0 ? (
+                avatars.map(av => (
                   <div 
                     key={av.id}
                     onClick={() => handleSelectAvatar(av.id)}
@@ -130,10 +138,12 @@ export function ProfilePage() {
                   >
                     <img src={av.imageUrl} alt={av.name} style={{ width: '40px', height: '40px', imageRendering: 'pixelated' }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}/>
                   </div>
-                ))}
-              </div>
+                ))
+              ) : (
+                <div style={{ color: 'var(--subdued)', fontSize: '0.85rem' }}>No avatars available.</div>
+              )}
             </div>
-          )}
+          </div>
 
           {/* Web3 / Wallet Panel */}
           <div className="space-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', cursor: 'default', border: '1px solid var(--border)' }}>

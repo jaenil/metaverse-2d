@@ -19,6 +19,7 @@ interface RainDrop {
 
 export function BackgroundFX() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -140,6 +141,13 @@ export function BackgroundFX() {
         ctx.fillRect(p.x, p.y, p.size, p.size);
       });
 
+      // Update Parallax Grid
+      if (gridRef.current) {
+        const offsetX = (mouseX / width - 0.5) * -30;
+        const offsetY = (mouseY / height - 0.5) * -30;
+        gridRef.current.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+      }
+
       frame++;
       animationFrameId = requestAnimationFrame(render);
     };
@@ -159,7 +167,7 @@ export function BackgroundFX() {
       <canvas ref={canvasRef} className="bg-fx-canvas" />
       
       {/* CSS 3D Perspective Grid Floor */}
-      <div className="synthwave-grid-wrapper">
+      <div className="synthwave-grid-wrapper" ref={gridRef}>
         <div className="synthwave-grid" />
       </div>
     </div>
