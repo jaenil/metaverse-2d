@@ -27,7 +27,7 @@ export function MapsPage() {
       
       {/* ── Navigation ────────────────────────── */}
       <header className="dash-header">
-        <div className="dash-brand">
+        <div className="dash-brand" onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>
           <span className="dash-dot" />
           METAVERSE
         </div>

@@ -54,7 +54,7 @@ export function AdminPage() {
       {/* ── Top Nav ────────────────────────────────────── */}
       <header className="admin-topnav">
         <div className="admin-topnav-left">
-          <div className="admin-brand">
+          <div className="admin-brand" onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>
             <span className="admin-brand-dot" />
             METAVERSE
           </div>

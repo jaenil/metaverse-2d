@@ -109,7 +109,7 @@ export function DashboardPage() {
 
       {/* ── Navigation ────────────────────────── */}
       <header className="dash-header">
-        <div className="dash-brand">
+        <div className="dash-brand" onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>
           <span className="dash-dot" />
           METAVERSE
         </div>
@@ -129,7 +129,7 @@ export function DashboardPage() {
           )}
           <button
             className="dash-nav-btn"
-            onClick={() => navigate('/home-page')}
+            onClick={() => navigate('/profile')}
             id="dashboard-profile-btn"
           >
             Profile
@@ -156,7 +156,7 @@ export function DashboardPage() {
             </span>
             <span className="dash-stat-label">Spaces</span>
           </div>
-          <div className="dash-stat">
+          <div className="dash-stat" onClick={() => navigate('/maps')} style={{ cursor: 'pointer' }}>
             <span className="dash-stat-value accent">
               {maps.length}
             </span>

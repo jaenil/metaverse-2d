@@ -6,7 +6,7 @@ import { SpacePage } from './pages/SpacePage';
 import { AdminPage } from './pages/AdminPage';
 import { SignupPage } from './pages/SignupPage';
 import { SigninPage } from './pages/SigninPage';
-import { HomePage } from './pages/HomePage';
+import { ProfilePage } from './pages/ProfilePage';
 import { AvatarsPage } from './pages/AvatarsPage';
 import { MapsPage } from './pages/MapsPage';
 import { BackgroundFX } from './components/BackgroundFX';
@@ -38,7 +38,7 @@ export default function App() {
         <Route path="/" element={<AuthPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/signin" element={<SigninPage />} />
-        <Route path="/home-page" element={<HomePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/avatars" element={<AvatarsPage />} />
         <Route path="/maps" element={<MapsPage />} />
         <Route

@@ -6,7 +6,7 @@ import '../styles/dashboard.css';
 
 const WALLETS = ['Metamask', 'Phantom', 'WalletConnect'];
 
-export function HomePage() {
+export function ProfilePage() {
   const [nickname, setNickname] = useState('User');
   const [sellerName, setSellerName] = useState('User');
   const { clearAuth } = useAuthStore();
@@ -22,7 +22,7 @@ export function HomePage() {
     <div className="dash-root">
       {/* ── Navigation ────────────────────────── */}
       <header className="dash-header">
-        <div className="dash-brand">
+        <div className="dash-brand" onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>
           <span className="dash-dot" />
           METAVERSE
         </div>
