@@ -162,4 +162,78 @@ describe("Websocket tests", () => {
         expect(message.type).toBe("user-left");
         expect(message.payload.userId).toBe(adminUserId);
     });
+
+    test("Emote Broadcasting: Users in the same space should receive emotes", async () => {
+        ws2.send(
+            JSON.stringify({ type: "emote", payload: { emote: "👋" } })
+        );
+        // We reconnect ws1 just to receive it? Wait, ws1 is closed. Let's create ws3.
+        const ws3 = new WebSocket(WS_URL);
+        const ws3Messages = [];
+        ws3.on("message", (event) => ws3Messages.push(JSON.parse(event.toString())));
+        await new Promise((r) => ws3.on("open", r));
+
+        ws3.send(
+            JSON.stringify({ type: "join", payload: { spaceId, token: adminToken } })
+        );
+        await waitForAndPopLatestMessage(ws3Messages); // space-joined
+        await waitForAndPopLatestMessage(ws2Messages); // user-join
+
+        ws3.send(
+            JSON.stringify({ type: "emote", payload: { emote: "👋" } })
+        );
+        
+        const message = await waitForAndPopLatestMessage(ws2Messages);
+        expect(message.type).toBe("emote");
+        expect(message.payload.emote).toBe("👋");
+        expect(message.payload.userId).toBe(adminUserId);
+        
+        ws3.close();
+        await waitForAndPopLatestMessage(ws2Messages); // consume user-left
+    });
+
+    test("Malformed Messages: Server should send event-rejected and not crash", async () => {
+        // Send broken JSON
+        ws2.send("{ type: broken json");
+        const message = await waitForAndPopLatestMessage(ws2Messages);
+        expect(message.type).toBe("event-rejected");
+    });
+
+    test("Non-Existent Space: Should not receive space-joined", async () => {
+        const ws4 = new WebSocket(WS_URL);
+        const ws4Messages = [];
+        ws4.on("message", (event) => ws4Messages.push(JSON.parse(event.toString())));
+        await new Promise((r) => ws4.on("open", r));
+
+        ws4.send(
+            JSON.stringify({ type: "join", payload: { spaceId: "invalid-space-id", token: userToken } })
+        );
+
+        // We expect it to timeout and not receive space-joined, meaning the promise rejects
+        await expect(waitForAndPopLatestMessage(ws4Messages, 1000)).rejects.toThrow();
+        ws4.close();
+    });
+
+    test("State Consistency: New users joining should not see users who have left", async () => {
+        // Currently, ws1 is closed, ws2 is still in the room.
+        // Let's create ws5 and check the space-joined users list.
+        const ws5 = new WebSocket(WS_URL);
+        const ws5Messages = [];
+        ws5.on("message", (event) => ws5Messages.push(JSON.parse(event.toString())));
+        await new Promise((r) => ws5.on("open", r));
+
+        ws5.send(
+            JSON.stringify({ type: "join", payload: { spaceId, token: adminToken } })
+        );
+        
+        const message = await waitForAndPopLatestMessage(ws5Messages);
+        expect(message.type).toBe("space-joined");
+        
+        // Users list should only contain ws2 (userId), and NOT ws1 (adminUserId) since ws1 left
+        expect(message.payload.users.length).toBe(1);
+        expect(message.payload.users[0].id).toBe(userId);
+        
+        ws5.close();
+        await waitForAndPopLatestMessage(ws2Messages); // consume user-left from ws5 joining and leaving
+    });
 });
