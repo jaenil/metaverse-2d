@@ -443,15 +443,12 @@ function MapForm({
               placeholder="https://example.com/thumbnail.png"
             />
           </div>
-          <div className="admin-url-preview">
+          <div style={{ marginTop: '0.5rem', background: 'rgba(0,0,0,0.25)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', minHeight: '100px', justifyContent: 'center' }}>
             {thumbnail.trim() ? (
-              <img src={thumbnail} alt="Thumbnail preview" />
+              <img src={thumbnail} alt="Preview" style={{ width: '100%', maxHeight: '250px', objectFit: 'contain' }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
             ) : (
-              <div className="admin-url-preview-placeholder">⬡</div>
+              <div style={{ color: 'var(--muted)', fontFamily: 'var(--font-mono)', fontSize: '11px' }}>⬡ Paste a URL above to preview</div>
             )}
-            <span className="admin-url-preview-text">
-              {thumbnail.trim() ? thumbnail : 'Paste a URL to preview'}
-            </span>
           </div>
         </div>
 
@@ -513,7 +510,7 @@ function MapForm({
           {maps.map(m => (
             <div key={m.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <img src={m.thumbnail} alt={m.name} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                <img src={m.thumbnail} alt={m.name} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                 <div>
                   <div style={{ fontWeight: 'bold' }}>{m.name}</div>
                   <div style={{ fontSize: '11px', color: 'var(--subdued)', fontFamily: 'var(--font-mono)' }}>{m.width}x{m.height} • {m.id.slice(0, 8)}...</div>

@@ -328,31 +328,33 @@ const [joinSpaceId, setJoinSpaceId] = useState('');
               </div>
 
               {/* Dimensions */}
-              <div className="modal-field">
-                <label>Dimensions</label>
-                <div className="dim-presets">
-                  {DIM_PRESETS.map((d) => (
-                    <button
-                      key={d}
-                      type="button"
-                      className={`dim-preset-btn${newDimensions === d ? ' active' : ''}`}
-                      onClick={() => setNewDimensions(d)}
-                    >
-                      {d}
-                    </button>
-                  ))}
+              {!selectedMap && (
+                <div className="modal-field">
+                  <label>Dimensions</label>
+                  <div className="dim-presets">
+                    {DIM_PRESETS.map((d) => (
+                      <button
+                        key={d}
+                        type="button"
+                        className={`dim-preset-btn${newDimensions === d ? ' active' : ''}`}
+                        onClick={() => setNewDimensions(d)}
+                      >
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="modal-input-wrap" style={{ marginTop: '0.4rem' }}>
+                    <span className="modal-input-icon">⬡</span>
+                    <input
+                      id="modal-space-dim"
+                      type="text"
+                      value={newDimensions}
+                      onChange={(e) => setNewDimensions(e.target.value)}
+                      placeholder="100x100"
+                    />
+                  </div>
                 </div>
-                <div className="modal-input-wrap" style={{ marginTop: '0.4rem' }}>
-                  <span className="modal-input-icon">⬡</span>
-                  <input
-                    id="modal-space-dim"
-                    type="text"
-                    value={newDimensions}
-                    onChange={(e) => setNewDimensions(e.target.value)}
-                    placeholder="100x100"
-                  />
-                </div>
-              </div>
+              )}
 
               {/* Map selector */}
               {maps.length > 0 && (
