@@ -156,27 +156,22 @@ export function ProfilePage() {
             <p style={{ color: 'var(--subdued)', fontSize: '0.85rem', marginTop: '-0.5rem' }}>Customize your dashboard aesthetic.</p>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
-              <button 
-                onClick={() => setTheme('ember')}
-                className={`dash-new-btn ${theme === 'ember' ? 'active' : ''}`}
-                style={{ flex: 1, justifyContent: 'center', background: theme === 'ember' ? 'var(--accent)' : 'rgba(0,0,0,0.2)' }}
-              >
-                Ember & Charcoal
-              </button>
-              <button 
-                onClick={() => setTheme('cyberpunk')}
-                className={`dash-new-btn ${theme === 'cyberpunk' ? 'active' : ''}`}
-                style={{ flex: 1, justifyContent: 'center', background: theme === 'cyberpunk' ? 'var(--accent)' : 'rgba(0,0,0,0.2)' }}
-              >
-                Cyberpunk Neon
-              </button>
-              <button 
-                onClick={() => setTheme('gameboy')}
-                className={`dash-new-btn ${theme === 'gameboy' ? 'active' : ''}`}
-                style={{ flex: 1, justifyContent: 'center', background: theme === 'gameboy' ? 'var(--accent)' : 'rgba(0,0,0,0.2)' }}
-              >
-                Gameboy Classic
-              </button>
+              {[
+                { id: 'ember', label: 'Ember & Charcoal' },
+                { id: 'cyberpunk', label: 'Cyberpunk Neon' },
+                { id: 'synthwave', label: 'Synthwave' },
+                { id: 'midnight', label: 'Midnight' },
+                { id: 'hacker', label: 'Hacker' }
+              ].map((t) => (
+                <button 
+                  key={t.id}
+                  onClick={() => setTheme(t.id)}
+                  className={`dash-new-btn ${theme === t.id ? 'active' : ''}`}
+                  style={{ flex: 1, justifyContent: 'center', background: theme === t.id ? 'var(--accent)' : 'rgba(0,0,0,0.2)' }}
+                >
+                  {t.label}
+                </button>
+              ))}
             </div>
           </div>
 

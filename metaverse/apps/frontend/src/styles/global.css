@@ -50,19 +50,49 @@
   --accent-raw:   0, 240, 255;
 }
 
-[data-theme="gameboy"] {
-  --bg:           #0f380f;
-  --surface:      #1a471a;
-  --surface-elev: #245624;
-  --border:       #306230;
-  --muted:        #407740;
-  --text:         #9bbc0f;
-  --subdued:      #8bac0f;
+[data-theme="synthwave"] {
+  --bg:           #1a0b2e;
+  --surface:      #2d1b4e;
+  --surface-elev: #432c7a;
+  --border:       #7928ca;
+  --muted:        #4a3330;
+  --text:         #f8f8ff;
+  --subdued:      #b39bc8;
 
-  --accent:       #8bac0f;
-  --accent-dim:   #306230;
-  --accent-hi:    #9bbc0f;
-  --accent-raw:   139, 172, 15;
+  --accent:       #ff0080;
+  --accent-dim:   #7a003d;
+  --accent-hi:    #ff4da6;
+  --accent-raw:   255, 0, 128;
+}
+
+[data-theme="midnight"] {
+  --bg:           #09090b;
+  --surface:      #18181b;
+  --surface-elev: #27272a;
+  --border:       #3f3f46;
+  --muted:        #52525b;
+  --text:         #f4f4f5;
+  --subdued:      #a1a1aa;
+
+  --accent:       #3b82f6;
+  --accent-dim:   #1e3a8a;
+  --accent-hi:    #60a5fa;
+  --accent-raw:   59, 130, 246;
+}
+
+[data-theme="hacker"] {
+  --bg:           #000000;
+  --surface:      #051005;
+  --surface-elev: #0a1f0a;
+  --border:       #004400;
+  --muted:        #003300;
+  --text:         #00ff00;
+  --subdued:      #00aa00;
+
+  --accent:       #00ff00;
+  --accent-dim:   #004400;
+  --accent-hi:    #88ff88;
+  --accent-raw:   0, 255, 0;
 }
 
 *, *::before, *::after {
@@ -292,4 +322,19 @@ kbd {
 }
 .floating-sketch {
   animation: float 6s ease-in-out infinite;
+}
+
+/* ── Custom Cursor for Interactive Elements ── */
+button, 
+a, 
+select, 
+input[type="button"], 
+input[type="submit"], 
+[role="button"], 
+.dash-new-btn, 
+.space-enter-btn, 
+.space-delete-btn,
+.modal-close,
+.modal-join-btn {
+  cursor: crosshair !important;
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllSpaces, createSpace, deleteSpace, getMaps } from '../api';
 import { useAuthStore } from '../store/authStore';
+import { useThemeStore } from '../store/themeStore';
 import type { Space, GameMap } from '../types';
 import '../styles/dashboard.css';
 
@@ -46,6 +47,7 @@ const [showJoinModal, setShowJoinModal] = useState(false);
 const [joinSpaceId, setJoinSpaceId] = useState('');
 
   const { userType, clearAuth } = useAuthStore();
+  const { theme, setTheme } = useThemeStore();
   const navigate = useNavigate();
 
   async function loadSpaces() {
@@ -121,6 +123,29 @@ const [joinSpaceId, setJoinSpaceId] = useState('');
         </div>
 
         <nav className="dash-nav">
+          <select 
+            value={theme}
+            onChange={(e) => setTheme(e.target.value)}
+            style={{
+              background: 'var(--surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text)',
+              borderRadius: 'var(--radius-sm)',
+              padding: '0.3rem 0.5rem',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
+              cursor: 'pointer',
+              outline: 'none',
+              textAlign: 'center'
+            }}
+          >
+            <option value="ember" style={{ background: 'var(--surface)', color: 'var(--text)' }}>Ember</option>
+            <option value="cyberpunk" style={{ background: 'var(--surface)', color: 'var(--text)' }}>Cyberpunk</option>
+            <option value="synthwave" style={{ background: 'var(--surface)', color: 'var(--text)' }}>Synthwave</option>
+            <option value="midnight" style={{ background: 'var(--surface)', color: 'var(--text)' }}>Midnight</option>
+            <option value="hacker" style={{ background: 'var(--surface)', color: 'var(--text)' }}>Hacker</option>
+          </select>
+          <div className="dash-nav-divider" />
           {userType === 'admin' && (
             <>
               <button
