@@ -24,7 +24,7 @@ spaceRouter.post('/', userMiddleware, async (req, res) => {
             return res.status(200).json({ spaceId: space.id })
         }
         catch (e) {
-            res.status(500).json({ message: "Internal server error" });
+            console.error(e); res.status(500).json({ message: "Internal server error" });
         }
     }
     else {
@@ -65,7 +65,7 @@ spaceRouter.post('/', userMiddleware, async (req, res) => {
             res.json({ spaceId: space.id })
         }
         catch (e) {
-            res.status(500).json({ message: "Internal server error" });
+            console.error(e); res.status(500).json({ message: "Internal server error" });
         }
     }
 
@@ -191,7 +191,8 @@ spaceRouter.delete('/:spaceId', userMiddleware, async (req, res) => {
     }
     catch (e) {
         console.error("Space delete error", e);
-        res.status(500).json({ message: "Internal server error" });
+        console.error(e); res.status(500).json({ message: "Internal server error" });
+
     }
 })
 
