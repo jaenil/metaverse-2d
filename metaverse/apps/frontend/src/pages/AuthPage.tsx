@@ -116,6 +116,7 @@ export function AuthPage() {
           <span className="brand-text">METAVERSE</span>
         </div>
         <div className="landing-nav-links">
+          <button className="btn-ghost sm" onClick={() => navigate('/about')}>About Us</button>
           <button className="btn-ghost sm" onClick={() => navigate('/signin')}>Sign in</button>
           <button className="btn-primary sm" onClick={() => navigate('/signup')}>Get started</button>
         </div>
@@ -214,6 +215,8 @@ export function AuthPage() {
       {/* Footer */}
       <footer className="landing-footer">
         <span>© 2025 Metaverse · Built at COEP</span>
+        <span className="footer-divider">·</span>
+        <button className="footer-link" onClick={() => navigate('/about')}>About Us</button>
         <span className="footer-divider">·</span>
         <button className="footer-link" onClick={() => navigate('/signup')}>Get started</button>
       </footer>

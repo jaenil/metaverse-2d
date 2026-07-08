@@ -9,6 +9,7 @@ import { SigninPage } from './pages/SigninPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { AvatarsPage } from './pages/AvatarsPage';
 import { MapsPage } from './pages/MapsPage';
+import { AboutPage } from './pages/AboutPage';
 import { BackgroundFX } from './components/BackgroundFX';
 import { useAuthStore } from './store/authStore';
 import { useThemeStore } from './store/themeStore';
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/avatars" element={<AvatarsPage />} />
         <Route path="/maps" element={<MapsPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route
           path="/dashboard"
           element={<ProtectedRoute><DashboardPage /></ProtectedRoute>}
