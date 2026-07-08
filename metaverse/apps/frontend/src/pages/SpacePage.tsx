@@ -26,6 +26,16 @@ export function SpacePage() {
   const [availableElements, setAvailableElements] = useState<Element[]>([]);
   const [selectedElement, setSelectedElement] = useState<Element | null>(null);
   
+  // null when there's no error, a string when there is one
+  const [placementError, setPlacementError] = useState<string | null>(null);
+
+  // Auto-dismiss the placement error after 2.5 seconds
+  useEffect(() => {
+    if (!placementError) return;
+    const timer = setTimeout(() => setPlacementError(null), 2500);
+    return () => clearTimeout(timer); // cleanup: cancel if error changes before timeout fires
+  }, [placementError]);
+
   const [showEmotes, setShowEmotes] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -139,6 +149,26 @@ export function SpacePage() {
     }
 
     try {
+      setPlacementError(null);
+      if (x < 0 || y < 0 || x >= dimensions.width || y >= dimensions.height) {
+        setPlacementError('Position out of bounds.');
+        return;
+      }
+      
+      const isColliding = elements.some((e)=>{
+        if (!e.element) return false; // narrows the type, skips malformed entries
+        const overlapX = x < e.x + e.element.width && 
+                     x + (selectedElement?.width ?? 0) > e.x;
+    
+        const overlapY = y < e.y + e.element.height && 
+                     y + (selectedElement?.height ?? 0) > e.y;
+    
+        return overlapX && overlapY && e.element.static;
+      })
+      if(isColliding){
+        setPlacementError('Element is colliding with another element');
+        return;
+      }
       const res = await addSpaceElement({ elementId: selectedElement.id, spaceId, x, y });
       if (res.status === 200) {
         setElements((prev) => [
@@ -153,6 +183,7 @@ export function SpacePage() {
       }
     } catch (e) {
       console.error("Failed to place element", e);
+      setPlacementError('Failed to place element. Try again.');
     }
   };
 
@@ -193,6 +224,28 @@ export function SpacePage() {
             <span className="space-title-accent">ZONE //</span> {spaceId?.slice(-6).toUpperCase()}
           </div>
         </div>
+
+        {/* Placement Error Banner — top center, auto-dismisses */}
+        {placementError && (
+          <div style={{
+            position: 'absolute',
+            top: '1.25rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(0,0,0,0.85)',
+            border: '1px solid #d9381e',
+            color: '#d9381e',
+            padding: '0.5rem 1.25rem',
+            fontFamily: 'var(--font-retro)',
+            fontSize: '0.8rem',
+            letterSpacing: '0.08em',
+            pointerEvents: 'none',
+            zIndex: 200,
+            whiteSpace: 'nowrap',
+          }}>
+            ⚠ {placementError}
+          </div>
+        )}
 
         {/* Bottom Center: Action Bar */}
         <div className="hud-action-bar">

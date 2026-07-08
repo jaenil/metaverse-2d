@@ -94,7 +94,16 @@ export class User{
                     const collision = RoomManager.getInstance().rooms.get(this.spaceId!)?.find((u)=>{
                         return u.x===x && u.y===y
                     })
-                    if(collision){
+                    const spaceElements = await client.spaceElements.findMany({
+                        where:{spaceId:this.spaceId,},
+                        include:{element:true}
+                    })
+                    const elementCollision = spaceElements.find((e) => {
+                        return (x >= e.x && x < e.x + e.element.width) &&
+                            (y >= e.y && y < e.y + e.element.height)&&(e.element.static);
+                    });
+
+                    if(collision||elementCollision){
                         this.send({
                             type:"movement-rejected",
                             payload:{
