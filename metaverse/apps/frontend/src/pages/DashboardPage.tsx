@@ -41,6 +41,10 @@ export function DashboardPage() {
   const [newDimensions, setNewDimensions] = useState('100x100');
   const [selectedMap,   setSelectedMap]   = useState('');
 
+  // In DashboardPage.tsx
+const [showJoinModal, setShowJoinModal] = useState(false);
+const [joinSpaceId, setJoinSpaceId] = useState('');
+
   const { userType, clearAuth } = useAuthStore();
   const navigate = useNavigate();
 
@@ -84,7 +88,9 @@ export function DashboardPage() {
       setCreating(false);
     }
   }
-
+  function handleJoin(){
+    navigate(`/space/${joinSpaceId}`) 
+  }
   async function handleDelete(spaceId: string) {
     try {
       await deleteSpace(spaceId);
@@ -190,6 +196,16 @@ export function DashboardPage() {
           >
             <span>＋</span> New Space
           </button>
+          <button
+            id="dashboard-join-space"
+            className="dash-new-btn glitch-hover"
+            data-text="⤢ Join Space"
+            onClick={() => setShowJoinModal(true)}
+          >
+            <span>⤢</span> Join Space
+          </button>
+
+
         </div>
 
         {/* Content */}
@@ -371,6 +387,57 @@ export function DashboardPage() {
                 disabled={creating || !newName.trim()}
               >
                 {creating ? 'Creating…' : 'Create Space →'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Join with code Modal */}
+      {showJoinModal && (
+        <div className="modal-backdrop" onClick={handleBackdropClick}>
+          <div className="modal-card" role="dialog" aria-modal="true" aria-label="Join space">
+            <div className="modal-header">
+              <h3>⬡ Join Space</h3>
+              <button
+                className="modal-close"
+                onClick={() => setShowJoinModal(false)}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="modal-body">
+              {/* Code */}
+              <div className="modal-field">
+                <label htmlFor="modal-space-code">Space code</label>
+                <div className="modal-input-wrap">
+                  <span className="modal-input-icon">⬡</span>
+                  <input
+                    id="modal-space-code"
+                    type="text"
+                    value={joinSpaceId}
+                    onChange={(e) => setJoinSpaceId(e.target.value)}
+                    placeholder="Enter space code"
+                    autoFocus
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleJoin(); }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button className="modal-cancel-btn" onClick={() => setShowJoinModal(false)}>
+                Cancel
+              </button>
+              <button
+                id="modal-join-btn"
+                className="modal-join-btn glitch-hover"
+                data-text="Join Space →"
+                onClick={handleJoin}
+                disabled={!joinSpaceId.trim()}
+              >
+                {joinSpaceId.trim() ? 'Joining…' : 'Join Space →'}
               </button>
             </div>
           </div>

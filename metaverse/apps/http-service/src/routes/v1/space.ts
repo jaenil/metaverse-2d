@@ -106,7 +106,7 @@ spaceRouter.post('/element', userMiddleware, async (req, res) => {
         }
     })
     if (!space) return res.status(404).json({ message: "Space not found" })
-    if (parsedData.data.x < 0 || parsedData.data.y < 0 || parsedData.data.x > space.width || parsedData.data.y > space.height) {
+    if (parsedData.data.x < 0 || parsedData.data.y < 0 || parsedData.data.x> space.width || parsedData.data.y > space.height) {
         return res.status(400).json({ message: "Element out of bounds" })
     }
     //do not allow element to b3e added if there already exists an element in the same x and y
