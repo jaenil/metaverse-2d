@@ -10,6 +10,8 @@ export function MapsPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const selectedMap = maps.find((m) => m.id === selected);
+
   useEffect(() => {
     getMaps()
       .then((res) => {
@@ -43,7 +45,6 @@ export function MapsPage() {
 
       {/* ── Body ──────────────────────────────── */}
       <div className="dash-body">
-
         {/* Title row */}
         <div className="dash-title-row">
           <div className="dash-title-row-left">
@@ -52,7 +53,9 @@ export function MapsPage() {
           </div>
         </div>
 
-        {/* Content */}
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '2rem', alignItems: 'flex-start', width: '100%' }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+          {/* Content */}
         {loading ? (
           <div className="space-grid">
             {[1, 2, 3].map((i) => (
@@ -126,7 +129,33 @@ export function MapsPage() {
             })}
           </div>
         )}
+        </div>
 
+          {/* Sidebar */}
+          {selectedMap && (
+            <div className="map-sidebar" style={{ width: '320px', flexShrink: 0, padding: '1.5rem', backgroundColor: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'sticky', top: '2rem' }}>
+              <h3 style={{ fontSize: '1.2rem', margin: 0, color: 'var(--text)', fontFamily: 'var(--font-retro)' }}>Map Preview</h3>
+              
+              <div style={{ width: '100%', aspectRatio: '16/9', backgroundColor: 'var(--bg)', borderRadius: '8px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {selectedMap.thumbnail ? (
+                  <img src={selectedMap.thumbnail} alt={selectedMap.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <span style={{ fontSize: '2rem', color: 'var(--muted)' }}>⬡</span>
+                )}
+              </div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}><strong style={{ color: 'var(--text)', marginBottom: '0.2rem' }}>Name</strong> {selectedMap.name}</div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}><strong style={{ color: 'var(--text)', marginBottom: '0.2rem' }}>ID</strong> <span style={{ fontFamily: 'monospace' }}>{selectedMap.id}</span></div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}><strong style={{ color: 'var(--text)', marginBottom: '0.2rem' }}>Dimensions</strong> {selectedMap.dimensions ?? `${selectedMap.width}x${selectedMap.height}`}</div>
+                {selectedMap.creator && (
+                  <div style={{ display: 'flex', flexDirection: 'column' }}><strong style={{ color: 'var(--text)', marginBottom: '0.2rem' }}>Creator</strong> {selectedMap.creator.username}</div>
+                )}
+              </div>
+            </div>
+          )}
+
+        </div>
       </div>
     </div>
   );

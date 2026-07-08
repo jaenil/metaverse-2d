@@ -19,6 +19,7 @@ model User {
   avatarId String?
   role     Role
   spaces   Space[]
+  maps Map[]
   avatar    Avatar? @relation(fields: [avatarId], references: [id])
 }
 
@@ -56,11 +57,13 @@ model Element {
 
 model Map {
   id     String  @id @unique @default(cuid())
+  creatorId String
   width  Int
   height Int
   name   String
   thumbnail String
   mapElements MapElements[]
+  creator User @relation(fields: [creatorId], references: [id])
 }
 
 model MapElements {

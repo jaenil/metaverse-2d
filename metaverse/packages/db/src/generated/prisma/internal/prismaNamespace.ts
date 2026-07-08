@@ -1014,6 +1014,7 @@ export type ElementScalarFieldEnum = (typeof ElementScalarFieldEnum)[keyof typeo
 
 export const MapScalarFieldEnum = {
   id: 'id',
+  creatorId: 'creatorId',
   width: 'width',
   height: 'height',
   name: 'name',

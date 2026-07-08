@@ -38,6 +38,7 @@ export type MapSumAggregateOutputType = {
 
 export type MapMinAggregateOutputType = {
   id: string | null
+  creatorId: string | null
   width: number | null
   height: number | null
   name: string | null
@@ -46,6 +47,7 @@ export type MapMinAggregateOutputType = {
 
 export type MapMaxAggregateOutputType = {
   id: string | null
+  creatorId: string | null
   width: number | null
   height: number | null
   name: string | null
@@ -54,6 +56,7 @@ export type MapMaxAggregateOutputType = {
 
 export type MapCountAggregateOutputType = {
   id: number
+  creatorId: number
   width: number
   height: number
   name: number
@@ -74,6 +77,7 @@ export type MapSumAggregateInputType = {
 
 export type MapMinAggregateInputType = {
   id?: true
+  creatorId?: true
   width?: true
   height?: true
   name?: true
@@ -82,6 +86,7 @@ export type MapMinAggregateInputType = {
 
 export type MapMaxAggregateInputType = {
   id?: true
+  creatorId?: true
   width?: true
   height?: true
   name?: true
@@ -90,6 +95,7 @@ export type MapMaxAggregateInputType = {
 
 export type MapCountAggregateInputType = {
   id?: true
+  creatorId?: true
   width?: true
   height?: true
   name?: true
@@ -185,6 +191,7 @@ export type MapGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
 
 export type MapGroupByOutputType = {
   id: string
+  creatorId: string
   width: number
   height: number
   name: string
@@ -216,20 +223,24 @@ export type MapWhereInput = {
   OR?: Prisma.MapWhereInput[]
   NOT?: Prisma.MapWhereInput | Prisma.MapWhereInput[]
   id?: Prisma.StringFilter<"Map"> | string
+  creatorId?: Prisma.StringFilter<"Map"> | string
   width?: Prisma.IntFilter<"Map"> | number
   height?: Prisma.IntFilter<"Map"> | number
   name?: Prisma.StringFilter<"Map"> | string
   thumbnail?: Prisma.StringFilter<"Map"> | string
   mapElements?: Prisma.MapElementsListRelationFilter
+  creator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type MapOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  creatorId?: Prisma.SortOrder
   width?: Prisma.SortOrder
   height?: Prisma.SortOrder
   name?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
   mapElements?: Prisma.MapElementsOrderByRelationAggregateInput
+  creator?: Prisma.UserOrderByWithRelationInput
 }
 
 export type MapWhereUniqueInput = Prisma.AtLeast<{
@@ -237,15 +248,18 @@ export type MapWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.MapWhereInput | Prisma.MapWhereInput[]
   OR?: Prisma.MapWhereInput[]
   NOT?: Prisma.MapWhereInput | Prisma.MapWhereInput[]
+  creatorId?: Prisma.StringFilter<"Map"> | string
   width?: Prisma.IntFilter<"Map"> | number
   height?: Prisma.IntFilter<"Map"> | number
   name?: Prisma.StringFilter<"Map"> | string
   thumbnail?: Prisma.StringFilter<"Map"> | string
   mapElements?: Prisma.MapElementsListRelationFilter
+  creator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "id">
 
 export type MapOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  creatorId?: Prisma.SortOrder
   width?: Prisma.SortOrder
   height?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -262,6 +276,7 @@ export type MapScalarWhereWithAggregatesInput = {
   OR?: Prisma.MapScalarWhereWithAggregatesInput[]
   NOT?: Prisma.MapScalarWhereWithAggregatesInput | Prisma.MapScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Map"> | string
+  creatorId?: Prisma.StringWithAggregatesFilter<"Map"> | string
   width?: Prisma.IntWithAggregatesFilter<"Map"> | number
   height?: Prisma.IntWithAggregatesFilter<"Map"> | number
   name?: Prisma.StringWithAggregatesFilter<"Map"> | string
@@ -275,10 +290,12 @@ export type MapCreateInput = {
   name: string
   thumbnail: string
   mapElements?: Prisma.MapElementsCreateNestedManyWithoutMapInput
+  creator: Prisma.UserCreateNestedOneWithoutMapsInput
 }
 
 export type MapUncheckedCreateInput = {
   id?: string
+  creatorId: string
   width: number
   height: number
   name: string
@@ -293,10 +310,12 @@ export type MapUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
   mapElements?: Prisma.MapElementsUpdateManyWithoutMapNestedInput
+  creator?: Prisma.UserUpdateOneRequiredWithoutMapsNestedInput
 }
 
 export type MapUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -306,6 +325,7 @@ export type MapUncheckedUpdateInput = {
 
 export type MapCreateManyInput = {
   id?: string
+  creatorId: string
   width: number
   height: number
   name: string
@@ -322,14 +342,26 @@ export type MapUpdateManyMutationInput = {
 
 export type MapUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  creatorId?: Prisma.StringFieldUpdateOperationsInput | string
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
+export type MapListRelationFilter = {
+  every?: Prisma.MapWhereInput
+  some?: Prisma.MapWhereInput
+  none?: Prisma.MapWhereInput
+}
+
+export type MapOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type MapCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  creatorId?: Prisma.SortOrder
   width?: Prisma.SortOrder
   height?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -343,6 +375,7 @@ export type MapAvgOrderByAggregateInput = {
 
 export type MapMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  creatorId?: Prisma.SortOrder
   width?: Prisma.SortOrder
   height?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -351,6 +384,7 @@ export type MapMaxOrderByAggregateInput = {
 
 export type MapMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  creatorId?: Prisma.SortOrder
   width?: Prisma.SortOrder
   height?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -367,6 +401,48 @@ export type MapScalarRelationFilter = {
   isNot?: Prisma.MapWhereInput
 }
 
+export type MapCreateNestedManyWithoutCreatorInput = {
+  create?: Prisma.XOR<Prisma.MapCreateWithoutCreatorInput, Prisma.MapUncheckedCreateWithoutCreatorInput> | Prisma.MapCreateWithoutCreatorInput[] | Prisma.MapUncheckedCreateWithoutCreatorInput[]
+  connectOrCreate?: Prisma.MapCreateOrConnectWithoutCreatorInput | Prisma.MapCreateOrConnectWithoutCreatorInput[]
+  createMany?: Prisma.MapCreateManyCreatorInputEnvelope
+  connect?: Prisma.MapWhereUniqueInput | Prisma.MapWhereUniqueInput[]
+}
+
+export type MapUncheckedCreateNestedManyWithoutCreatorInput = {
+  create?: Prisma.XOR<Prisma.MapCreateWithoutCreatorInput, Prisma.MapUncheckedCreateWithoutCreatorInput> | Prisma.MapCreateWithoutCreatorInput[] | Prisma.MapUncheckedCreateWithoutCreatorInput[]
+  connectOrCreate?: Prisma.MapCreateOrConnectWithoutCreatorInput | Prisma.MapCreateOrConnectWithoutCreatorInput[]
+  createMany?: Prisma.MapCreateManyCreatorInputEnvelope
+  connect?: Prisma.MapWhereUniqueInput | Prisma.MapWhereUniqueInput[]
+}
+
+export type MapUpdateManyWithoutCreatorNestedInput = {
+  create?: Prisma.XOR<Prisma.MapCreateWithoutCreatorInput, Prisma.MapUncheckedCreateWithoutCreatorInput> | Prisma.MapCreateWithoutCreatorInput[] | Prisma.MapUncheckedCreateWithoutCreatorInput[]
+  connectOrCreate?: Prisma.MapCreateOrConnectWithoutCreatorInput | Prisma.MapCreateOrConnectWithoutCreatorInput[]
+  upsert?: Prisma.MapUpsertWithWhereUniqueWithoutCreatorInput | Prisma.MapUpsertWithWhereUniqueWithoutCreatorInput[]
+  createMany?: Prisma.MapCreateManyCreatorInputEnvelope
+  set?: Prisma.MapWhereUniqueInput | Prisma.MapWhereUniqueInput[]
+  disconnect?: Prisma.MapWhereUniqueInput | Prisma.MapWhereUniqueInput[]
+  delete?: Prisma.MapWhereUniqueInput | Prisma.MapWhereUniqueInput[]
+  connect?: Prisma.MapWhereUniqueInput | Prisma.MapWhereUniqueInput[]
+  update?: Prisma.MapUpdateWithWhereUniqueWithoutCreatorInput | Prisma.MapUpdateWithWhereUniqueWithoutCreatorInput[]
+  updateMany?: Prisma.MapUpdateManyWithWhereWithoutCreatorInput | Prisma.MapUpdateManyWithWhereWithoutCreatorInput[]
+  deleteMany?: Prisma.MapScalarWhereInput | Prisma.MapScalarWhereInput[]
+}
+
+export type MapUncheckedUpdateManyWithoutCreatorNestedInput = {
+  create?: Prisma.XOR<Prisma.MapCreateWithoutCreatorInput, Prisma.MapUncheckedCreateWithoutCreatorInput> | Prisma.MapCreateWithoutCreatorInput[] | Prisma.MapUncheckedCreateWithoutCreatorInput[]
+  connectOrCreate?: Prisma.MapCreateOrConnectWithoutCreatorInput | Prisma.MapCreateOrConnectWithoutCreatorInput[]
+  upsert?: Prisma.MapUpsertWithWhereUniqueWithoutCreatorInput | Prisma.MapUpsertWithWhereUniqueWithoutCreatorInput[]
+  createMany?: Prisma.MapCreateManyCreatorInputEnvelope
+  set?: Prisma.MapWhereUniqueInput | Prisma.MapWhereUniqueInput[]
+  disconnect?: Prisma.MapWhereUniqueInput | Prisma.MapWhereUniqueInput[]
+  delete?: Prisma.MapWhereUniqueInput | Prisma.MapWhereUniqueInput[]
+  connect?: Prisma.MapWhereUniqueInput | Prisma.MapWhereUniqueInput[]
+  update?: Prisma.MapUpdateWithWhereUniqueWithoutCreatorInput | Prisma.MapUpdateWithWhereUniqueWithoutCreatorInput[]
+  updateMany?: Prisma.MapUpdateManyWithWhereWithoutCreatorInput | Prisma.MapUpdateManyWithWhereWithoutCreatorInput[]
+  deleteMany?: Prisma.MapScalarWhereInput | Prisma.MapScalarWhereInput[]
+}
+
 export type MapCreateNestedOneWithoutMapElementsInput = {
   create?: Prisma.XOR<Prisma.MapCreateWithoutMapElementsInput, Prisma.MapUncheckedCreateWithoutMapElementsInput>
   connectOrCreate?: Prisma.MapCreateOrConnectWithoutMapElementsInput
@@ -381,16 +457,74 @@ export type MapUpdateOneRequiredWithoutMapElementsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MapUpdateToOneWithWhereWithoutMapElementsInput, Prisma.MapUpdateWithoutMapElementsInput>, Prisma.MapUncheckedUpdateWithoutMapElementsInput>
 }
 
+export type MapCreateWithoutCreatorInput = {
+  id?: string
+  width: number
+  height: number
+  name: string
+  thumbnail: string
+  mapElements?: Prisma.MapElementsCreateNestedManyWithoutMapInput
+}
+
+export type MapUncheckedCreateWithoutCreatorInput = {
+  id?: string
+  width: number
+  height: number
+  name: string
+  thumbnail: string
+  mapElements?: Prisma.MapElementsUncheckedCreateNestedManyWithoutMapInput
+}
+
+export type MapCreateOrConnectWithoutCreatorInput = {
+  where: Prisma.MapWhereUniqueInput
+  create: Prisma.XOR<Prisma.MapCreateWithoutCreatorInput, Prisma.MapUncheckedCreateWithoutCreatorInput>
+}
+
+export type MapCreateManyCreatorInputEnvelope = {
+  data: Prisma.MapCreateManyCreatorInput | Prisma.MapCreateManyCreatorInput[]
+  skipDuplicates?: boolean
+}
+
+export type MapUpsertWithWhereUniqueWithoutCreatorInput = {
+  where: Prisma.MapWhereUniqueInput
+  update: Prisma.XOR<Prisma.MapUpdateWithoutCreatorInput, Prisma.MapUncheckedUpdateWithoutCreatorInput>
+  create: Prisma.XOR<Prisma.MapCreateWithoutCreatorInput, Prisma.MapUncheckedCreateWithoutCreatorInput>
+}
+
+export type MapUpdateWithWhereUniqueWithoutCreatorInput = {
+  where: Prisma.MapWhereUniqueInput
+  data: Prisma.XOR<Prisma.MapUpdateWithoutCreatorInput, Prisma.MapUncheckedUpdateWithoutCreatorInput>
+}
+
+export type MapUpdateManyWithWhereWithoutCreatorInput = {
+  where: Prisma.MapScalarWhereInput
+  data: Prisma.XOR<Prisma.MapUpdateManyMutationInput, Prisma.MapUncheckedUpdateManyWithoutCreatorInput>
+}
+
+export type MapScalarWhereInput = {
+  AND?: Prisma.MapScalarWhereInput | Prisma.MapScalarWhereInput[]
+  OR?: Prisma.MapScalarWhereInput[]
+  NOT?: Prisma.MapScalarWhereInput | Prisma.MapScalarWhereInput[]
+  id?: Prisma.StringFilter<"Map"> | string
+  creatorId?: Prisma.StringFilter<"Map"> | string
+  width?: Prisma.IntFilter<"Map"> | number
+  height?: Prisma.IntFilter<"Map"> | number
+  name?: Prisma.StringFilter<"Map"> | string
+  thumbnail?: Prisma.StringFilter<"Map"> | string
+}
+
 export type MapCreateWithoutMapElementsInput = {
   id?: string
   width: number
   height: number
   name: string
   thumbnail: string
+  creator: Prisma.UserCreateNestedOneWithoutMapsInput
 }
 
 export type MapUncheckedCreateWithoutMapElementsInput = {
   id?: string
+  creatorId: string
   width: number
   height: number
   name: string
@@ -419,9 +553,45 @@ export type MapUpdateWithoutMapElementsInput = {
   height?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
+  creator?: Prisma.UserUpdateOneRequiredWithoutMapsNestedInput
 }
 
 export type MapUncheckedUpdateWithoutMapElementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  creatorId?: Prisma.StringFieldUpdateOperationsInput | string
+  width?: Prisma.IntFieldUpdateOperationsInput | number
+  height?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type MapCreateManyCreatorInput = {
+  id?: string
+  width: number
+  height: number
+  name: string
+  thumbnail: string
+}
+
+export type MapUpdateWithoutCreatorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  width?: Prisma.IntFieldUpdateOperationsInput | number
+  height?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
+  mapElements?: Prisma.MapElementsUpdateManyWithoutMapNestedInput
+}
+
+export type MapUncheckedUpdateWithoutCreatorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  width?: Prisma.IntFieldUpdateOperationsInput | number
+  height?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
+  mapElements?: Prisma.MapElementsUncheckedUpdateManyWithoutMapNestedInput
+}
+
+export type MapUncheckedUpdateManyWithoutCreatorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   width?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.IntFieldUpdateOperationsInput | number
@@ -462,53 +632,67 @@ export type MapCountOutputTypeCountMapElementsArgs<ExtArgs extends runtime.Types
 
 export type MapSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  creatorId?: boolean
   width?: boolean
   height?: boolean
   name?: boolean
   thumbnail?: boolean
   mapElements?: boolean | Prisma.Map$mapElementsArgs<ExtArgs>
+  creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.MapCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["map"]>
 
 export type MapSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  creatorId?: boolean
   width?: boolean
   height?: boolean
   name?: boolean
   thumbnail?: boolean
+  creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["map"]>
 
 export type MapSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  creatorId?: boolean
   width?: boolean
   height?: boolean
   name?: boolean
   thumbnail?: boolean
+  creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["map"]>
 
 export type MapSelectScalar = {
   id?: boolean
+  creatorId?: boolean
   width?: boolean
   height?: boolean
   name?: boolean
   thumbnail?: boolean
 }
 
-export type MapOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "width" | "height" | "name" | "thumbnail", ExtArgs["result"]["map"]>
+export type MapOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "width" | "height" | "name" | "thumbnail", ExtArgs["result"]["map"]>
 export type MapInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   mapElements?: boolean | Prisma.Map$mapElementsArgs<ExtArgs>
+  creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.MapCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type MapIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type MapIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type MapIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type MapIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
 
 export type $MapPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Map"
   objects: {
     mapElements: Prisma.$MapElementsPayload<ExtArgs>[]
+    creator: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    creatorId: string
     width: number
     height: number
     name: string
@@ -908,6 +1092,7 @@ readonly fields: MapFieldRefs;
 export interface Prisma__MapClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   mapElements<T extends Prisma.Map$mapElementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Map$mapElementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  creator<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -938,6 +1123,7 @@ export interface Prisma__MapClient<T, Null = never, ExtArgs extends runtime.Type
  */
 export interface MapFieldRefs {
   readonly id: Prisma.FieldRef<"Map", 'String'>
+  readonly creatorId: Prisma.FieldRef<"Map", 'String'>
   readonly width: Prisma.FieldRef<"Map", 'Int'>
   readonly height: Prisma.FieldRef<"Map", 'Int'>
   readonly name: Prisma.FieldRef<"Map", 'String'>
@@ -1196,6 +1382,10 @@ export type MapCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.
    */
   data: Prisma.MapCreateManyInput | Prisma.MapCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MapIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1266,6 +1456,10 @@ export type MapUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many Maps to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MapIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
