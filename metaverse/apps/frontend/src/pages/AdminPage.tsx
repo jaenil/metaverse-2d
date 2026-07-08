@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   adminCreateElement,
   adminCreateMap,
   adminCreateAvatar,
+  getElements,
 } from '../api';
+import type { Element } from '../types';
 import { useAuthStore } from '../store/authStore';
 import '../styles/admin.css';
 
@@ -134,11 +136,22 @@ function ElementForm({
 }: {
   onDone: (msg: string, type: 'success' | 'error') => void;
 }) {
-  const [imageUrl, setImageUrl] = useState('');
-  const [width,    setWidth]    = useState(1);
-  const [height,   setHeight]   = useState(1);
-  const [isStatic, setIsStatic] = useState(true);
-  const [loading,  setLoading]  = useState(false);
+  const [imageUrl,  setImageUrl]  = useState('');
+  const [width,     setWidth]     = useState(1);
+  const [height,    setHeight]    = useState(1);
+  const [isStatic,  setIsStatic]  = useState(true);
+  const [loading,   setLoading]   = useState(false);
+  const [elements,  setElements]  = useState<Element[]>([]);
+
+  function fetchElements() {
+    getElements().then(res => {
+      if (res.status === 200) setElements(res.data.elements);
+    });
+  }
+
+  useEffect(() => {
+    fetchElements();
+  }, []);
 
   async function handleSubmit() {
     if (!imageUrl.trim()) {
@@ -153,6 +166,7 @@ function ElementForm({
         setImageUrl('');
         setWidth(1);
         setHeight(1);
+        fetchElements(); // Refresh library
       } else {
         onDone('Failed to create element.', 'error');
       }
@@ -163,7 +177,8 @@ function ElementForm({
   }
 
   return (
-    <div className="admin-form-card">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <div className="admin-form-card">
       {/* Image URL + preview */}
       <div className="admin-field">
         <label htmlFor="el-image-url">Image URL</label>
@@ -179,15 +194,12 @@ function ElementForm({
         </div>
 
         {/* Preview */}
-        <div className="admin-url-preview">
+        <div style={{ marginTop: '0.5rem', background: 'rgba(0,0,0,0.25)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', minHeight: '100px', justifyContent: 'center' }}>
           {imageUrl.trim() ? (
-            <img src={imageUrl} alt="Preview" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            <img src={imageUrl} alt="Preview" style={{ width: '100%', maxHeight: '250px', objectFit: 'contain', imageRendering: 'pixelated' }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
           ) : (
-            <div className="admin-url-preview-placeholder">◈</div>
+            <div style={{ color: 'var(--muted)', fontFamily: 'var(--font-mono)', fontSize: '11px' }}>◈ Paste a URL above to preview</div>
           )}
-          <span className="admin-url-preview-text">
-            {imageUrl.trim() ? imageUrl : 'Paste a URL above to preview'}
-          </span>
         </div>
       </div>
 
@@ -255,13 +267,55 @@ function ElementForm({
         <span className="admin-form-hint">Saved to element library</span>
       </div>
     </div>
+
+    {/* ── Element Library ─────────────────────────────── */}
+    <div className="admin-form-card">
+      <h3 style={{ margin: '0 0 1rem', fontSize: '1.2rem' }}>Element Library</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '1rem' }}>
+        {elements.length === 0 && <span style={{ color: 'var(--muted)', gridColumn: '1 / -1' }}>No elements found.</span>}
+        {elements.map(el => (
+          <div key={el.id} style={{ display: 'flex', flexDirection: 'column', padding: '0.75rem', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' }}>
+            <div style={{ width: '100%', aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.3)', borderRadius: '4px', marginBottom: '0.75rem' }}>
+              <img
+                src={el.imageUrl}
+                alt="element"
+                style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain', imageRendering: 'pixelated' }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+            </div>
+            
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--fg)', marginBottom: '4px' }}>
+                {el.width}×{el.height} tiles
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px' }}>
+                <span style={{ color: el.static ? 'var(--accent)' : '#10b981' }}>
+                  {el.static ? 'Static' : 'Dynamic'}
+                </span>
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--subdued)', fontFamily: 'var(--font-mono)', marginTop: '4px', marginBottom: '0.75rem' }}>id: {el.id.slice(0, 8)}…</div>
+            </div>
+            
+            <button
+              onClick={() => { setImageUrl(el.imageUrl); setWidth(el.width); setHeight(el.height); setIsStatic(el.static); }}
+              style={{ width: '100%', background: 'none', border: '1px solid var(--border)', color: 'var(--subdued)', padding: '6px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '11px', transition: 'all 0.2s' }}
+              onMouseOver={(e) => { (e.target as HTMLElement).style.borderColor = 'var(--accent)'; (e.target as HTMLElement).style.color = 'var(--text)'; }}
+              onMouseOut={(e) => { (e.target as HTMLElement).style.borderColor = 'var(--border)'; (e.target as HTMLElement).style.color = 'var(--subdued)'; }}
+              title="Load into form to edit"
+            >
+              Load
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+    </div>
   );
 }
 
 /* ════════════════════════════════════════════════════════════════════════ */
 /*   Map Form                                                                */
 /* ════════════════════════════════════════════════════════════════════════ */
-import { useEffect } from 'react';
 import { getMaps, adminDeleteMap } from '../api';
 import type { GameMap } from '../types';
 

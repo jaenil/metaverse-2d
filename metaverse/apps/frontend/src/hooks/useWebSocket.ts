@@ -82,5 +82,5 @@ export function useWebSocket({
     };
   }, [connect]);
 
-  return { sendMove };
+  return { sendMove, sendEmote };
 }

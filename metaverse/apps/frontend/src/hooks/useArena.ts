@@ -5,6 +5,8 @@ import type { ServerMessage, ArenaUser } from '../types';
 interface ArenaState {
   myPos: { x: number; y: number } | null;
   myAvatarUrl?: string;
+  myEmote?: string;
+  myEmoteExpiresAt?: number;
   users: Map<string, ArenaUser>;
   connected: boolean;
 }
