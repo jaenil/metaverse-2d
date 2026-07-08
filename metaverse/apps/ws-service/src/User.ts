@@ -156,28 +156,22 @@ export class User{
                 */
                 {if(!this.spaceId) return;
                 const space = await client.space.findUnique({
-                    where:{
-                        id:this.spaceId
-                    }
-                })
-                if(!space) return;
-                if(space.creatorId!==this.id) {
-                    this.send({type:"event-rejected"});
+                    where: { id: this.spaceId }
+                });
+
+                if (space?.creatorId !== this.id) {
+                    this.send({ type: "movement-rejected", payload: { x: this.x, y: this.y } });
                     return;
                 }
-                const updatedSpace = await client.space.update({
-                    where:{
-                        id:this.spaceId
-                    },
-                    data:{
-                        name:parsedData.payload.name,
-                        width:parsedData.payload.width,
-                        height:parsedData.payload.height,
-                        thumbnail:parsedData.payload.thumbnail,
-                        timeOfDay:parsedData.payload.timeOfDay,
-                        weather:parsedData.payload.weather
+
+                await client.space.update({
+                    where: { id: this.spaceId },
+                    data: {
+                        weather: parsedData.payload.weather,
+                        timeOfDay: parsedData.payload.timeOfDay
                     }
-                })
+                });
+
                 const broadcastPayload = {
                     type: "settings-changed",
                     payload: {
@@ -185,8 +179,24 @@ export class User{
                         timeOfDay: parsedData.payload.timeOfDay
                     }
                 };
+                
                 RoomManager.getInstance().broadcast(broadcastPayload, this, this.spaceId);
-                this.send(broadcastPayload);
+                break;
+            }
+            case "element-added": {
+                if(!this.spaceId) return;
+                RoomManager.getInstance().broadcast({
+                    type: "element-added",
+                    payload: parsedData.payload
+                }, this, this.spaceId);
+                break;
+            }
+            case "element-deleted": {
+                if(!this.spaceId) return;
+                RoomManager.getInstance().broadcast({
+                    type: "element-deleted",
+                    payload: parsedData.payload
+                }, this, this.spaceId);
                 break;
             }
         }

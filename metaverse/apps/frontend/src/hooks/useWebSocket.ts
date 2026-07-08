@@ -30,15 +30,18 @@ export function useWebSocket({
   const sendMove = useCallback((x: number, y: number) => {
     send({ type: 'move', payload: { x, y } });
   }, [send]);
-// Add this inside the hook, similar to how sendMove is defined
+
   const sendSettingsUpdate = useCallback((weather: string, timeOfDay: string) => {
-      send({
-              type: 'update-settings',
-              payload: { weather, timeOfDay }
-          })
-      }, [send]);
+    send({ type: 'update-settings', payload: { weather, timeOfDay } });
+  }, [send]);
 
+  const sendElementAdded = useCallback((element: any) => {
+    send({ type: 'element-added', payload: element });
+  }, [send]);
 
+  const sendElementDeleted = useCallback((id: string) => {
+    send({ type: 'element-deleted', payload: { id } });
+  }, [send]);
 
   const sendEmote = useCallback((emote: string) => {
     send({ type: 'emote', payload: { emote } });
@@ -91,5 +94,5 @@ export function useWebSocket({
     };
   }, [connect]);
 
-  return { sendMove, sendEmote,sendSettingsUpdate };
+  return { sendMove, sendEmote, sendSettingsUpdate, sendElementAdded, sendElementDeleted };
 }

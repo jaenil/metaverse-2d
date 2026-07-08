@@ -568,19 +568,6 @@ export function ArenaCanvas({
 
     let topY = -S * 2.0 + bob;
 
-    // Body parts
-    const headW = S * 1.6;
-    const headH = S * 1.4;
-    const headX = cx - headW / 2;
-    const headY = cy - S * 2.0 + bob;
-
-    const bodyW = S * 1.2;
-    const bodyH = S * 1.4;
-    const bodyX = cx - bodyW / 2;
-    const bodyY = headY + headH;
-    const legY = bodyY + bodyH;
-    const legH = S * 0.85;
-
     if (img && img.complete && img.naturalHeight !== 0) {
       // Draw image sprite instead of block character
       const spriteW = TILE * 1.2;

@@ -89,7 +89,9 @@ export type ClientMessage =
   | { type: 'join'; payload: { spaceId: string; token: string } }
   | { type: 'move'; payload: { x: number; y: number } }
   | { type: 'emote'; payload: { emote: string } }
-  | { type: 'update-settings'; payload: { weather: string; timeOfDay: string } };
+  | { type: 'update-settings'; payload: { weather: string; timeOfDay: string } }
+  | { type: 'element-added'; payload: SpaceElement }
+  | { type: 'element-deleted'; payload: { id: string } };
 
 // Server → Client
 export type ServerMessage =
@@ -106,7 +108,9 @@ export type ServerMessage =
   | { type: 'movement-rejected'; payload: { x: number; y: number } }
   | { type: 'user-left'; payload: { userId: string } }
   | { type: 'emote'; payload: { userId: string; emote: string } }
-  | { type: 'settings-changed'; payload: { weather: string; timeOfDay: string } };
+  | { type: 'settings-changed'; payload: { weather: string; timeOfDay: string } }
+  | { type: 'element-added'; payload: SpaceElement }
+  | { type: 'element-deleted'; payload: { id: string } };
 
 // ─── Arena State ─────────────────────────────────────────────────────────────
 

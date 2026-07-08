@@ -6,7 +6,7 @@ import { useWebSocket } from '../hooks/useWebSocket';
 import { useArena } from '../hooks/useArena';
 import { ArenaCanvas } from '../components/ArenaCanvas';
 import { MiniMap } from '../components/MiniMap';
-import type { SpaceElement, Element } from '../types';
+import type { Element } from '../types';
 import '../styles/space.css';
 
 const ERASER_ELEMENT = { id: 'ERASER', imageUrl: 'https://img.icons8.com/color/48/eraser.png', width: 1, height: 1, static: false } as Element;
@@ -18,16 +18,9 @@ export function SpacePage() {
   
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [thumbnail, setThumbnail] = useState<string | null>(null);
-  const [elements, setElements] = useState<SpaceElement[]>([]);
   const [spaceLoading, setSpaceLoading] = useState(true);
   const [spaceError, setSpaceError] = useState('');
-
-  const [buildMode, setBuildMode] = useState(false);
-  const [availableElements, setAvailableElements] = useState<Element[]>([]);
-  const [selectedElement, setSelectedElement] = useState<Element | null>(null);
-  
   const [isCreator, setIsCreator] = useState(false);
-  // null when there's no error, a string when there is one
   const [placementError, setPlacementError] = useState<string | null>(null);
 
   // Auto-dismiss the placement error after 2.5 seconds
@@ -37,6 +30,10 @@ export function SpacePage() {
     return () => clearTimeout(timer); // cleanup: cancel if error changes before timeout fires
   }, [placementError]);
 
+  const [buildMode, setBuildMode] = useState(false);
+  const [availableElements, setAvailableElements] = useState<Element[]>([]);
+  const [selectedElement, setSelectedElement] = useState<Element | null>(null);
+  
   const [showEmotes, setShowEmotes] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -78,7 +75,8 @@ export function SpacePage() {
     handleOpen,
     handleClose,
     applyOptimisticMove,
-    setMyEmote
+    setMyEmote,
+    setElements
   } = useArena(userId ?? '');
 
   const { weather = 'none', timeOfDay = 'day' } = arenaState;
@@ -116,9 +114,9 @@ export function SpacePage() {
       setSpaceError('Failed to load space data.');
       setSpaceLoading(false);
     });
-  }, [spaceId]);
+  }, [spaceId, userId, setElements]);
 
-  const { sendMove, sendEmote, sendSettingsUpdate } = useWebSocket({
+  const { sendMove, sendEmote, sendSettingsUpdate, sendElementAdded, sendElementDeleted } = useWebSocket({
     spaceId: spaceId ?? '',
     token: token ?? '',
     onMessage: handleMessage,
@@ -152,7 +150,7 @@ export function SpacePage() {
     if (!buildMode || !selectedElement || !spaceId) return;
     
     if (selectedElement.id === 'ERASER') {
-      const target = elements.find(el => {
+      const target = arenaState.elements.find(el => {
         const ew = el.element?.width ?? 1;
         const eh = el.element?.height ?? 1;
         return x >= el.x && x < el.x + ew && y >= el.y && y < el.y + eh;
@@ -161,7 +159,7 @@ export function SpacePage() {
         try {
           const res = await deleteSpaceElement(target.id, spaceId);
           if (res.status === 200) {
-            setElements(prev => prev.filter(e => e.id !== target.id));
+            sendElementDeleted(target.id);
           }
         } catch (e) { console.error("Failed to delete element", e); }
       }
@@ -175,7 +173,7 @@ export function SpacePage() {
         return;
       }
       
-      const isColliding = elements.some((e)=>{
+      const isColliding = arenaState.elements.some((e)=>{
         if (!e.element) return false; // narrows the type, skips malformed entries
         const overlapX = x < e.x + e.element.width && 
                      x + (selectedElement?.width ?? 0) > e.x;
@@ -191,15 +189,13 @@ export function SpacePage() {
       }
       const res = await addSpaceElement({ elementId: selectedElement.id, spaceId, x, y });
       if (res.status === 200) {
-        setElements((prev) => [
-          ...prev, 
-          {
-            id: res.data.element.id,
-            elementId: selectedElement.id,
-            x, y,
-            element: selectedElement
-          }
-        ]);
+        const newElement = {
+          id: res.data.element.id,
+          elementId: selectedElement.id,
+          x, y,
+          element: selectedElement
+        };
+        sendElementAdded(newElement);
       }
     } catch (e) {
       console.error("Failed to place element", e);
@@ -382,7 +378,7 @@ export function SpacePage() {
               width={dimensions.width}
               height={dimensions.height}
               thumbnail={thumbnail}
-              elements={elements}
+              elements={arenaState.elements}
               users={arenaState.users}
               myPos={arenaState.myPos}
               myUserId={userId ?? ''}
@@ -475,7 +471,7 @@ export function SpacePage() {
             myEmote={arenaState.myEmote}
             myEmoteExpiresAt={arenaState.myEmoteExpiresAt}
             users={arenaState.users}
-            elements={elements}
+            elements={arenaState.elements}
             myUserId={userId ?? ''}
             onMove={handleMove}
             onCanvasClick={handleCanvasClick}

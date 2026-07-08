@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { getBulkAvatars } from '../api';
-import type { ServerMessage, ArenaUser } from '../types';
+import type { ServerMessage, ArenaUser, SpaceElement } from '../types';
 
 interface ArenaState {
   myPos: { x: number; y: number } | null;
@@ -11,6 +11,7 @@ interface ArenaState {
   connected: boolean;
   weather?: 'none' | 'rain' | 'snow';
   timeOfDay?: 'day' | 'night';
+  elements: SpaceElement[];
 }
 
 export function useArena(_myUserId: string) {
@@ -18,7 +19,12 @@ export function useArena(_myUserId: string) {
     myPos: null,
     users: new Map(),
     connected: false,
+    elements: [],
   });
+
+  const setElements = useCallback((elements: SpaceElement[]) => {
+    setState(prev => ({ ...prev, elements }));
+  }, []);
 
   // Ref so canvas render loop can always read latest pos without stale closure
   const myPosRef = useRef<{ x: number; y: number } | null>(null);
@@ -26,21 +32,22 @@ export function useArena(_myUserId: string) {
   const handleMessage = useCallback((msg: ServerMessage) => {
     switch (msg.type) {
       case 'space-joined': {
-        const { spawn, users, weather, timeOfDay } = msg.payload as any;
-        myPosRef.current = spawn;
+        const payload = msg.payload as any;
+        myPosRef.current = payload.spawn;
         const userMap = new Map<string, ArenaUser>();
         // Backend sends { id, x, y } in space-joined
-        users.forEach((u: any) => {
+        payload.users.forEach((u: any) => {
           const uid = u.id || u.userId;
           if (uid && uid !== _myUserId) userMap.set(uid, { userId: uid, x: u.x, y: u.y });
         });
-        setState({
-          myPos: spawn,
+        setState(prev => ({
+          ...prev,
+          myPos: payload.spawn,
           users: userMap,
           connected: true,
-          weather,
-          timeOfDay
-        });
+          weather: payload.weather,
+          timeOfDay: payload.timeOfDay
+        }));
         break;
       }
 
@@ -106,6 +113,15 @@ export function useArena(_myUserId: string) {
           weather: payload.weather,
           timeOfDay: payload.timeOfDay
         }));
+        break;
+      }
+      case 'element-added': {
+        setState(prev => ({ ...prev, elements: [...prev.elements, msg.payload as SpaceElement] }));
+        break;
+      }
+      case 'element-deleted': {
+        const { id } = msg.payload as any;
+        setState(prev => ({ ...prev, elements: prev.elements.filter(e => e.id !== id) }));
         break;
       }
     }
@@ -179,5 +195,6 @@ export function useArena(_myUserId: string) {
     handleClose,
     applyOptimisticMove,
     setMyEmote,
+    setElements,
   };
 }
