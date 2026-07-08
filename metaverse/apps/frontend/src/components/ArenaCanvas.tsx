@@ -118,14 +118,14 @@ export function ArenaCanvas({
 
     const renderState = new Map<string, RenderUser>();
     const particles: Particle[] = [];
-    const avatarCache = new Map<string, HTMLImageElement>();
+    const imageCache = new Map<string, HTMLImageElement>();
 
-    const getAvatarImage = (url?: string) => {
+    const getCachedImage = (url?: string) => {
       if (!url) return undefined;
-      if (avatarCache.has(url)) return avatarCache.get(url);
+      if (imageCache.has(url)) return imageCache.get(url);
       const img = new Image();
       img.src = url;
-      avatarCache.set(url, img);
+      imageCache.set(url, img);
       return img;
     };
 
@@ -296,40 +296,51 @@ export function ArenaCanvas({
 
       // ── 5. Static Elements ──
       elements.forEach((el) => {
-        const px = el.x * TILE + 1;
-        const py = el.y * TILE + 1;
-        const ew = (el.element?.width ?? 1) * TILE - 2;
-        const eh = (el.element?.height ?? 1) * TILE - 2;
+        const px = el.x * TILE;
+        const py = el.y * TILE;
+        const ew = (el.element?.width ?? 1) * TILE;
+        const eh = (el.element?.height ?? 1) * TILE;
 
-        ctx.shadowColor = 'rgba(var(--accent-raw),0.06)';
-        ctx.shadowBlur = 10;
-        ctx.fillStyle = STATIC_FILL;
-        ctx.fillRect(px, py, ew, eh);
-        ctx.shadowBlur = 0;
+        const img = getCachedImage(el.element?.imageUrl);
+        if (img && img.complete && img.naturalHeight !== 0) {
+          ctx.drawImage(img, px, py, ew, eh);
+        } else {
+          // Fallback box while loading or if no image
+          const boxPx = px + 1;
+          const boxPy = py + 1;
+          const boxEw = ew - 2;
+          const boxEh = eh - 2;
 
-        ctx.strokeStyle = STATIC_BORDER;
-        ctx.lineWidth = 1;
-        ctx.strokeRect(px, py, ew, eh);
+          ctx.shadowColor = 'rgba(var(--accent-raw),0.06)';
+          ctx.shadowBlur = 10;
+          ctx.fillStyle = STATIC_FILL;
+          ctx.fillRect(boxPx, boxPy, boxEw, boxEh);
+          ctx.shadowBlur = 0;
 
-        // Hatch pattern
-        ctx.save();
-        ctx.beginPath(); ctx.rect(px, py, ew, eh); ctx.clip();
-        ctx.strokeStyle = 'rgba(46,31,29,0.5)';
-        ctx.lineWidth = 1;
-        for (let d = -(ew + eh); d < ew + eh; d += 10) {
-          ctx.beginPath(); ctx.moveTo(px + d, py); ctx.lineTo(px + d + eh, py + eh); ctx.stroke();
+          ctx.strokeStyle = STATIC_BORDER;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(boxPx, boxPy, boxEw, boxEh);
+
+          // Hatch pattern
+          ctx.save();
+          ctx.beginPath(); ctx.rect(boxPx, boxPy, boxEw, boxEh); ctx.clip();
+          ctx.strokeStyle = 'rgba(46,31,29,0.5)';
+          ctx.lineWidth = 1;
+          for (let d = -(boxEw + boxEh); d < boxEw + boxEh; d += 10) {
+            ctx.beginPath(); ctx.moveTo(boxPx + d, boxPy); ctx.lineTo(boxPx + d + boxEh, boxPy + boxEh); ctx.stroke();
+          }
+          ctx.restore();
         }
-        ctx.restore();
       });
 
       // ── 6. Avatars ──
       renderState.forEach((ru, id) => {
         if (id === myUserId) return;
-        const img = getAvatarImage(ru.avatarUrl);
+        const img = getCachedImage(ru.avatarUrl);
         drawPixelAvatar(ctx, ru.x, ru.y, ru.walkCycle, OTHER_COLOR, id.slice(-4), false, img, ru.emote, ru.emoteExpiresAt);
       });
       if (myRender) {
-        const img = getAvatarImage(myRender.avatarUrl);
+        const img = getCachedImage(myRender.avatarUrl);
         drawPixelAvatar(ctx, myRender.x, myRender.y, myRender.walkCycle, MY_COLOR, 'YOU', true, img, myRender.emote, myRender.emoteExpiresAt);
       }
 
