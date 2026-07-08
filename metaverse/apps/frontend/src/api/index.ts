@@ -69,6 +69,9 @@ export const adminCreateElement = (data: {
 export const adminUpdateElement = (elementId: string, imageUrl: string) =>
   client.put(`/admin/element/${elementId}`, { imageUrl });
 
+export const adminDeleteElement = (elementId: string) =>
+  client.delete(`/admin/element/${elementId}`);
+
 export const adminCreateMap = (data: {
   thumbnail: string;
   dimensions: string;

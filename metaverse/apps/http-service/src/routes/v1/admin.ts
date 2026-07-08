@@ -36,6 +36,30 @@ adminRouter.put('/element/:elementId', adminMiddleware, async (req, res) => {
     return res.json({ message: "Element updated" })
 })
 
+adminRouter.delete('/element/:elementId', adminMiddleware, async (req, res) => {
+    try {
+        const elementId = req.params.elementId as string;
+        
+        // 1. Remove element from all spaces and maps first
+        await client.mapElements.deleteMany({
+            where: { elementId }
+        });
+        await client.spaceElements.deleteMany({
+            where: { elementId }
+        });
+
+        // 2. Delete the element itself
+        await client.element.delete({
+            where: { id: elementId }
+        });
+
+        res.status(200).json({ message: "Element deleted" });
+    } catch (e) {
+        console.error("Element delete error", e);
+        res.status(500).json({ message: "Failed to delete element" });
+    }
+})
+
 adminRouter.post('/avatar', adminMiddleware, async (req, res) => {
     const parsedData = CreateAvatarSchema.safeParse(req.body)
     if (!parsedData.success) {

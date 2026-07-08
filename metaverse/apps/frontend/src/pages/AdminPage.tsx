@@ -5,6 +5,7 @@ import {
   adminCreateMap,
   adminCreateAvatar,
   getElements,
+  adminDeleteElement,
 } from '../api';
 import type { Element } from '../types';
 import { useAuthStore } from '../store/authStore';
@@ -142,6 +143,7 @@ function ElementForm({
   const [isStatic,  setIsStatic]  = useState(true);
   const [loading,   setLoading]   = useState(false);
   const [elements,  setElements]  = useState<Element[]>([]);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   function fetchElements() {
     getElements().then(res => {
@@ -174,6 +176,22 @@ function ElementForm({
       onDone('Network error.', 'error');
     }
     setLoading(false);
+  }
+
+  async function handleDelete(id: string) {
+    setDeletingId(id);
+    try {
+      const res = await adminDeleteElement(id);
+      if (res.status === 200) {
+        onDone('Element deleted', 'success');
+        fetchElements();
+      } else {
+        onDone('Failed to delete element', 'error');
+      }
+    } catch {
+      onDone('Network error.', 'error');
+    }
+    setDeletingId(null);
   }
 
   return (
@@ -296,15 +314,28 @@ function ElementForm({
               <div style={{ fontSize: '10px', color: 'var(--subdued)', fontFamily: 'var(--font-mono)', marginTop: '4px', marginBottom: '0.75rem' }}>id: {el.id.slice(0, 8)}…</div>
             </div>
             
-            <button
-              onClick={() => { setImageUrl(el.imageUrl); setWidth(el.width); setHeight(el.height); setIsStatic(el.static); }}
-              style={{ width: '100%', background: 'none', border: '1px solid var(--border)', color: 'var(--subdued)', padding: '6px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '11px', transition: 'all 0.2s' }}
-              onMouseOver={(e) => { (e.target as HTMLElement).style.borderColor = 'var(--accent)'; (e.target as HTMLElement).style.color = 'var(--text)'; }}
-              onMouseOut={(e) => { (e.target as HTMLElement).style.borderColor = 'var(--border)'; (e.target as HTMLElement).style.color = 'var(--subdued)'; }}
-              title="Load into form to edit"
-            >
-              Load
-            </button>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={() => { setImageUrl(el.imageUrl); setWidth(el.width); setHeight(el.height); setIsStatic(el.static); }}
+                style={{ flex: 1, background: 'none', border: '1px solid var(--border)', color: 'var(--subdued)', padding: '6px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '11px', transition: 'all 0.2s' }}
+                onMouseOver={(e) => { (e.target as HTMLElement).style.borderColor = 'var(--accent)'; (e.target as HTMLElement).style.color = 'var(--text)'; }}
+                onMouseOut={(e) => { (e.target as HTMLElement).style.borderColor = 'var(--border)'; (e.target as HTMLElement).style.color = 'var(--subdued)'; }}
+                title="Load into form to edit"
+              >
+                Load
+              </button>
+              <button 
+                onClick={() => handleDelete(el.id)}
+                disabled={deletingId === el.id}
+                style={{
+                  flex: 1, background: 'none', border: '1px solid var(--border)', color: 'var(--text)', padding: '6px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '11px', transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => (e.target as HTMLElement).style.borderColor = 'rgba(217, 56, 30, 0.8)'}
+                onMouseOut={(e) => (e.target as HTMLElement).style.borderColor = 'var(--border)'}
+              >
+                {deletingId === el.id ? '...' : 'Delete'}
+              </button>
+            </div>
           </div>
         ))}
       </div>

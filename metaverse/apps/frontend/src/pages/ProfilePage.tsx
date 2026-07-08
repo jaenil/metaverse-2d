@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getAvailableAvatars, updateMetadata } from '../api';
+import type { Avatar } from '../types';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
 import '../styles/dashboard.css';
@@ -9,9 +11,27 @@ const WALLETS = ['Metamask', 'Phantom', 'WalletConnect'];
 export function ProfilePage() {
   const [nickname, setNickname] = useState('User');
   const [sellerName, setSellerName] = useState('User');
+  const [avatars, setAvatars] = useState<Avatar[]>([]);
+  const [selectedAvatarId, setSelectedAvatarId] = useState<string | null>(null);
+
   const { clearAuth } = useAuthStore();
   const { theme, setTheme } = useThemeStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getAvailableAvatars().then(res => {
+      if (res.status === 200) setAvatars(res.data.avatars);
+    }).catch(() => {});
+  }, []);
+
+  async function handleSelectAvatar(avatarId: string) {
+    try {
+      await updateMetadata(avatarId);
+      setSelectedAvatarId(avatarId);
+    } catch (e) {
+      console.error("Failed to update avatar", e);
+    }
+  }
 
   function handleLogout() {
     clearAuth();
@@ -85,6 +105,35 @@ export function ProfilePage() {
               <button className="dash-new-btn" style={{ flex: 1 }}>Save Changes</button>
             </div>
           </div>
+
+          {/* Avatar Panel */}
+          {avatars.length > 0 && (
+            <div className="space-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', cursor: 'default', border: '1px solid var(--border)' }}>
+              <h3 style={{ fontFamily: 'var(--font-retro)', letterSpacing: '0.05em', color: 'var(--fg)', margin: 0 }}>Choose Avatar</h3>
+              <p style={{ color: 'var(--subdued)', fontSize: '0.85rem', marginTop: '-0.5rem' }}>Select your appearance in the metaverse.</p>
+              
+              <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem', flexWrap: 'wrap' }}>
+                {avatars.map(av => (
+                  <div 
+                    key={av.id}
+                    onClick={() => handleSelectAvatar(av.id)}
+                    style={{
+                      width: '64px', height: '64px', 
+                      borderRadius: '8px', 
+                      background: selectedAvatarId === av.id ? 'rgba(var(--accent-raw), 0.3)' : 'rgba(0,0,0,0.3)',
+                      border: selectedAvatarId === av.id ? '2px solid var(--accent)' : '1px solid var(--border)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                      transition: 'all 0.2s', flexShrink: 0
+                    }}
+                    onMouseOver={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)' }}
+                    onMouseOut={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)' }}
+                  >
+                    <img src={av.imageUrl} alt={av.name} style={{ width: '40px', height: '40px', imageRendering: 'pixelated' }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}/>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Web3 / Wallet Panel */}
           <div className="space-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', cursor: 'default', border: '1px solid var(--border)' }}>
