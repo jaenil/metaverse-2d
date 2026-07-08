@@ -464,7 +464,7 @@ const [joinSpaceId, setJoinSpaceId] = useState('');
                 onClick={handleJoin}
                 disabled={!joinSpaceId.trim()}
               >
-                {joinSpaceId.trim() ? 'Joining…' : 'Join Space →'}
+                Join Space
               </button>
             </div>
           </div>

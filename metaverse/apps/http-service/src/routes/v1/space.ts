@@ -99,28 +99,42 @@ spaceRouter.post('/element', userMiddleware, async (req, res) => {
     const space = await client.space.findUnique({
         where: {
             id: parsedData.data.spaceId,
-            creatorId: req.userId!
+            //creatorId: req.userId!
         }, select: {
             width: true,
             height: true
         }
     })
-    if (!space) return res.status(404).json({ message: "Space not found" })
-    if (parsedData.data.x < 0 || parsedData.data.y < 0 || parsedData.data.x> space.width || parsedData.data.y > space.height) {
+    if (!space) return res.status(404).json({ message: "Space not found" });
+    const element = await client.element.findUnique({
+        where:{
+            id:parsedData.data.elementId
+        }
+    })
+    if (parsedData.data.x < 0 || parsedData.data.y < 0 || parsedData.data.x + (element?.width || 0)> space.width || parsedData.data.y + (element?.height || 0) > space.height) {
         return res.status(400).json({ message: "Element out of bounds" })
     }
     //do not allow element to b3e added if there already exists an element in the same x and y
-    const existingElement = await client.spaceElements.findFirst({
+    const existingElements = await client.spaceElements.findMany({
         where: {
-            x: parsedData.data.x,
-            y: parsedData.data.y,
             spaceId:parsedData.data.spaceId
-        }
+        },
+        include:{element:true}
     })
-    if (existingElement) {
-        return res.status(400).json({ message: "there already exists an element at that particular position" }); //this needs to be discussed.
+    const isColliding = existingElements.some((e)=>{
+        const overlapX = parsedData.data.x < e.x + e.element.width && 
+                     parsedData.data.x + (element?.width ?? 0) > e.x;
+    
+    const overlapY = parsedData.data.y < e.y + e.element.height && 
+                     parsedData.data.y + (element?.height ?? 0) > e.y;
+    
+    return overlapX && overlapY&&e.element.static;
+
+    })
+    if(isColliding){
+        return res.status(400).json({ message: "Element is colliding with another element" });
     }
-    const element = await client.spaceElements.create({
+    const created_element = await client.spaceElements.create({
         data: {
             spaceId: parsedData.data.spaceId,
             elementId: parsedData.data.elementId,
@@ -128,7 +142,7 @@ spaceRouter.post('/element', userMiddleware, async (req, res) => {
             y: parsedData.data.y,
         }
     })
-    res.status(200).json({ element })
+    res.status(200).json({ element:created_element })
 })
 
 spaceRouter.delete('/element', userMiddleware, async (req, res) => {
@@ -144,7 +158,7 @@ spaceRouter.delete('/element', userMiddleware, async (req, res) => {
         }
     })
     if (!space) return res.status(404).json({ message: "space not found" });
-    if (space.creatorId != req.userId) return res.status(403).json({ message: "Unauthorised" });
+    //if (space.creatorId != req.userId) return res.status(403).json({ message: "Unauthorised" });
     try {
         const element = await client.spaceElements.delete({
             where: {
