@@ -7,7 +7,7 @@ import client from "@repo/db";
 import { compare, hash } from '../../scrypt.js';
 
 import jwt from "jsonwebtoken"
-import { JWT_PASSWORD } from '../../config.js';
+import { JWT_SECRET } from '../../config.js';
 import { userMiddleware } from '../../middleware/user.js';
 
 export const router = Router();
@@ -60,7 +60,7 @@ router.post('/signin', async (req, res) => {
         const token = jwt.sign({
             userId: user.id,
             role: user.role
-        }, JWT_PASSWORD);
+        }, JWT_SECRET);
         res.status(200).json({ token: token })
     }
     catch (e) {

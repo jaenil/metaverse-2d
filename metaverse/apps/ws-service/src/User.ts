@@ -1,7 +1,7 @@
 import {WebSocket} from "ws";
 import jwt from "jsonwebtoken";
 import type {JwtPayload} from "jsonwebtoken";
-import { JWT_PASSWORD } from './config.js';
+import { JWT_SECRET } from './config.js';
 import {RoomManager} from "./RoomManager.js"
 import client from "@repo/db"
 import type { OutgoingMessage } from "./types.js";
@@ -37,7 +37,7 @@ export class User{
                 //verify user from payload.token
                 const token = parsedData.payload.token ;
                 try{
-                    const userId = (jwt.verify(token,JWT_PASSWORD) as JwtPayload).userId
+                    const userId = (jwt.verify(token,JWT_SECRET) as JwtPayload).userId
                     this.id = userId ;
                 }   
                 catch(e){
