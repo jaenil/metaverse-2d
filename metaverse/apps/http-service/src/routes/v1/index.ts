@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { userRouter } from './user.js';
 import { adminRouter } from './admin.js';
 import { spaceRouter } from './space.js';
-import { SigninSchema, SignupSchema } from "../../types/index.js";
+import { SigninSchema, SignupSchema } from "@repo/types";
 import client from "@repo/db";
 import { compare, hash } from '../../scrypt.js';
 import jwt from "jsonwebtoken"
@@ -89,33 +89,43 @@ router.get('/elements', userMiddleware, async (req, res) => {
 })
 
 router.get('/avatars', async (req, res) => {
-    const avatars = await client.avatar.findMany({
-        select: {
-            id: true,
-            imageUrl: true,
-            name: true
-        }
-    })
-    res.status(200).json({ avatars: avatars });
+    try {
+        const avatars = await client.avatar.findMany({
+            select: {
+                id: true,
+                imageUrl: true,
+                name: true
+            }
+        })
+        res.status(200).json({ avatars: avatars });
+    } catch (e) {
+        console.error("[AVATARS ERROR]", e);
+        res.status(500).json({ message: "Internal Server Error" })
+    }
 })
 
 router.get('/maps', async (req, res) => {
-    const maps = await client.map.findMany({
-        select: {
-            id: true,
-            width: true,
-            height: true,
-            name: true,
-            thumbnail: true,
-            creator: {                  // <-- Add this nested select
+    try {
+        const maps = await client.map.findMany({
             select: {
                 id: true,
-                username: true
+                width: true,
+                height: true,
+                name: true,
+                thumbnail: true,
+                creator: {                  // <-- Add this nested select
+                    select: {
+                        id: true,
+                        username: true
+                    }
+                }
             }
-        }
-        }
-    })
-    res.status(200).json({ maps: maps });
+        })
+        res.status(200).json({ maps: maps });
+    } catch (e) {
+        console.error("[MAPS ERROR]", e);
+        res.status(500).json({ message: "Internal Server Error" })
+    }
 })
 
 router.use('/user', userRouter);

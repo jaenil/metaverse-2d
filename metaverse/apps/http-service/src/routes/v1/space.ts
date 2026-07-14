@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { CreateSpaceSchema, AddElementSchema, DeleteElementSchema } from '../../types/index.js';
+import { CreateSpaceSchema, AddElementSchema, DeleteElementSchema } from '@repo/types';
 import client from "@repo/db";
 import { adminMiddleware } from '../../middleware/admin.js';
 import { userMiddleware } from '../../middleware/user.js';

@@ -3,7 +3,7 @@ import express from 'express';
 // 1. Import cors
 import cors from 'cors';
 import { router } from './routes/v1/index.js';
-import { envSchema } from './types/index.js';
+import { envSchema } from '@repo/types';
 
 envSchema.parse(process.env);
 

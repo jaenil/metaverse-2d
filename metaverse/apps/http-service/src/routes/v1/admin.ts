@@ -1,6 +1,6 @@
 import {Router} from 'express' ;
 import { adminMiddleware } from '../../middleware/admin.js';
-import { CreateAvatarSchema, CreateElementSchema, CreateMapSchema, UpdateElementSchema } from '../../types/index.js';
+import { CreateAvatarSchema, CreateElementSchema, CreateMapSchema, UpdateElementSchema } from '@repo/types';
 import client from "@repo/db" ;
 
 export const adminRouter = Router() ;

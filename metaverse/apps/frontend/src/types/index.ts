@@ -37,21 +37,7 @@ export interface UserAvatar {
 
 // ─── Element ─────────────────────────────────────────────────────────────────
 
-export interface Element {
-  id: string;
-  imageUrl: string;
-  width: number;
-  height: number;
-  static: boolean;
-}
-
-export interface SpaceElement {
-  id: string;           // SpaceElements row id (used for deletion)
-  elementId: string;
-  x: number;
-  y: number;
-  element?: Element;
-}
+export type { Element, SpaceElement } from '@repo/types';
 
 // ─── Map ─────────────────────────────────────────────────────────────────────
 
@@ -77,6 +63,8 @@ export interface Space {
   thumbnail?: string;
 }
 
+import type { SpaceElement } from '@repo/types';
+
 export interface SpaceDetail {
   space: { width: number; height: number; thumbnail?: string; creatorId: string; weather: string; timeOfDay: string; };
   elements: SpaceElement[];
@@ -84,33 +72,7 @@ export interface SpaceDetail {
 
 // ─── WebSocket Messages ───────────────────────────────────────────────────────
 
-// Client → Server
-export type ClientMessage =
-  | { type: 'join'; payload: { spaceId: string; token: string } }
-  | { type: 'move'; payload: { x: number; y: number } }
-  | { type: 'emote'; payload: { emote: string } }
-  | { type: 'update-settings'; payload: { weather: string; timeOfDay: string } }
-  | { type: 'element-added'; payload: SpaceElement }
-  | { type: 'element-deleted'; payload: { id: string } };
-
-// Server → Client
-export type ServerMessage =
-  | {
-      type: 'space-joined';
-      payload: {
-        spawn: { x: number; y: number };
-        users: { userId: string; x: number; y: number }[];
-      };
-    }
-  | { type: 'user-join'; payload: { userId: string; x: number; y: number } }
-  | { type: 'user-joined'; payload: { userId: string; x: number; y: number } }
-  | { type: 'movement'; payload: { userId: string; x: number; y: number } }
-  | { type: 'movement-rejected'; payload: { x: number; y: number } }
-  | { type: 'user-left'; payload: { userId: string } }
-  | { type: 'emote'; payload: { userId: string; emote: string } }
-  | { type: 'settings-changed'; payload: { weather: string; timeOfDay: string } }
-  | { type: 'element-added'; payload: SpaceElement }
-  | { type: 'element-deleted'; payload: { id: string } };
+export type { IncomingClientMessage as ClientMessage, ServerMessage } from '@repo/types';
 
 // ─── Arena State ─────────────────────────────────────────────────────────────
 

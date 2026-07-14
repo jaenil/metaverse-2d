@@ -4,7 +4,8 @@ import type {JwtPayload} from "jsonwebtoken";
 import { JWT_SECRET } from './config.js';
 import {RoomManager} from "./RoomManager.js"
 import client from "@repo/db"
-import type { OutgoingMessage } from "./types.js";
+import type { ServerMessage } from "@repo/types";
+import { IncomingClientMessageSchema } from "@repo/types";
 
 export class User{
     private ws:WebSocket;
@@ -31,11 +32,17 @@ export class User{
             })
             return ;
         }
-        switch(parsedData.type){
+        const result = IncomingClientMessageSchema.safeParse(parsedData);
+        if (!result.success) {
+            console.error("Invalid message format:", result.error);
+            return;
+        }
+        const validatedData = result.data;
+        switch(validatedData.type){
             case "join":
-                const spaceId=parsedData.payload.spaceId ;
+                const spaceId=validatedData.payload.spaceId ;
                 //verify user from payload.token
-                const token = parsedData.payload.token ;
+                const token = validatedData.payload.token ;
                 try{
                     const userId = (jwt.verify(token,JWT_SECRET) as JwtPayload).userId
                     this.id = userId ;
@@ -63,7 +70,7 @@ export class User{
                             y: this.y,
                         },
                         users: RoomManager.getInstance().getRoom(spaceId)?.map((usr) =>({
-                            id:usr.id,
+                            userId:usr.id,
                             x:usr.x,
                             y:usr.y 
                         })) ?? [] ,
@@ -82,9 +89,10 @@ export class User{
                 },this,this.spaceId!)
                 break
             case "move":
+                {
                 if(!this.spaceId) return ;
-                const x = parsedData.payload.x ;
-                const y = parsedData.payload.y ;
+                const x = validatedData.payload.x ;
+                const y = validatedData.payload.y ;
                 //handle movement logic here 
                 const disX = Math.abs(this.x - x) ;
                 const disY = Math.abs(this.y - y) ;
@@ -135,6 +143,7 @@ export class User{
                         }
                     })
                 }
+                }
                 break;
             case "emote":
                 if(!this.spaceId) return;
@@ -142,12 +151,11 @@ export class User{
                     type:"emote",
                     payload:{
                         userId:this.id,
-                        emote:parsedData.payload.emote
+                        emote:validatedData.payload.emote
                     }
                 }, this, this.spaceId);
                 break;
             case "update-settings":
-            
                 {if(!this.spaceId) return;
                 const space = await client.space.findUnique({
                     where: { id: this.spaceId }
@@ -161,16 +169,16 @@ export class User{
                 await client.space.update({
                     where: { id: this.spaceId },
                     data: {
-                        weather: parsedData.payload.weather,
-                        timeOfDay: parsedData.payload.timeOfDay
+                        weather: validatedData.payload.weather,
+                        timeOfDay: validatedData.payload.timeOfDay
                     }
                 });
 
-                const broadcastPayload = {
+                const broadcastPayload: ServerMessage = {
                     type: "settings-changed",
                     payload: {
-                        weather: parsedData.payload.weather,
-                        timeOfDay: parsedData.payload.timeOfDay
+                        weather: validatedData.payload.weather,
+                        timeOfDay: validatedData.payload.timeOfDay
                     }
                 };
                 
@@ -181,7 +189,7 @@ export class User{
                 if(!this.spaceId) return;
                 RoomManager.getInstance().broadcast({
                     type: "element-added",
-                    payload: parsedData.payload
+                    payload: validatedData.payload
                 }, this, this.spaceId);
                 break;
             }
@@ -189,7 +197,7 @@ export class User{
                 if(!this.spaceId) return;
                 RoomManager.getInstance().broadcast({
                     type: "element-deleted",
-                    payload: parsedData.payload
+                    payload: validatedData.payload
                 }, this, this.spaceId);
                 break;
             }
@@ -204,7 +212,7 @@ export class User{
         },this,this.spaceId!)
         RoomManager.getInstance().removeUser(this,this.spaceId!)
     }
-    send(payload:OutgoingMessage){
+    send(payload:ServerMessage){
         this.ws.send(JSON.stringify(payload)) ;
     }
 }

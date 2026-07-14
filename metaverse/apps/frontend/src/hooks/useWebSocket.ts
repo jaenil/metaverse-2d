@@ -31,7 +31,7 @@ export function useWebSocket({
     send({ type: 'move', payload: { x, y } });
   }, [send]);
 
-  const sendSettingsUpdate = useCallback((weather: string, timeOfDay: string) => {
+  const sendSettingsUpdate = useCallback((weather: 'none' | 'rain' | 'snow', timeOfDay: 'day' | 'night') => {
     send({ type: 'update-settings', payload: { weather, timeOfDay } });
   }, [send]);
 
