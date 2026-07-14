@@ -12,7 +12,7 @@ export const adminMiddleware = async (req:Request, res:Response, next:NextFuncti
     }
     try{
         const verifiedUser = jwt.verify(token,JWT_SECRET) as {userId:string,role:string}
-        if(verifiedUser.role !="Admin"){
+        if(verifiedUser.role !=="Admin"){
             res.status(403).json({message:"Incorrect role access"})
             return 
         }

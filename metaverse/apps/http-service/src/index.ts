@@ -7,7 +7,11 @@ import { router } from './routes/v1/index.js';
 const app = express();
 
 // 2. Use the cors middleware BEFORE your routes!
-app.use(cors());
+app.use(cors(
+    {
+        origin: process.env.ALLOWED_ORIGINS?.split(',')
+    }
+));
 
 app.use(express.json());
 

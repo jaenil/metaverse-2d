@@ -158,7 +158,7 @@ spaceRouter.delete('/element', userMiddleware, async (req, res) => {
         }
     })
     if (!space) return res.status(404).json({ message: "space not found" });
-    if (space.creatorId != req.userId) return res.status(403).json({ message: "Unauthorised" });
+    if (space.creatorId !== req.userId) return res.status(403).json({ message: "Unauthorised" });
     try {
         const element = await client.spaceElements.delete({
             where: {
@@ -187,7 +187,7 @@ spaceRouter.delete('/:spaceId', userMiddleware, async (req, res) => {
             }
         })
         if (!space) return res.status(404).json({ message: "Space not found" })
-        if (space?.creatorId != req.userId) {
+        if (space?.creatorId !== req.userId) {
             return res.status(403).json({ message: "Unauthorised" })
         }
 
