@@ -16,5 +16,3 @@ wss.on('connection', function connection(ws) {
     if(user.spaceId) user.destroy()
   })
 });
-
-// Trigger nodemon 1

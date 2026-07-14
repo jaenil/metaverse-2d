@@ -62,7 +62,7 @@ export class User{
                             x: this.x,
                             y: this.y,
                         },
-                        users: RoomManager.getInstance().rooms.get(spaceId)?.map((usr) =>({
+                        users: RoomManager.getInstance().getRoom(spaceId)?.map((usr) =>({
                             id:usr.id,
                             x:usr.x,
                             y:usr.y 
@@ -93,7 +93,7 @@ export class User{
                     //Use a standard for...of loop so you can use break or continue.
                     //Use an array method like .some() or .find() to check if a collision exists, and wrap the movement logic in an if (!collisionFound) block.
 
-                    const collision = RoomManager.getInstance().rooms.get(this.spaceId!)?.find((u)=>{
+                    const collision = RoomManager.getInstance().getRoom(this.spaceId!)?.find((u)=>{
                         return u.x===x && u.y===y
                     })
                     const spaceElements = await client.spaceElements.findMany({
@@ -147,13 +147,7 @@ export class User{
                 }, this, this.spaceId);
                 break;
             case "update-settings":
-                /*
-                TODO:
-                Validate the input payload.
-                Fetch the space and ensure this.id === space.creatorId.
-                Use client.space.update() to save.
-                Use RoomManager.getInstance().broadcast() to send the settings-changed event. Tip: Include the current settings in the space-joined payload when a user first connects!
-                */
+            
                 {if(!this.spaceId) return;
                 const space = await client.space.findUnique({
                     where: { id: this.spaceId }

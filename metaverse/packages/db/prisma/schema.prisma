@@ -33,10 +33,10 @@ model Space {
   timeOfDay String @default("day")
   weather String @default("clear")
   creator     User    @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  elements  spaceElements[]
+  elements  SpaceElements[]
 }
 
-model spaceElements {
+model SpaceElements {
   id        String @id @unique @default(cuid())
   elementId String
   spaceId   String
@@ -53,7 +53,7 @@ model Element {
   height          Int
   static          Boolean
   imageUrl        String
-  spaces          spaceElements[]
+  spaces          SpaceElements[]
   mapElements     MapElements[]
 }
 

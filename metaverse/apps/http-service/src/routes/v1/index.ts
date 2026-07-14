@@ -5,7 +5,6 @@ import { spaceRouter } from './space.js';
 import { SigninSchema, SignupSchema } from "../../types/index.js";
 import client from "@repo/db";
 import { compare, hash } from '../../scrypt.js';
-
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from '../../config.js';
 import { userMiddleware } from '../../middleware/user.js';
@@ -70,7 +69,8 @@ router.post('/signin', async (req, res) => {
 })
 
 router.get('/elements', userMiddleware, async (req, res) => {
-    const elements = await client.element.findMany({
+    try{
+        const elements = await client.element.findMany({
         select: {
             id: true,
             imageUrl: true,
@@ -80,6 +80,12 @@ router.get('/elements', userMiddleware, async (req, res) => {
         }
     })
     res.status(200).json({ elements: elements });
+    }
+    catch(e){
+        console.error("[ELEMENTS ERROR]", e);
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+    
 })
 
 router.get('/avatars', async (req, res) => {

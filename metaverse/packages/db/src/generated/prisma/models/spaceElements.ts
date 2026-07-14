@@ -4,7 +4,7 @@
 // biome-ignore-all lint: generated file
 // @ts-nocheck 
 /*
- * This file exports the `spaceElements` model and its related types.
+ * This file exports the `SpaceElements` model and its related types.
  *
  * 🟢 You can import this file directly.
  */
@@ -13,10 +13,10 @@ import type * as $Enums from "../enums.js"
 import type * as Prisma from "../internal/prismaNamespace.js"
 
 /**
- * Model spaceElements
+ * Model SpaceElements
  * 
  */
-export type spaceElementsModel = runtime.Types.Result.DefaultSelection<Prisma.$spaceElementsPayload>
+export type SpaceElementsModel = runtime.Types.Result.DefaultSelection<Prisma.$SpaceElementsPayload>
 
 export type AggregateSpaceElements = {
   _count: SpaceElementsCountAggregateOutputType | null
@@ -99,37 +99,37 @@ export type SpaceElementsCountAggregateInputType = {
 
 export type SpaceElementsAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which spaceElements to aggregate.
+   * Filter which SpaceElements to aggregate.
    */
-  where?: Prisma.spaceElementsWhereInput
+  where?: Prisma.SpaceElementsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of spaceElements to fetch.
+   * Determine the order of SpaceElements to fetch.
    */
-  orderBy?: Prisma.spaceElementsOrderByWithRelationInput | Prisma.spaceElementsOrderByWithRelationInput[]
+  orderBy?: Prisma.SpaceElementsOrderByWithRelationInput | Prisma.SpaceElementsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
    * Sets the start position
    */
-  cursor?: Prisma.spaceElementsWhereUniqueInput
+  cursor?: Prisma.SpaceElementsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` spaceElements from the position of the cursor.
+   * Take `±n` SpaceElements from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` spaceElements.
+   * Skip the first `n` SpaceElements.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Count returned spaceElements
+   * Count returned SpaceElements
   **/
   _count?: true | SpaceElementsCountAggregateInputType
   /**
@@ -169,11 +169,11 @@ export type GetSpaceElementsAggregateType<T extends SpaceElementsAggregateArgs> 
 
 
 
-export type spaceElementsGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.spaceElementsWhereInput
-  orderBy?: Prisma.spaceElementsOrderByWithAggregationInput | Prisma.spaceElementsOrderByWithAggregationInput[]
+export type SpaceElementsGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SpaceElementsWhereInput
+  orderBy?: Prisma.SpaceElementsOrderByWithAggregationInput | Prisma.SpaceElementsOrderByWithAggregationInput[]
   by: Prisma.SpaceElementsScalarFieldEnum[] | Prisma.SpaceElementsScalarFieldEnum
-  having?: Prisma.spaceElementsScalarWhereWithAggregatesInput
+  having?: Prisma.SpaceElementsScalarWhereWithAggregatesInput
   take?: number
   skip?: number
   _count?: SpaceElementsCountAggregateInputType | true
@@ -196,7 +196,7 @@ export type SpaceElementsGroupByOutputType = {
   _max: SpaceElementsMaxAggregateOutputType | null
 }
 
-export type GetSpaceElementsGroupByPayload<T extends spaceElementsGroupByArgs> = Prisma.PrismaPromise<
+export type GetSpaceElementsGroupByPayload<T extends SpaceElementsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<SpaceElementsGroupByOutputType, T['by']> &
       {
@@ -211,20 +211,20 @@ export type GetSpaceElementsGroupByPayload<T extends spaceElementsGroupByArgs> =
 
 
 
-export type spaceElementsWhereInput = {
-  AND?: Prisma.spaceElementsWhereInput | Prisma.spaceElementsWhereInput[]
-  OR?: Prisma.spaceElementsWhereInput[]
-  NOT?: Prisma.spaceElementsWhereInput | Prisma.spaceElementsWhereInput[]
-  id?: Prisma.StringFilter<"spaceElements"> | string
-  elementId?: Prisma.StringFilter<"spaceElements"> | string
-  spaceId?: Prisma.StringFilter<"spaceElements"> | string
-  x?: Prisma.IntFilter<"spaceElements"> | number
-  y?: Prisma.IntFilter<"spaceElements"> | number
+export type SpaceElementsWhereInput = {
+  AND?: Prisma.SpaceElementsWhereInput | Prisma.SpaceElementsWhereInput[]
+  OR?: Prisma.SpaceElementsWhereInput[]
+  NOT?: Prisma.SpaceElementsWhereInput | Prisma.SpaceElementsWhereInput[]
+  id?: Prisma.StringFilter<"SpaceElements"> | string
+  elementId?: Prisma.StringFilter<"SpaceElements"> | string
+  spaceId?: Prisma.StringFilter<"SpaceElements"> | string
+  x?: Prisma.IntFilter<"SpaceElements"> | number
+  y?: Prisma.IntFilter<"SpaceElements"> | number
   space?: Prisma.XOR<Prisma.SpaceScalarRelationFilter, Prisma.SpaceWhereInput>
   element?: Prisma.XOR<Prisma.ElementScalarRelationFilter, Prisma.ElementWhereInput>
 }
 
-export type spaceElementsOrderByWithRelationInput = {
+export type SpaceElementsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   elementId?: Prisma.SortOrder
   spaceId?: Prisma.SortOrder
@@ -234,45 +234,45 @@ export type spaceElementsOrderByWithRelationInput = {
   element?: Prisma.ElementOrderByWithRelationInput
 }
 
-export type spaceElementsWhereUniqueInput = Prisma.AtLeast<{
+export type SpaceElementsWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  spaceId_x_y?: Prisma.spaceElementsSpaceIdXYCompoundUniqueInput
-  AND?: Prisma.spaceElementsWhereInput | Prisma.spaceElementsWhereInput[]
-  OR?: Prisma.spaceElementsWhereInput[]
-  NOT?: Prisma.spaceElementsWhereInput | Prisma.spaceElementsWhereInput[]
-  elementId?: Prisma.StringFilter<"spaceElements"> | string
-  spaceId?: Prisma.StringFilter<"spaceElements"> | string
-  x?: Prisma.IntFilter<"spaceElements"> | number
-  y?: Prisma.IntFilter<"spaceElements"> | number
+  spaceId_x_y?: Prisma.SpaceElementsSpaceIdXYCompoundUniqueInput
+  AND?: Prisma.SpaceElementsWhereInput | Prisma.SpaceElementsWhereInput[]
+  OR?: Prisma.SpaceElementsWhereInput[]
+  NOT?: Prisma.SpaceElementsWhereInput | Prisma.SpaceElementsWhereInput[]
+  elementId?: Prisma.StringFilter<"SpaceElements"> | string
+  spaceId?: Prisma.StringFilter<"SpaceElements"> | string
+  x?: Prisma.IntFilter<"SpaceElements"> | number
+  y?: Prisma.IntFilter<"SpaceElements"> | number
   space?: Prisma.XOR<Prisma.SpaceScalarRelationFilter, Prisma.SpaceWhereInput>
   element?: Prisma.XOR<Prisma.ElementScalarRelationFilter, Prisma.ElementWhereInput>
 }, "id" | "id" | "spaceId_x_y">
 
-export type spaceElementsOrderByWithAggregationInput = {
+export type SpaceElementsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   elementId?: Prisma.SortOrder
   spaceId?: Prisma.SortOrder
   x?: Prisma.SortOrder
   y?: Prisma.SortOrder
-  _count?: Prisma.spaceElementsCountOrderByAggregateInput
-  _avg?: Prisma.spaceElementsAvgOrderByAggregateInput
-  _max?: Prisma.spaceElementsMaxOrderByAggregateInput
-  _min?: Prisma.spaceElementsMinOrderByAggregateInput
-  _sum?: Prisma.spaceElementsSumOrderByAggregateInput
+  _count?: Prisma.SpaceElementsCountOrderByAggregateInput
+  _avg?: Prisma.SpaceElementsAvgOrderByAggregateInput
+  _max?: Prisma.SpaceElementsMaxOrderByAggregateInput
+  _min?: Prisma.SpaceElementsMinOrderByAggregateInput
+  _sum?: Prisma.SpaceElementsSumOrderByAggregateInput
 }
 
-export type spaceElementsScalarWhereWithAggregatesInput = {
-  AND?: Prisma.spaceElementsScalarWhereWithAggregatesInput | Prisma.spaceElementsScalarWhereWithAggregatesInput[]
-  OR?: Prisma.spaceElementsScalarWhereWithAggregatesInput[]
-  NOT?: Prisma.spaceElementsScalarWhereWithAggregatesInput | Prisma.spaceElementsScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"spaceElements"> | string
-  elementId?: Prisma.StringWithAggregatesFilter<"spaceElements"> | string
-  spaceId?: Prisma.StringWithAggregatesFilter<"spaceElements"> | string
-  x?: Prisma.IntWithAggregatesFilter<"spaceElements"> | number
-  y?: Prisma.IntWithAggregatesFilter<"spaceElements"> | number
+export type SpaceElementsScalarWhereWithAggregatesInput = {
+  AND?: Prisma.SpaceElementsScalarWhereWithAggregatesInput | Prisma.SpaceElementsScalarWhereWithAggregatesInput[]
+  OR?: Prisma.SpaceElementsScalarWhereWithAggregatesInput[]
+  NOT?: Prisma.SpaceElementsScalarWhereWithAggregatesInput | Prisma.SpaceElementsScalarWhereWithAggregatesInput[]
+  id?: Prisma.StringWithAggregatesFilter<"SpaceElements"> | string
+  elementId?: Prisma.StringWithAggregatesFilter<"SpaceElements"> | string
+  spaceId?: Prisma.StringWithAggregatesFilter<"SpaceElements"> | string
+  x?: Prisma.IntWithAggregatesFilter<"SpaceElements"> | number
+  y?: Prisma.IntWithAggregatesFilter<"SpaceElements"> | number
 }
 
-export type spaceElementsCreateInput = {
+export type SpaceElementsCreateInput = {
   id?: string
   x: number
   y: number
@@ -280,7 +280,7 @@ export type spaceElementsCreateInput = {
   element: Prisma.ElementCreateNestedOneWithoutSpacesInput
 }
 
-export type spaceElementsUncheckedCreateInput = {
+export type SpaceElementsUncheckedCreateInput = {
   id?: string
   elementId: string
   spaceId: string
@@ -288,7 +288,7 @@ export type spaceElementsUncheckedCreateInput = {
   y: number
 }
 
-export type spaceElementsUpdateInput = {
+export type SpaceElementsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   x?: Prisma.IntFieldUpdateOperationsInput | number
   y?: Prisma.IntFieldUpdateOperationsInput | number
@@ -296,7 +296,7 @@ export type spaceElementsUpdateInput = {
   element?: Prisma.ElementUpdateOneRequiredWithoutSpacesNestedInput
 }
 
-export type spaceElementsUncheckedUpdateInput = {
+export type SpaceElementsUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   elementId?: Prisma.StringFieldUpdateOperationsInput | string
   spaceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -304,7 +304,7 @@ export type spaceElementsUncheckedUpdateInput = {
   y?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
-export type spaceElementsCreateManyInput = {
+export type SpaceElementsCreateManyInput = {
   id?: string
   elementId: string
   spaceId: string
@@ -312,13 +312,13 @@ export type spaceElementsCreateManyInput = {
   y: number
 }
 
-export type spaceElementsUpdateManyMutationInput = {
+export type SpaceElementsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   x?: Prisma.IntFieldUpdateOperationsInput | number
   y?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
-export type spaceElementsUncheckedUpdateManyInput = {
+export type SpaceElementsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   elementId?: Prisma.StringFieldUpdateOperationsInput | string
   spaceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -327,22 +327,22 @@ export type spaceElementsUncheckedUpdateManyInput = {
 }
 
 export type SpaceElementsListRelationFilter = {
-  every?: Prisma.spaceElementsWhereInput
-  some?: Prisma.spaceElementsWhereInput
-  none?: Prisma.spaceElementsWhereInput
+  every?: Prisma.SpaceElementsWhereInput
+  some?: Prisma.SpaceElementsWhereInput
+  none?: Prisma.SpaceElementsWhereInput
 }
 
-export type spaceElementsOrderByRelationAggregateInput = {
+export type SpaceElementsOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type spaceElementsSpaceIdXYCompoundUniqueInput = {
+export type SpaceElementsSpaceIdXYCompoundUniqueInput = {
   spaceId: string
   x: number
   y: number
 }
 
-export type spaceElementsCountOrderByAggregateInput = {
+export type SpaceElementsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   elementId?: Prisma.SortOrder
   spaceId?: Prisma.SortOrder
@@ -350,12 +350,12 @@ export type spaceElementsCountOrderByAggregateInput = {
   y?: Prisma.SortOrder
 }
 
-export type spaceElementsAvgOrderByAggregateInput = {
+export type SpaceElementsAvgOrderByAggregateInput = {
   x?: Prisma.SortOrder
   y?: Prisma.SortOrder
 }
 
-export type spaceElementsMaxOrderByAggregateInput = {
+export type SpaceElementsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   elementId?: Prisma.SortOrder
   spaceId?: Prisma.SortOrder
@@ -363,7 +363,7 @@ export type spaceElementsMaxOrderByAggregateInput = {
   y?: Prisma.SortOrder
 }
 
-export type spaceElementsMinOrderByAggregateInput = {
+export type SpaceElementsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   elementId?: Prisma.SortOrder
   spaceId?: Prisma.SortOrder
@@ -371,236 +371,236 @@ export type spaceElementsMinOrderByAggregateInput = {
   y?: Prisma.SortOrder
 }
 
-export type spaceElementsSumOrderByAggregateInput = {
+export type SpaceElementsSumOrderByAggregateInput = {
   x?: Prisma.SortOrder
   y?: Prisma.SortOrder
 }
 
-export type spaceElementsCreateNestedManyWithoutSpaceInput = {
-  create?: Prisma.XOR<Prisma.spaceElementsCreateWithoutSpaceInput, Prisma.spaceElementsUncheckedCreateWithoutSpaceInput> | Prisma.spaceElementsCreateWithoutSpaceInput[] | Prisma.spaceElementsUncheckedCreateWithoutSpaceInput[]
-  connectOrCreate?: Prisma.spaceElementsCreateOrConnectWithoutSpaceInput | Prisma.spaceElementsCreateOrConnectWithoutSpaceInput[]
-  createMany?: Prisma.spaceElementsCreateManySpaceInputEnvelope
-  connect?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
+export type SpaceElementsCreateNestedManyWithoutSpaceInput = {
+  create?: Prisma.XOR<Prisma.SpaceElementsCreateWithoutSpaceInput, Prisma.SpaceElementsUncheckedCreateWithoutSpaceInput> | Prisma.SpaceElementsCreateWithoutSpaceInput[] | Prisma.SpaceElementsUncheckedCreateWithoutSpaceInput[]
+  connectOrCreate?: Prisma.SpaceElementsCreateOrConnectWithoutSpaceInput | Prisma.SpaceElementsCreateOrConnectWithoutSpaceInput[]
+  createMany?: Prisma.SpaceElementsCreateManySpaceInputEnvelope
+  connect?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
 }
 
-export type spaceElementsUncheckedCreateNestedManyWithoutSpaceInput = {
-  create?: Prisma.XOR<Prisma.spaceElementsCreateWithoutSpaceInput, Prisma.spaceElementsUncheckedCreateWithoutSpaceInput> | Prisma.spaceElementsCreateWithoutSpaceInput[] | Prisma.spaceElementsUncheckedCreateWithoutSpaceInput[]
-  connectOrCreate?: Prisma.spaceElementsCreateOrConnectWithoutSpaceInput | Prisma.spaceElementsCreateOrConnectWithoutSpaceInput[]
-  createMany?: Prisma.spaceElementsCreateManySpaceInputEnvelope
-  connect?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
+export type SpaceElementsUncheckedCreateNestedManyWithoutSpaceInput = {
+  create?: Prisma.XOR<Prisma.SpaceElementsCreateWithoutSpaceInput, Prisma.SpaceElementsUncheckedCreateWithoutSpaceInput> | Prisma.SpaceElementsCreateWithoutSpaceInput[] | Prisma.SpaceElementsUncheckedCreateWithoutSpaceInput[]
+  connectOrCreate?: Prisma.SpaceElementsCreateOrConnectWithoutSpaceInput | Prisma.SpaceElementsCreateOrConnectWithoutSpaceInput[]
+  createMany?: Prisma.SpaceElementsCreateManySpaceInputEnvelope
+  connect?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
 }
 
-export type spaceElementsUpdateManyWithoutSpaceNestedInput = {
-  create?: Prisma.XOR<Prisma.spaceElementsCreateWithoutSpaceInput, Prisma.spaceElementsUncheckedCreateWithoutSpaceInput> | Prisma.spaceElementsCreateWithoutSpaceInput[] | Prisma.spaceElementsUncheckedCreateWithoutSpaceInput[]
-  connectOrCreate?: Prisma.spaceElementsCreateOrConnectWithoutSpaceInput | Prisma.spaceElementsCreateOrConnectWithoutSpaceInput[]
-  upsert?: Prisma.spaceElementsUpsertWithWhereUniqueWithoutSpaceInput | Prisma.spaceElementsUpsertWithWhereUniqueWithoutSpaceInput[]
-  createMany?: Prisma.spaceElementsCreateManySpaceInputEnvelope
-  set?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  disconnect?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  delete?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  connect?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  update?: Prisma.spaceElementsUpdateWithWhereUniqueWithoutSpaceInput | Prisma.spaceElementsUpdateWithWhereUniqueWithoutSpaceInput[]
-  updateMany?: Prisma.spaceElementsUpdateManyWithWhereWithoutSpaceInput | Prisma.spaceElementsUpdateManyWithWhereWithoutSpaceInput[]
-  deleteMany?: Prisma.spaceElementsScalarWhereInput | Prisma.spaceElementsScalarWhereInput[]
+export type SpaceElementsUpdateManyWithoutSpaceNestedInput = {
+  create?: Prisma.XOR<Prisma.SpaceElementsCreateWithoutSpaceInput, Prisma.SpaceElementsUncheckedCreateWithoutSpaceInput> | Prisma.SpaceElementsCreateWithoutSpaceInput[] | Prisma.SpaceElementsUncheckedCreateWithoutSpaceInput[]
+  connectOrCreate?: Prisma.SpaceElementsCreateOrConnectWithoutSpaceInput | Prisma.SpaceElementsCreateOrConnectWithoutSpaceInput[]
+  upsert?: Prisma.SpaceElementsUpsertWithWhereUniqueWithoutSpaceInput | Prisma.SpaceElementsUpsertWithWhereUniqueWithoutSpaceInput[]
+  createMany?: Prisma.SpaceElementsCreateManySpaceInputEnvelope
+  set?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  disconnect?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  delete?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  connect?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  update?: Prisma.SpaceElementsUpdateWithWhereUniqueWithoutSpaceInput | Prisma.SpaceElementsUpdateWithWhereUniqueWithoutSpaceInput[]
+  updateMany?: Prisma.SpaceElementsUpdateManyWithWhereWithoutSpaceInput | Prisma.SpaceElementsUpdateManyWithWhereWithoutSpaceInput[]
+  deleteMany?: Prisma.SpaceElementsScalarWhereInput | Prisma.SpaceElementsScalarWhereInput[]
 }
 
-export type spaceElementsUncheckedUpdateManyWithoutSpaceNestedInput = {
-  create?: Prisma.XOR<Prisma.spaceElementsCreateWithoutSpaceInput, Prisma.spaceElementsUncheckedCreateWithoutSpaceInput> | Prisma.spaceElementsCreateWithoutSpaceInput[] | Prisma.spaceElementsUncheckedCreateWithoutSpaceInput[]
-  connectOrCreate?: Prisma.spaceElementsCreateOrConnectWithoutSpaceInput | Prisma.spaceElementsCreateOrConnectWithoutSpaceInput[]
-  upsert?: Prisma.spaceElementsUpsertWithWhereUniqueWithoutSpaceInput | Prisma.spaceElementsUpsertWithWhereUniqueWithoutSpaceInput[]
-  createMany?: Prisma.spaceElementsCreateManySpaceInputEnvelope
-  set?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  disconnect?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  delete?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  connect?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  update?: Prisma.spaceElementsUpdateWithWhereUniqueWithoutSpaceInput | Prisma.spaceElementsUpdateWithWhereUniqueWithoutSpaceInput[]
-  updateMany?: Prisma.spaceElementsUpdateManyWithWhereWithoutSpaceInput | Prisma.spaceElementsUpdateManyWithWhereWithoutSpaceInput[]
-  deleteMany?: Prisma.spaceElementsScalarWhereInput | Prisma.spaceElementsScalarWhereInput[]
+export type SpaceElementsUncheckedUpdateManyWithoutSpaceNestedInput = {
+  create?: Prisma.XOR<Prisma.SpaceElementsCreateWithoutSpaceInput, Prisma.SpaceElementsUncheckedCreateWithoutSpaceInput> | Prisma.SpaceElementsCreateWithoutSpaceInput[] | Prisma.SpaceElementsUncheckedCreateWithoutSpaceInput[]
+  connectOrCreate?: Prisma.SpaceElementsCreateOrConnectWithoutSpaceInput | Prisma.SpaceElementsCreateOrConnectWithoutSpaceInput[]
+  upsert?: Prisma.SpaceElementsUpsertWithWhereUniqueWithoutSpaceInput | Prisma.SpaceElementsUpsertWithWhereUniqueWithoutSpaceInput[]
+  createMany?: Prisma.SpaceElementsCreateManySpaceInputEnvelope
+  set?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  disconnect?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  delete?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  connect?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  update?: Prisma.SpaceElementsUpdateWithWhereUniqueWithoutSpaceInput | Prisma.SpaceElementsUpdateWithWhereUniqueWithoutSpaceInput[]
+  updateMany?: Prisma.SpaceElementsUpdateManyWithWhereWithoutSpaceInput | Prisma.SpaceElementsUpdateManyWithWhereWithoutSpaceInput[]
+  deleteMany?: Prisma.SpaceElementsScalarWhereInput | Prisma.SpaceElementsScalarWhereInput[]
 }
 
-export type spaceElementsCreateNestedManyWithoutElementInput = {
-  create?: Prisma.XOR<Prisma.spaceElementsCreateWithoutElementInput, Prisma.spaceElementsUncheckedCreateWithoutElementInput> | Prisma.spaceElementsCreateWithoutElementInput[] | Prisma.spaceElementsUncheckedCreateWithoutElementInput[]
-  connectOrCreate?: Prisma.spaceElementsCreateOrConnectWithoutElementInput | Prisma.spaceElementsCreateOrConnectWithoutElementInput[]
-  createMany?: Prisma.spaceElementsCreateManyElementInputEnvelope
-  connect?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
+export type SpaceElementsCreateNestedManyWithoutElementInput = {
+  create?: Prisma.XOR<Prisma.SpaceElementsCreateWithoutElementInput, Prisma.SpaceElementsUncheckedCreateWithoutElementInput> | Prisma.SpaceElementsCreateWithoutElementInput[] | Prisma.SpaceElementsUncheckedCreateWithoutElementInput[]
+  connectOrCreate?: Prisma.SpaceElementsCreateOrConnectWithoutElementInput | Prisma.SpaceElementsCreateOrConnectWithoutElementInput[]
+  createMany?: Prisma.SpaceElementsCreateManyElementInputEnvelope
+  connect?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
 }
 
-export type spaceElementsUncheckedCreateNestedManyWithoutElementInput = {
-  create?: Prisma.XOR<Prisma.spaceElementsCreateWithoutElementInput, Prisma.spaceElementsUncheckedCreateWithoutElementInput> | Prisma.spaceElementsCreateWithoutElementInput[] | Prisma.spaceElementsUncheckedCreateWithoutElementInput[]
-  connectOrCreate?: Prisma.spaceElementsCreateOrConnectWithoutElementInput | Prisma.spaceElementsCreateOrConnectWithoutElementInput[]
-  createMany?: Prisma.spaceElementsCreateManyElementInputEnvelope
-  connect?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
+export type SpaceElementsUncheckedCreateNestedManyWithoutElementInput = {
+  create?: Prisma.XOR<Prisma.SpaceElementsCreateWithoutElementInput, Prisma.SpaceElementsUncheckedCreateWithoutElementInput> | Prisma.SpaceElementsCreateWithoutElementInput[] | Prisma.SpaceElementsUncheckedCreateWithoutElementInput[]
+  connectOrCreate?: Prisma.SpaceElementsCreateOrConnectWithoutElementInput | Prisma.SpaceElementsCreateOrConnectWithoutElementInput[]
+  createMany?: Prisma.SpaceElementsCreateManyElementInputEnvelope
+  connect?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
 }
 
-export type spaceElementsUpdateManyWithoutElementNestedInput = {
-  create?: Prisma.XOR<Prisma.spaceElementsCreateWithoutElementInput, Prisma.spaceElementsUncheckedCreateWithoutElementInput> | Prisma.spaceElementsCreateWithoutElementInput[] | Prisma.spaceElementsUncheckedCreateWithoutElementInput[]
-  connectOrCreate?: Prisma.spaceElementsCreateOrConnectWithoutElementInput | Prisma.spaceElementsCreateOrConnectWithoutElementInput[]
-  upsert?: Prisma.spaceElementsUpsertWithWhereUniqueWithoutElementInput | Prisma.spaceElementsUpsertWithWhereUniqueWithoutElementInput[]
-  createMany?: Prisma.spaceElementsCreateManyElementInputEnvelope
-  set?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  disconnect?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  delete?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  connect?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  update?: Prisma.spaceElementsUpdateWithWhereUniqueWithoutElementInput | Prisma.spaceElementsUpdateWithWhereUniqueWithoutElementInput[]
-  updateMany?: Prisma.spaceElementsUpdateManyWithWhereWithoutElementInput | Prisma.spaceElementsUpdateManyWithWhereWithoutElementInput[]
-  deleteMany?: Prisma.spaceElementsScalarWhereInput | Prisma.spaceElementsScalarWhereInput[]
+export type SpaceElementsUpdateManyWithoutElementNestedInput = {
+  create?: Prisma.XOR<Prisma.SpaceElementsCreateWithoutElementInput, Prisma.SpaceElementsUncheckedCreateWithoutElementInput> | Prisma.SpaceElementsCreateWithoutElementInput[] | Prisma.SpaceElementsUncheckedCreateWithoutElementInput[]
+  connectOrCreate?: Prisma.SpaceElementsCreateOrConnectWithoutElementInput | Prisma.SpaceElementsCreateOrConnectWithoutElementInput[]
+  upsert?: Prisma.SpaceElementsUpsertWithWhereUniqueWithoutElementInput | Prisma.SpaceElementsUpsertWithWhereUniqueWithoutElementInput[]
+  createMany?: Prisma.SpaceElementsCreateManyElementInputEnvelope
+  set?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  disconnect?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  delete?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  connect?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  update?: Prisma.SpaceElementsUpdateWithWhereUniqueWithoutElementInput | Prisma.SpaceElementsUpdateWithWhereUniqueWithoutElementInput[]
+  updateMany?: Prisma.SpaceElementsUpdateManyWithWhereWithoutElementInput | Prisma.SpaceElementsUpdateManyWithWhereWithoutElementInput[]
+  deleteMany?: Prisma.SpaceElementsScalarWhereInput | Prisma.SpaceElementsScalarWhereInput[]
 }
 
-export type spaceElementsUncheckedUpdateManyWithoutElementNestedInput = {
-  create?: Prisma.XOR<Prisma.spaceElementsCreateWithoutElementInput, Prisma.spaceElementsUncheckedCreateWithoutElementInput> | Prisma.spaceElementsCreateWithoutElementInput[] | Prisma.spaceElementsUncheckedCreateWithoutElementInput[]
-  connectOrCreate?: Prisma.spaceElementsCreateOrConnectWithoutElementInput | Prisma.spaceElementsCreateOrConnectWithoutElementInput[]
-  upsert?: Prisma.spaceElementsUpsertWithWhereUniqueWithoutElementInput | Prisma.spaceElementsUpsertWithWhereUniqueWithoutElementInput[]
-  createMany?: Prisma.spaceElementsCreateManyElementInputEnvelope
-  set?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  disconnect?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  delete?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  connect?: Prisma.spaceElementsWhereUniqueInput | Prisma.spaceElementsWhereUniqueInput[]
-  update?: Prisma.spaceElementsUpdateWithWhereUniqueWithoutElementInput | Prisma.spaceElementsUpdateWithWhereUniqueWithoutElementInput[]
-  updateMany?: Prisma.spaceElementsUpdateManyWithWhereWithoutElementInput | Prisma.spaceElementsUpdateManyWithWhereWithoutElementInput[]
-  deleteMany?: Prisma.spaceElementsScalarWhereInput | Prisma.spaceElementsScalarWhereInput[]
+export type SpaceElementsUncheckedUpdateManyWithoutElementNestedInput = {
+  create?: Prisma.XOR<Prisma.SpaceElementsCreateWithoutElementInput, Prisma.SpaceElementsUncheckedCreateWithoutElementInput> | Prisma.SpaceElementsCreateWithoutElementInput[] | Prisma.SpaceElementsUncheckedCreateWithoutElementInput[]
+  connectOrCreate?: Prisma.SpaceElementsCreateOrConnectWithoutElementInput | Prisma.SpaceElementsCreateOrConnectWithoutElementInput[]
+  upsert?: Prisma.SpaceElementsUpsertWithWhereUniqueWithoutElementInput | Prisma.SpaceElementsUpsertWithWhereUniqueWithoutElementInput[]
+  createMany?: Prisma.SpaceElementsCreateManyElementInputEnvelope
+  set?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  disconnect?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  delete?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  connect?: Prisma.SpaceElementsWhereUniqueInput | Prisma.SpaceElementsWhereUniqueInput[]
+  update?: Prisma.SpaceElementsUpdateWithWhereUniqueWithoutElementInput | Prisma.SpaceElementsUpdateWithWhereUniqueWithoutElementInput[]
+  updateMany?: Prisma.SpaceElementsUpdateManyWithWhereWithoutElementInput | Prisma.SpaceElementsUpdateManyWithWhereWithoutElementInput[]
+  deleteMany?: Prisma.SpaceElementsScalarWhereInput | Prisma.SpaceElementsScalarWhereInput[]
 }
 
-export type spaceElementsCreateWithoutSpaceInput = {
+export type SpaceElementsCreateWithoutSpaceInput = {
   id?: string
   x: number
   y: number
   element: Prisma.ElementCreateNestedOneWithoutSpacesInput
 }
 
-export type spaceElementsUncheckedCreateWithoutSpaceInput = {
+export type SpaceElementsUncheckedCreateWithoutSpaceInput = {
   id?: string
   elementId: string
   x: number
   y: number
 }
 
-export type spaceElementsCreateOrConnectWithoutSpaceInput = {
-  where: Prisma.spaceElementsWhereUniqueInput
-  create: Prisma.XOR<Prisma.spaceElementsCreateWithoutSpaceInput, Prisma.spaceElementsUncheckedCreateWithoutSpaceInput>
+export type SpaceElementsCreateOrConnectWithoutSpaceInput = {
+  where: Prisma.SpaceElementsWhereUniqueInput
+  create: Prisma.XOR<Prisma.SpaceElementsCreateWithoutSpaceInput, Prisma.SpaceElementsUncheckedCreateWithoutSpaceInput>
 }
 
-export type spaceElementsCreateManySpaceInputEnvelope = {
-  data: Prisma.spaceElementsCreateManySpaceInput | Prisma.spaceElementsCreateManySpaceInput[]
+export type SpaceElementsCreateManySpaceInputEnvelope = {
+  data: Prisma.SpaceElementsCreateManySpaceInput | Prisma.SpaceElementsCreateManySpaceInput[]
   skipDuplicates?: boolean
 }
 
-export type spaceElementsUpsertWithWhereUniqueWithoutSpaceInput = {
-  where: Prisma.spaceElementsWhereUniqueInput
-  update: Prisma.XOR<Prisma.spaceElementsUpdateWithoutSpaceInput, Prisma.spaceElementsUncheckedUpdateWithoutSpaceInput>
-  create: Prisma.XOR<Prisma.spaceElementsCreateWithoutSpaceInput, Prisma.spaceElementsUncheckedCreateWithoutSpaceInput>
+export type SpaceElementsUpsertWithWhereUniqueWithoutSpaceInput = {
+  where: Prisma.SpaceElementsWhereUniqueInput
+  update: Prisma.XOR<Prisma.SpaceElementsUpdateWithoutSpaceInput, Prisma.SpaceElementsUncheckedUpdateWithoutSpaceInput>
+  create: Prisma.XOR<Prisma.SpaceElementsCreateWithoutSpaceInput, Prisma.SpaceElementsUncheckedCreateWithoutSpaceInput>
 }
 
-export type spaceElementsUpdateWithWhereUniqueWithoutSpaceInput = {
-  where: Prisma.spaceElementsWhereUniqueInput
-  data: Prisma.XOR<Prisma.spaceElementsUpdateWithoutSpaceInput, Prisma.spaceElementsUncheckedUpdateWithoutSpaceInput>
+export type SpaceElementsUpdateWithWhereUniqueWithoutSpaceInput = {
+  where: Prisma.SpaceElementsWhereUniqueInput
+  data: Prisma.XOR<Prisma.SpaceElementsUpdateWithoutSpaceInput, Prisma.SpaceElementsUncheckedUpdateWithoutSpaceInput>
 }
 
-export type spaceElementsUpdateManyWithWhereWithoutSpaceInput = {
-  where: Prisma.spaceElementsScalarWhereInput
-  data: Prisma.XOR<Prisma.spaceElementsUpdateManyMutationInput, Prisma.spaceElementsUncheckedUpdateManyWithoutSpaceInput>
+export type SpaceElementsUpdateManyWithWhereWithoutSpaceInput = {
+  where: Prisma.SpaceElementsScalarWhereInput
+  data: Prisma.XOR<Prisma.SpaceElementsUpdateManyMutationInput, Prisma.SpaceElementsUncheckedUpdateManyWithoutSpaceInput>
 }
 
-export type spaceElementsScalarWhereInput = {
-  AND?: Prisma.spaceElementsScalarWhereInput | Prisma.spaceElementsScalarWhereInput[]
-  OR?: Prisma.spaceElementsScalarWhereInput[]
-  NOT?: Prisma.spaceElementsScalarWhereInput | Prisma.spaceElementsScalarWhereInput[]
-  id?: Prisma.StringFilter<"spaceElements"> | string
-  elementId?: Prisma.StringFilter<"spaceElements"> | string
-  spaceId?: Prisma.StringFilter<"spaceElements"> | string
-  x?: Prisma.IntFilter<"spaceElements"> | number
-  y?: Prisma.IntFilter<"spaceElements"> | number
+export type SpaceElementsScalarWhereInput = {
+  AND?: Prisma.SpaceElementsScalarWhereInput | Prisma.SpaceElementsScalarWhereInput[]
+  OR?: Prisma.SpaceElementsScalarWhereInput[]
+  NOT?: Prisma.SpaceElementsScalarWhereInput | Prisma.SpaceElementsScalarWhereInput[]
+  id?: Prisma.StringFilter<"SpaceElements"> | string
+  elementId?: Prisma.StringFilter<"SpaceElements"> | string
+  spaceId?: Prisma.StringFilter<"SpaceElements"> | string
+  x?: Prisma.IntFilter<"SpaceElements"> | number
+  y?: Prisma.IntFilter<"SpaceElements"> | number
 }
 
-export type spaceElementsCreateWithoutElementInput = {
+export type SpaceElementsCreateWithoutElementInput = {
   id?: string
   x: number
   y: number
   space: Prisma.SpaceCreateNestedOneWithoutElementsInput
 }
 
-export type spaceElementsUncheckedCreateWithoutElementInput = {
+export type SpaceElementsUncheckedCreateWithoutElementInput = {
   id?: string
   spaceId: string
   x: number
   y: number
 }
 
-export type spaceElementsCreateOrConnectWithoutElementInput = {
-  where: Prisma.spaceElementsWhereUniqueInput
-  create: Prisma.XOR<Prisma.spaceElementsCreateWithoutElementInput, Prisma.spaceElementsUncheckedCreateWithoutElementInput>
+export type SpaceElementsCreateOrConnectWithoutElementInput = {
+  where: Prisma.SpaceElementsWhereUniqueInput
+  create: Prisma.XOR<Prisma.SpaceElementsCreateWithoutElementInput, Prisma.SpaceElementsUncheckedCreateWithoutElementInput>
 }
 
-export type spaceElementsCreateManyElementInputEnvelope = {
-  data: Prisma.spaceElementsCreateManyElementInput | Prisma.spaceElementsCreateManyElementInput[]
+export type SpaceElementsCreateManyElementInputEnvelope = {
+  data: Prisma.SpaceElementsCreateManyElementInput | Prisma.SpaceElementsCreateManyElementInput[]
   skipDuplicates?: boolean
 }
 
-export type spaceElementsUpsertWithWhereUniqueWithoutElementInput = {
-  where: Prisma.spaceElementsWhereUniqueInput
-  update: Prisma.XOR<Prisma.spaceElementsUpdateWithoutElementInput, Prisma.spaceElementsUncheckedUpdateWithoutElementInput>
-  create: Prisma.XOR<Prisma.spaceElementsCreateWithoutElementInput, Prisma.spaceElementsUncheckedCreateWithoutElementInput>
+export type SpaceElementsUpsertWithWhereUniqueWithoutElementInput = {
+  where: Prisma.SpaceElementsWhereUniqueInput
+  update: Prisma.XOR<Prisma.SpaceElementsUpdateWithoutElementInput, Prisma.SpaceElementsUncheckedUpdateWithoutElementInput>
+  create: Prisma.XOR<Prisma.SpaceElementsCreateWithoutElementInput, Prisma.SpaceElementsUncheckedCreateWithoutElementInput>
 }
 
-export type spaceElementsUpdateWithWhereUniqueWithoutElementInput = {
-  where: Prisma.spaceElementsWhereUniqueInput
-  data: Prisma.XOR<Prisma.spaceElementsUpdateWithoutElementInput, Prisma.spaceElementsUncheckedUpdateWithoutElementInput>
+export type SpaceElementsUpdateWithWhereUniqueWithoutElementInput = {
+  where: Prisma.SpaceElementsWhereUniqueInput
+  data: Prisma.XOR<Prisma.SpaceElementsUpdateWithoutElementInput, Prisma.SpaceElementsUncheckedUpdateWithoutElementInput>
 }
 
-export type spaceElementsUpdateManyWithWhereWithoutElementInput = {
-  where: Prisma.spaceElementsScalarWhereInput
-  data: Prisma.XOR<Prisma.spaceElementsUpdateManyMutationInput, Prisma.spaceElementsUncheckedUpdateManyWithoutElementInput>
+export type SpaceElementsUpdateManyWithWhereWithoutElementInput = {
+  where: Prisma.SpaceElementsScalarWhereInput
+  data: Prisma.XOR<Prisma.SpaceElementsUpdateManyMutationInput, Prisma.SpaceElementsUncheckedUpdateManyWithoutElementInput>
 }
 
-export type spaceElementsCreateManySpaceInput = {
+export type SpaceElementsCreateManySpaceInput = {
   id?: string
   elementId: string
   x: number
   y: number
 }
 
-export type spaceElementsUpdateWithoutSpaceInput = {
+export type SpaceElementsUpdateWithoutSpaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   x?: Prisma.IntFieldUpdateOperationsInput | number
   y?: Prisma.IntFieldUpdateOperationsInput | number
   element?: Prisma.ElementUpdateOneRequiredWithoutSpacesNestedInput
 }
 
-export type spaceElementsUncheckedUpdateWithoutSpaceInput = {
+export type SpaceElementsUncheckedUpdateWithoutSpaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   elementId?: Prisma.StringFieldUpdateOperationsInput | string
   x?: Prisma.IntFieldUpdateOperationsInput | number
   y?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
-export type spaceElementsUncheckedUpdateManyWithoutSpaceInput = {
+export type SpaceElementsUncheckedUpdateManyWithoutSpaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   elementId?: Prisma.StringFieldUpdateOperationsInput | string
   x?: Prisma.IntFieldUpdateOperationsInput | number
   y?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
-export type spaceElementsCreateManyElementInput = {
+export type SpaceElementsCreateManyElementInput = {
   id?: string
   spaceId: string
   x: number
   y: number
 }
 
-export type spaceElementsUpdateWithoutElementInput = {
+export type SpaceElementsUpdateWithoutElementInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   x?: Prisma.IntFieldUpdateOperationsInput | number
   y?: Prisma.IntFieldUpdateOperationsInput | number
   space?: Prisma.SpaceUpdateOneRequiredWithoutElementsNestedInput
 }
 
-export type spaceElementsUncheckedUpdateWithoutElementInput = {
+export type SpaceElementsUncheckedUpdateWithoutElementInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   spaceId?: Prisma.StringFieldUpdateOperationsInput | string
   x?: Prisma.IntFieldUpdateOperationsInput | number
   y?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
-export type spaceElementsUncheckedUpdateManyWithoutElementInput = {
+export type SpaceElementsUncheckedUpdateManyWithoutElementInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   spaceId?: Prisma.StringFieldUpdateOperationsInput | string
   x?: Prisma.IntFieldUpdateOperationsInput | number
@@ -609,7 +609,7 @@ export type spaceElementsUncheckedUpdateManyWithoutElementInput = {
 
 
 
-export type spaceElementsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type SpaceElementsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   elementId?: boolean
   spaceId?: boolean
@@ -619,7 +619,7 @@ export type spaceElementsSelect<ExtArgs extends runtime.Types.Extensions.Interna
   element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["spaceElements"]>
 
-export type spaceElementsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type SpaceElementsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   elementId?: boolean
   spaceId?: boolean
@@ -629,7 +629,7 @@ export type spaceElementsSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["spaceElements"]>
 
-export type spaceElementsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type SpaceElementsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   elementId?: boolean
   spaceId?: boolean
@@ -639,7 +639,7 @@ export type spaceElementsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["spaceElements"]>
 
-export type spaceElementsSelectScalar = {
+export type SpaceElementsSelectScalar = {
   id?: boolean
   elementId?: boolean
   spaceId?: boolean
@@ -647,22 +647,22 @@ export type spaceElementsSelectScalar = {
   y?: boolean
 }
 
-export type spaceElementsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "elementId" | "spaceId" | "x" | "y", ExtArgs["result"]["spaceElements"]>
-export type spaceElementsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "elementId" | "spaceId" | "x" | "y", ExtArgs["result"]["spaceElements"]>
+export type SpaceElementsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   space?: boolean | Prisma.SpaceDefaultArgs<ExtArgs>
   element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
 }
-export type spaceElementsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   space?: boolean | Prisma.SpaceDefaultArgs<ExtArgs>
   element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
 }
-export type spaceElementsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   space?: boolean | Prisma.SpaceDefaultArgs<ExtArgs>
   element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
 }
 
-export type $spaceElementsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  name: "spaceElements"
+export type $SpaceElementsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  name: "SpaceElements"
   objects: {
     space: Prisma.$SpacePayload<ExtArgs>
     element: Prisma.$ElementPayload<ExtArgs>
@@ -677,18 +677,18 @@ export type $spaceElementsPayload<ExtArgs extends runtime.Types.Extensions.Inter
   composites: {}
 }
 
-export type spaceElementsGetPayload<S extends boolean | null | undefined | spaceElementsDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload, S>
+export type SpaceElementsGetPayload<S extends boolean | null | undefined | SpaceElementsDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload, S>
 
-export type spaceElementsCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<spaceElementsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+export type SpaceElementsCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
+  Omit<SpaceElementsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
     select?: SpaceElementsCountAggregateInputType | true
   }
 
-export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['spaceElements'], meta: { name: 'spaceElements' } }
+export interface SpaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SpaceElements'], meta: { name: 'SpaceElements' } }
   /**
    * Find zero or one SpaceElements that matches the filter.
-   * @param {spaceElementsFindUniqueArgs} args - Arguments to find a SpaceElements
+   * @param {SpaceElementsFindUniqueArgs} args - Arguments to find a SpaceElements
    * @example
    * // Get one SpaceElements
    * const spaceElements = await prisma.spaceElements.findUnique({
@@ -697,12 +697,12 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    *   }
    * })
    */
-  findUnique<T extends spaceElementsFindUniqueArgs>(args: Prisma.SelectSubset<T, spaceElementsFindUniqueArgs<ExtArgs>>): Prisma.Prisma__spaceElementsClient<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findUnique<T extends SpaceElementsFindUniqueArgs>(args: Prisma.SelectSubset<T, SpaceElementsFindUniqueArgs<ExtArgs>>): Prisma.Prisma__SpaceElementsClient<runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find one SpaceElements that matches the filter or throw an error with `error.code='P2025'`
    * if no matches were found.
-   * @param {spaceElementsFindUniqueOrThrowArgs} args - Arguments to find a SpaceElements
+   * @param {SpaceElementsFindUniqueOrThrowArgs} args - Arguments to find a SpaceElements
    * @example
    * // Get one SpaceElements
    * const spaceElements = await prisma.spaceElements.findUniqueOrThrow({
@@ -711,13 +711,13 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    *   }
    * })
    */
-  findUniqueOrThrow<T extends spaceElementsFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, spaceElementsFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__spaceElementsClient<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findUniqueOrThrow<T extends SpaceElementsFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, SpaceElementsFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__SpaceElementsClient<runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first SpaceElements that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {spaceElementsFindFirstArgs} args - Arguments to find a SpaceElements
+   * @param {SpaceElementsFindFirstArgs} args - Arguments to find a SpaceElements
    * @example
    * // Get one SpaceElements
    * const spaceElements = await prisma.spaceElements.findFirst({
@@ -726,14 +726,14 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    *   }
    * })
    */
-  findFirst<T extends spaceElementsFindFirstArgs>(args?: Prisma.SelectSubset<T, spaceElementsFindFirstArgs<ExtArgs>>): Prisma.Prisma__spaceElementsClient<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findFirst<T extends SpaceElementsFindFirstArgs>(args?: Prisma.SelectSubset<T, SpaceElementsFindFirstArgs<ExtArgs>>): Prisma.Prisma__SpaceElementsClient<runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first SpaceElements that matches the filter or
    * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {spaceElementsFindFirstOrThrowArgs} args - Arguments to find a SpaceElements
+   * @param {SpaceElementsFindFirstOrThrowArgs} args - Arguments to find a SpaceElements
    * @example
    * // Get one SpaceElements
    * const spaceElements = await prisma.spaceElements.findFirstOrThrow({
@@ -742,13 +742,13 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    *   }
    * })
    */
-  findFirstOrThrow<T extends spaceElementsFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, spaceElementsFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__spaceElementsClient<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findFirstOrThrow<T extends SpaceElementsFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, SpaceElementsFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__SpaceElementsClient<runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find zero or more SpaceElements that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {spaceElementsFindManyArgs} args - Arguments to filter and select certain fields only.
+   * @param {SpaceElementsFindManyArgs} args - Arguments to filter and select certain fields only.
    * @example
    * // Get all SpaceElements
    * const spaceElements = await prisma.spaceElements.findMany()
@@ -760,11 +760,11 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    * const spaceElementsWithIdOnly = await prisma.spaceElements.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends spaceElementsFindManyArgs>(args?: Prisma.SelectSubset<T, spaceElementsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+  findMany<T extends SpaceElementsFindManyArgs>(args?: Prisma.SelectSubset<T, SpaceElementsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
   /**
    * Create a SpaceElements.
-   * @param {spaceElementsCreateArgs} args - Arguments to create a SpaceElements.
+   * @param {SpaceElementsCreateArgs} args - Arguments to create a SpaceElements.
    * @example
    * // Create one SpaceElements
    * const SpaceElements = await prisma.spaceElements.create({
@@ -774,11 +774,11 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    * })
    * 
    */
-  create<T extends spaceElementsCreateArgs>(args: Prisma.SelectSubset<T, spaceElementsCreateArgs<ExtArgs>>): Prisma.Prisma__spaceElementsClient<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  create<T extends SpaceElementsCreateArgs>(args: Prisma.SelectSubset<T, SpaceElementsCreateArgs<ExtArgs>>): Prisma.Prisma__SpaceElementsClient<runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Create many SpaceElements.
-   * @param {spaceElementsCreateManyArgs} args - Arguments to create many SpaceElements.
+   * @param {SpaceElementsCreateManyArgs} args - Arguments to create many SpaceElements.
    * @example
    * // Create many SpaceElements
    * const spaceElements = await prisma.spaceElements.createMany({
@@ -788,11 +788,11 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    * })
    *     
    */
-  createMany<T extends spaceElementsCreateManyArgs>(args?: Prisma.SelectSubset<T, spaceElementsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  createMany<T extends SpaceElementsCreateManyArgs>(args?: Prisma.SelectSubset<T, SpaceElementsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Create many SpaceElements and returns the data saved in the database.
-   * @param {spaceElementsCreateManyAndReturnArgs} args - Arguments to create many SpaceElements.
+   * @param {SpaceElementsCreateManyAndReturnArgs} args - Arguments to create many SpaceElements.
    * @example
    * // Create many SpaceElements
    * const spaceElements = await prisma.spaceElements.createManyAndReturn({
@@ -812,11 +812,11 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    * Read more here: https://pris.ly/d/null-undefined
    * 
    */
-  createManyAndReturn<T extends spaceElementsCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, spaceElementsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+  createManyAndReturn<T extends SpaceElementsCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, SpaceElementsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Delete a SpaceElements.
-   * @param {spaceElementsDeleteArgs} args - Arguments to delete one SpaceElements.
+   * @param {SpaceElementsDeleteArgs} args - Arguments to delete one SpaceElements.
    * @example
    * // Delete one SpaceElements
    * const SpaceElements = await prisma.spaceElements.delete({
@@ -826,11 +826,11 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    * })
    * 
    */
-  delete<T extends spaceElementsDeleteArgs>(args: Prisma.SelectSubset<T, spaceElementsDeleteArgs<ExtArgs>>): Prisma.Prisma__spaceElementsClient<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  delete<T extends SpaceElementsDeleteArgs>(args: Prisma.SelectSubset<T, SpaceElementsDeleteArgs<ExtArgs>>): Prisma.Prisma__SpaceElementsClient<runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Update one SpaceElements.
-   * @param {spaceElementsUpdateArgs} args - Arguments to update one SpaceElements.
+   * @param {SpaceElementsUpdateArgs} args - Arguments to update one SpaceElements.
    * @example
    * // Update one SpaceElements
    * const spaceElements = await prisma.spaceElements.update({
@@ -843,11 +843,11 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    * })
    * 
    */
-  update<T extends spaceElementsUpdateArgs>(args: Prisma.SelectSubset<T, spaceElementsUpdateArgs<ExtArgs>>): Prisma.Prisma__spaceElementsClient<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  update<T extends SpaceElementsUpdateArgs>(args: Prisma.SelectSubset<T, SpaceElementsUpdateArgs<ExtArgs>>): Prisma.Prisma__SpaceElementsClient<runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Delete zero or more SpaceElements.
-   * @param {spaceElementsDeleteManyArgs} args - Arguments to filter SpaceElements to delete.
+   * @param {SpaceElementsDeleteManyArgs} args - Arguments to filter SpaceElements to delete.
    * @example
    * // Delete a few SpaceElements
    * const { count } = await prisma.spaceElements.deleteMany({
@@ -857,13 +857,13 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    * })
    * 
    */
-  deleteMany<T extends spaceElementsDeleteManyArgs>(args?: Prisma.SelectSubset<T, spaceElementsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  deleteMany<T extends SpaceElementsDeleteManyArgs>(args?: Prisma.SelectSubset<T, SpaceElementsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more SpaceElements.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {spaceElementsUpdateManyArgs} args - Arguments to update one or more rows.
+   * @param {SpaceElementsUpdateManyArgs} args - Arguments to update one or more rows.
    * @example
    * // Update many SpaceElements
    * const spaceElements = await prisma.spaceElements.updateMany({
@@ -876,11 +876,11 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    * })
    * 
    */
-  updateMany<T extends spaceElementsUpdateManyArgs>(args: Prisma.SelectSubset<T, spaceElementsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  updateMany<T extends SpaceElementsUpdateManyArgs>(args: Prisma.SelectSubset<T, SpaceElementsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more SpaceElements and returns the data updated in the database.
-   * @param {spaceElementsUpdateManyAndReturnArgs} args - Arguments to update many SpaceElements.
+   * @param {SpaceElementsUpdateManyAndReturnArgs} args - Arguments to update many SpaceElements.
    * @example
    * // Update many SpaceElements
    * const spaceElements = await prisma.spaceElements.updateManyAndReturn({
@@ -906,11 +906,11 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    * Read more here: https://pris.ly/d/null-undefined
    * 
    */
-  updateManyAndReturn<T extends spaceElementsUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, spaceElementsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+  updateManyAndReturn<T extends SpaceElementsUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, SpaceElementsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Create or update one SpaceElements.
-   * @param {spaceElementsUpsertArgs} args - Arguments to update or create a SpaceElements.
+   * @param {SpaceElementsUpsertArgs} args - Arguments to update or create a SpaceElements.
    * @example
    * // Update or create a SpaceElements
    * const spaceElements = await prisma.spaceElements.upsert({
@@ -925,14 +925,14 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    *   }
    * })
    */
-  upsert<T extends spaceElementsUpsertArgs>(args: Prisma.SelectSubset<T, spaceElementsUpsertArgs<ExtArgs>>): Prisma.Prisma__spaceElementsClient<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  upsert<T extends SpaceElementsUpsertArgs>(args: Prisma.SelectSubset<T, SpaceElementsUpsertArgs<ExtArgs>>): Prisma.Prisma__SpaceElementsClient<runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
   /**
    * Count the number of SpaceElements.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {spaceElementsCountArgs} args - Arguments to filter SpaceElements to count.
+   * @param {SpaceElementsCountArgs} args - Arguments to filter SpaceElements to count.
    * @example
    * // Count the number of SpaceElements
    * const count = await prisma.spaceElements.count({
@@ -941,8 +941,8 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    *   }
    * })
   **/
-  count<T extends spaceElementsCountArgs>(
-    args?: Prisma.Subset<T, spaceElementsCountArgs>,
+  count<T extends SpaceElementsCountArgs>(
+    args?: Prisma.Subset<T, SpaceElementsCountArgs>,
   ): Prisma.PrismaPromise<
     T extends runtime.Types.Utils.Record<'select', any>
       ? T['select'] extends true
@@ -981,7 +981,7 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    * Group by SpaceElements.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {spaceElementsGroupByArgs} args - Group by arguments.
+   * @param {SpaceElementsGroupByArgs} args - Group by arguments.
    * @example
    * // Group by city, order by createdAt, get count
    * const result = await prisma.user.groupBy({
@@ -996,14 +996,14 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
    * 
   **/
   groupBy<
-    T extends spaceElementsGroupByArgs,
+    T extends SpaceElementsGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
       Prisma.Extends<'skip', Prisma.Keys<T>>,
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends Prisma.True extends HasSelectOrTake
-      ? { orderBy: spaceElementsGroupByArgs['orderBy'] }
-      : { orderBy?: spaceElementsGroupByArgs['orderBy'] },
+      ? { orderBy: SpaceElementsGroupByArgs['orderBy'] }
+      : { orderBy?: SpaceElementsGroupByArgs['orderBy'] },
     OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>,
     ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
@@ -1052,20 +1052,20 @@ export interface spaceElementsDelegate<ExtArgs extends runtime.Types.Extensions.
           ? never
           : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
       }[OrderFields]
-  >(args: Prisma.SubsetIntersection<T, spaceElementsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSpaceElementsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  >(args: Prisma.SubsetIntersection<T, SpaceElementsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSpaceElementsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 /**
- * Fields of the spaceElements model
+ * Fields of the SpaceElements model
  */
-readonly fields: spaceElementsFieldRefs;
+readonly fields: SpaceElementsFieldRefs;
 }
 
 /**
- * The delegate class that acts as a "Promise-like" for spaceElements.
+ * The delegate class that acts as a "Promise-like" for SpaceElements.
  * Why is this prefixed with `Prisma__`?
  * Because we want to prevent naming conflicts as mentioned in
  * https://github.com/prisma/prisma-client-js/issues/707
  */
-export interface Prisma__spaceElementsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+export interface Prisma__SpaceElementsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   space<T extends Prisma.SpaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SpaceDefaultArgs<ExtArgs>>): Prisma.Prisma__SpaceClient<runtime.Types.Result.GetResult<Prisma.$SpacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   element<T extends Prisma.ElementDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ElementDefaultArgs<ExtArgs>>): Prisma.Prisma__ElementClient<runtime.Types.Result.GetResult<Prisma.$ElementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -1095,428 +1095,428 @@ export interface Prisma__spaceElementsClient<T, Null = never, ExtArgs extends ru
 
 
 /**
- * Fields of the spaceElements model
+ * Fields of the SpaceElements model
  */
-export interface spaceElementsFieldRefs {
-  readonly id: Prisma.FieldRef<"spaceElements", 'String'>
-  readonly elementId: Prisma.FieldRef<"spaceElements", 'String'>
-  readonly spaceId: Prisma.FieldRef<"spaceElements", 'String'>
-  readonly x: Prisma.FieldRef<"spaceElements", 'Int'>
-  readonly y: Prisma.FieldRef<"spaceElements", 'Int'>
+export interface SpaceElementsFieldRefs {
+  readonly id: Prisma.FieldRef<"SpaceElements", 'String'>
+  readonly elementId: Prisma.FieldRef<"SpaceElements", 'String'>
+  readonly spaceId: Prisma.FieldRef<"SpaceElements", 'String'>
+  readonly x: Prisma.FieldRef<"SpaceElements", 'Int'>
+  readonly y: Prisma.FieldRef<"SpaceElements", 'Int'>
 }
     
 
 // Custom InputTypes
 /**
- * spaceElements findUnique
+ * SpaceElements findUnique
  */
-export type spaceElementsFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelect<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsInclude<ExtArgs> | null
+  include?: Prisma.SpaceElementsInclude<ExtArgs> | null
   /**
-   * Filter, which spaceElements to fetch.
+   * Filter, which SpaceElements to fetch.
    */
-  where: Prisma.spaceElementsWhereUniqueInput
+  where: Prisma.SpaceElementsWhereUniqueInput
 }
 
 /**
- * spaceElements findUniqueOrThrow
+ * SpaceElements findUniqueOrThrow
  */
-export type spaceElementsFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelect<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsInclude<ExtArgs> | null
+  include?: Prisma.SpaceElementsInclude<ExtArgs> | null
   /**
-   * Filter, which spaceElements to fetch.
+   * Filter, which SpaceElements to fetch.
    */
-  where: Prisma.spaceElementsWhereUniqueInput
+  where: Prisma.SpaceElementsWhereUniqueInput
 }
 
 /**
- * spaceElements findFirst
+ * SpaceElements findFirst
  */
-export type spaceElementsFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelect<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsInclude<ExtArgs> | null
+  include?: Prisma.SpaceElementsInclude<ExtArgs> | null
   /**
-   * Filter, which spaceElements to fetch.
+   * Filter, which SpaceElements to fetch.
    */
-  where?: Prisma.spaceElementsWhereInput
+  where?: Prisma.SpaceElementsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of spaceElements to fetch.
+   * Determine the order of SpaceElements to fetch.
    */
-  orderBy?: Prisma.spaceElementsOrderByWithRelationInput | Prisma.spaceElementsOrderByWithRelationInput[]
+  orderBy?: Prisma.SpaceElementsOrderByWithRelationInput | Prisma.SpaceElementsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for spaceElements.
+   * Sets the position for searching for SpaceElements.
    */
-  cursor?: Prisma.spaceElementsWhereUniqueInput
+  cursor?: Prisma.SpaceElementsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` spaceElements from the position of the cursor.
+   * Take `±n` SpaceElements from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` spaceElements.
+   * Skip the first `n` SpaceElements.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of spaceElements.
+   * Filter by unique combinations of SpaceElements.
    */
   distinct?: Prisma.SpaceElementsScalarFieldEnum | Prisma.SpaceElementsScalarFieldEnum[]
 }
 
 /**
- * spaceElements findFirstOrThrow
+ * SpaceElements findFirstOrThrow
  */
-export type spaceElementsFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelect<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsInclude<ExtArgs> | null
+  include?: Prisma.SpaceElementsInclude<ExtArgs> | null
   /**
-   * Filter, which spaceElements to fetch.
+   * Filter, which SpaceElements to fetch.
    */
-  where?: Prisma.spaceElementsWhereInput
+  where?: Prisma.SpaceElementsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of spaceElements to fetch.
+   * Determine the order of SpaceElements to fetch.
    */
-  orderBy?: Prisma.spaceElementsOrderByWithRelationInput | Prisma.spaceElementsOrderByWithRelationInput[]
+  orderBy?: Prisma.SpaceElementsOrderByWithRelationInput | Prisma.SpaceElementsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for spaceElements.
+   * Sets the position for searching for SpaceElements.
    */
-  cursor?: Prisma.spaceElementsWhereUniqueInput
+  cursor?: Prisma.SpaceElementsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` spaceElements from the position of the cursor.
+   * Take `±n` SpaceElements from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` spaceElements.
+   * Skip the first `n` SpaceElements.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of spaceElements.
+   * Filter by unique combinations of SpaceElements.
    */
   distinct?: Prisma.SpaceElementsScalarFieldEnum | Prisma.SpaceElementsScalarFieldEnum[]
 }
 
 /**
- * spaceElements findMany
+ * SpaceElements findMany
  */
-export type spaceElementsFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelect<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsInclude<ExtArgs> | null
+  include?: Prisma.SpaceElementsInclude<ExtArgs> | null
   /**
-   * Filter, which spaceElements to fetch.
+   * Filter, which SpaceElements to fetch.
    */
-  where?: Prisma.spaceElementsWhereInput
+  where?: Prisma.SpaceElementsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of spaceElements to fetch.
+   * Determine the order of SpaceElements to fetch.
    */
-  orderBy?: Prisma.spaceElementsOrderByWithRelationInput | Prisma.spaceElementsOrderByWithRelationInput[]
+  orderBy?: Prisma.SpaceElementsOrderByWithRelationInput | Prisma.SpaceElementsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for listing spaceElements.
+   * Sets the position for listing SpaceElements.
    */
-  cursor?: Prisma.spaceElementsWhereUniqueInput
+  cursor?: Prisma.SpaceElementsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` spaceElements from the position of the cursor.
+   * Take `±n` SpaceElements from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` spaceElements.
+   * Skip the first `n` SpaceElements.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of spaceElements.
+   * Filter by unique combinations of SpaceElements.
    */
   distinct?: Prisma.SpaceElementsScalarFieldEnum | Prisma.SpaceElementsScalarFieldEnum[]
 }
 
 /**
- * spaceElements create
+ * SpaceElements create
  */
-export type spaceElementsCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelect<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsInclude<ExtArgs> | null
+  include?: Prisma.SpaceElementsInclude<ExtArgs> | null
   /**
-   * The data needed to create a spaceElements.
+   * The data needed to create a SpaceElements.
    */
-  data: Prisma.XOR<Prisma.spaceElementsCreateInput, Prisma.spaceElementsUncheckedCreateInput>
+  data: Prisma.XOR<Prisma.SpaceElementsCreateInput, Prisma.SpaceElementsUncheckedCreateInput>
 }
 
 /**
- * spaceElements createMany
+ * SpaceElements createMany
  */
-export type spaceElementsCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to create many spaceElements.
+   * The data used to create many SpaceElements.
    */
-  data: Prisma.spaceElementsCreateManyInput | Prisma.spaceElementsCreateManyInput[]
+  data: Prisma.SpaceElementsCreateManyInput | Prisma.SpaceElementsCreateManyInput[]
   skipDuplicates?: boolean
 }
 
 /**
- * spaceElements createManyAndReturn
+ * SpaceElements createManyAndReturn
  */
-export type spaceElementsCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelectCreateManyAndReturn<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelectCreateManyAndReturn<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
-   * The data used to create many spaceElements.
+   * The data used to create many SpaceElements.
    */
-  data: Prisma.spaceElementsCreateManyInput | Prisma.spaceElementsCreateManyInput[]
+  data: Prisma.SpaceElementsCreateManyInput | Prisma.SpaceElementsCreateManyInput[]
   skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsIncludeCreateManyAndReturn<ExtArgs> | null
+  include?: Prisma.SpaceElementsIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
- * spaceElements update
+ * SpaceElements update
  */
-export type spaceElementsUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelect<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsInclude<ExtArgs> | null
+  include?: Prisma.SpaceElementsInclude<ExtArgs> | null
   /**
-   * The data needed to update a spaceElements.
+   * The data needed to update a SpaceElements.
    */
-  data: Prisma.XOR<Prisma.spaceElementsUpdateInput, Prisma.spaceElementsUncheckedUpdateInput>
+  data: Prisma.XOR<Prisma.SpaceElementsUpdateInput, Prisma.SpaceElementsUncheckedUpdateInput>
   /**
-   * Choose, which spaceElements to update.
+   * Choose, which SpaceElements to update.
    */
-  where: Prisma.spaceElementsWhereUniqueInput
+  where: Prisma.SpaceElementsWhereUniqueInput
 }
 
 /**
- * spaceElements updateMany
+ * SpaceElements updateMany
  */
-export type spaceElementsUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to update spaceElements.
+   * The data used to update SpaceElements.
    */
-  data: Prisma.XOR<Prisma.spaceElementsUpdateManyMutationInput, Prisma.spaceElementsUncheckedUpdateManyInput>
+  data: Prisma.XOR<Prisma.SpaceElementsUpdateManyMutationInput, Prisma.SpaceElementsUncheckedUpdateManyInput>
   /**
-   * Filter which spaceElements to update
+   * Filter which SpaceElements to update
    */
-  where?: Prisma.spaceElementsWhereInput
+  where?: Prisma.SpaceElementsWhereInput
   /**
-   * Limit how many spaceElements to update.
+   * Limit how many SpaceElements to update.
    */
   limit?: number
 }
 
 /**
- * spaceElements updateManyAndReturn
+ * SpaceElements updateManyAndReturn
  */
-export type spaceElementsUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelectUpdateManyAndReturn<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelectUpdateManyAndReturn<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
-   * The data used to update spaceElements.
+   * The data used to update SpaceElements.
    */
-  data: Prisma.XOR<Prisma.spaceElementsUpdateManyMutationInput, Prisma.spaceElementsUncheckedUpdateManyInput>
+  data: Prisma.XOR<Prisma.SpaceElementsUpdateManyMutationInput, Prisma.SpaceElementsUncheckedUpdateManyInput>
   /**
-   * Filter which spaceElements to update
+   * Filter which SpaceElements to update
    */
-  where?: Prisma.spaceElementsWhereInput
+  where?: Prisma.SpaceElementsWhereInput
   /**
-   * Limit how many spaceElements to update.
+   * Limit how many SpaceElements to update.
    */
   limit?: number
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsIncludeUpdateManyAndReturn<ExtArgs> | null
+  include?: Prisma.SpaceElementsIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
- * spaceElements upsert
+ * SpaceElements upsert
  */
-export type spaceElementsUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelect<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsInclude<ExtArgs> | null
+  include?: Prisma.SpaceElementsInclude<ExtArgs> | null
   /**
-   * The filter to search for the spaceElements to update in case it exists.
+   * The filter to search for the SpaceElements to update in case it exists.
    */
-  where: Prisma.spaceElementsWhereUniqueInput
+  where: Prisma.SpaceElementsWhereUniqueInput
   /**
-   * In case the spaceElements found by the `where` argument doesn't exist, create a new spaceElements with this data.
+   * In case the SpaceElements found by the `where` argument doesn't exist, create a new SpaceElements with this data.
    */
-  create: Prisma.XOR<Prisma.spaceElementsCreateInput, Prisma.spaceElementsUncheckedCreateInput>
+  create: Prisma.XOR<Prisma.SpaceElementsCreateInput, Prisma.SpaceElementsUncheckedCreateInput>
   /**
-   * In case the spaceElements was found with the provided `where` argument, update it with this data.
+   * In case the SpaceElements was found with the provided `where` argument, update it with this data.
    */
-  update: Prisma.XOR<Prisma.spaceElementsUpdateInput, Prisma.spaceElementsUncheckedUpdateInput>
+  update: Prisma.XOR<Prisma.SpaceElementsUpdateInput, Prisma.SpaceElementsUncheckedUpdateInput>
 }
 
 /**
- * spaceElements delete
+ * SpaceElements delete
  */
-export type spaceElementsDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelect<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsInclude<ExtArgs> | null
+  include?: Prisma.SpaceElementsInclude<ExtArgs> | null
   /**
-   * Filter which spaceElements to delete.
+   * Filter which SpaceElements to delete.
    */
-  where: Prisma.spaceElementsWhereUniqueInput
+  where: Prisma.SpaceElementsWhereUniqueInput
 }
 
 /**
- * spaceElements deleteMany
+ * SpaceElements deleteMany
  */
-export type spaceElementsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which spaceElements to delete
+   * Filter which SpaceElements to delete
    */
-  where?: Prisma.spaceElementsWhereInput
+  where?: Prisma.SpaceElementsWhereInput
   /**
-   * Limit how many spaceElements to delete.
+   * Limit how many SpaceElements to delete.
    */
   limit?: number
 }
 
 /**
- * spaceElements without action
+ * SpaceElements without action
  */
-export type spaceElementsDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type SpaceElementsDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelect<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsInclude<ExtArgs> | null
+  include?: Prisma.SpaceElementsInclude<ExtArgs> | null
 }

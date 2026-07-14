@@ -96,7 +96,7 @@ export function SpacePage() {
           width: res.data.space.width,
           height: res.data.space.height,
         });
-        if(res.data.space.creatorId == userId){
+        if(res.data.space.creatorId === userId){
           setIsCreator(true);
         }
         setThumbnail(res.data.space.thumbnail || null);

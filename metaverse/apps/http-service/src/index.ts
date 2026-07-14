@@ -3,6 +3,9 @@ import express from 'express';
 // 1. Import cors
 import cors from 'cors';
 import { router } from './routes/v1/index.js';
+import { envSchema } from './types/index.js';
+
+envSchema.parse(process.env);
 
 const app = express();
 
@@ -25,6 +28,3 @@ app.use('/api/v1', router);
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server started on port ${process.env.PORT || 3000}`);
 })
-
-// Trigger nodemon 4
-// Trigger nodemon 5

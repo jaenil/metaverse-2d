@@ -3,7 +3,6 @@ import { CreateSpaceSchema, AddElementSchema, DeleteElementSchema } from '../../
 import client from "@repo/db";
 import { adminMiddleware } from '../../middleware/admin.js';
 import { userMiddleware } from '../../middleware/user.js';
-import { parse } from 'dotenv';
 export const spaceRouter = Router();
 
 spaceRouter.post('/', userMiddleware, async (req, res) => {
@@ -43,7 +42,7 @@ spaceRouter.post('/', userMiddleware, async (req, res) => {
                 return res.status(400).json({ message: "Map not found" });
             }
             let space = await client.$transaction(async () => {
-                const curr_space = await client.space.create({
+                const currSpace = await client.space.create({
                     data: {
                         name: parsedData.data.name,
                         width: map.width, //if map is present we will use maps dimension only
@@ -54,13 +53,13 @@ spaceRouter.post('/', userMiddleware, async (req, res) => {
                 });
                 await client.spaceElements.createMany({
                     data: map.mapElements.map(e => ({
-                        spaceId: curr_space.id,
+                        spaceId: currSpace.id,
                         elementId: e.elementId,
                         x: e.x!,
                         y: e.y!
                     }))
                 })
-                return curr_space;
+                return currSpace;
             })
             res.json({ spaceId: space.id })
         }
@@ -134,7 +133,7 @@ spaceRouter.post('/element', userMiddleware, async (req, res) => {
     if(isColliding){
         return res.status(400).json({ message: "Element is colliding with another element" });
     }
-    const created_element = await client.spaceElements.create({
+    const createdElement = await client.spaceElements.create({
         data: {
             spaceId: parsedData.data.spaceId,
             elementId: parsedData.data.elementId,
@@ -142,7 +141,7 @@ spaceRouter.post('/element', userMiddleware, async (req, res) => {
             y: parsedData.data.y,
         }
     })
-    res.status(200).json({ element:created_element })
+    res.status(200).json({ element:createdElement })
 })
 
 spaceRouter.delete('/element', userMiddleware, async (req, res) => {
@@ -204,7 +203,6 @@ spaceRouter.delete('/:spaceId', userMiddleware, async (req, res) => {
         return res.status(200).json({ message: "Space deleted successfully" })
     }
     catch (e) {
-        console.error("Space delete error", e);
         console.error(e); res.status(500).json({ message: "Internal server error" });
 
     }
@@ -241,5 +239,3 @@ spaceRouter.get('/:spaceId', userMiddleware, async (req, res) => {
     })
     return res.status(200).json({ space, elements: space_elements })
 })
-
-// Trigger nodemon 2

@@ -53,7 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Space: 'Space',
-  spaceElements: 'spaceElements',
+  SpaceElements: 'SpaceElements',
   Element: 'Element',
   Map: 'Map',
   MapElements: 'MapElements',

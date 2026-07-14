@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export const envSchema = z.object({
+  DATABASE_URL: z.string().url(),
+  JWT_SECRET: z.string().min(32),
+  PORT: z.string().regex(/^\d+$/).optional(),
+});
+
 export const SignupSchema = z.object({
     username: z.string(),
     password: z.string(),

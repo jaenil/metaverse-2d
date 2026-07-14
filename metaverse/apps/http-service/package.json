@@ -18,12 +18,12 @@
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "concurrently": "^9.2.1",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10"
   },
   "dependencies": {
     "@repo/db": "*",
-    "@types/express": "^5.0.6",
-    "@types/jsonwebtoken": "^9.0.10",
     "cors": "^2.8.6",
     "db": "*",
     "dotenv": "^16.0.3",

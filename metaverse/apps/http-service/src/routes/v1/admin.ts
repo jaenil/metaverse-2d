@@ -140,5 +140,3 @@ adminRouter.delete('/map/:mapId', adminMiddleware, async (req, res) => {
         res.status(500).json({ message: "Failed to delete map" });
     }
 })
-
-// Trigger nodemon 2

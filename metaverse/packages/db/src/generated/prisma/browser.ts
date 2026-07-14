@@ -28,10 +28,10 @@ export type User = Prisma.UserModel
  */
 export type Space = Prisma.SpaceModel
 /**
- * Model spaceElements
+ * Model SpaceElements
  * 
  */
-export type spaceElements = Prisma.spaceElementsModel
+export type SpaceElements = Prisma.SpaceElementsModel
 /**
  * Model Element
  * 

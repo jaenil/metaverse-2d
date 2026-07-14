@@ -5,10 +5,13 @@ import type { OutgoingMessage } from "./types.js";
 //so we made the constructor private and are returning the same instance again and again
 
 export class RoomManager{
-    rooms:Map<string,User[]> = new Map() ;
-    static instance:RoomManager ;
+    private rooms:Map<string,User[]> = new Map() ;
+    private static instance:RoomManager ;
     private constructor(){
         this.rooms = new Map() ;
+    }
+    public getRoom(spaceId: string): ReadonlyArray<User> {
+        return this.rooms.get(spaceId) ?? [];
     }
     public removeUser(user:User,spaceId:string){
         if(!this.rooms.has(spaceId)){
