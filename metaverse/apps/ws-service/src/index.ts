@@ -2,7 +2,7 @@ import './dotenv-setup.js';
 import { WebSocketServer } from 'ws';
 import { User } from './User.js';
 
-const wss = new WebSocketServer({ port: 3001 });
+const wss = new WebSocketServer({ port: 3001, host: '0.0.0.0' });
 
 wss.on('connection', function connection(ws) {
   const user = new User(ws) ;
