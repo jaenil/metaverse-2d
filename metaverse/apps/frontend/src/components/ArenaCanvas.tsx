@@ -269,16 +269,36 @@ export function ArenaCanvas({
       }
 
       // ── 2. Camera Calculation ──
-      let camX = sw / 2;
-      let camY = sh / 2;
+      let targetCamX = sw / 2;
+      let targetCamY = sh / 2;
       const myRender = renderState.get(myUserId);
       if (myRender) {
-        camX -= myRender.x * TILE + TILE / 2;
-        camY -= myRender.y * TILE + TILE / 2;
+        targetCamX -= myRender.x * TILE + TILE / 2;
+        targetCamY -= myRender.y * TILE + TILE / 2;
       } else if (myPosRef.current) {
-        camX -= myPosRef.current.x * TILE + TILE / 2;
-        camY -= myPosRef.current.y * TILE + TILE / 2;
+        targetCamX -= myPosRef.current.x * TILE + TILE / 2;
+        targetCamY -= myPosRef.current.y * TILE + TILE / 2;
       }
+
+      const W = logicalWidth * TILE;
+      const H = logicalHeight * TILE;
+
+      let camX = targetCamX;
+      let camY = targetCamY;
+
+      // Clamp Camera to Map Boundaries
+      if (W <= sw) {
+        camX = (sw - W) / 2; // Center horizontally if map is smaller than screen
+      } else {
+        camX = Math.max(sw - W, Math.min(0, camX));
+      }
+
+      if (H <= sh) {
+        camY = (sh - H) / 2; // Center vertically if map is smaller than screen
+      } else {
+        camY = Math.max(sh - H, Math.min(0, camY));
+      }
+
       camPosRef.current.x = camX;
       camPosRef.current.y = camY;
 
@@ -290,8 +310,6 @@ export function ArenaCanvas({
       ctx.translate(Math.round(camX), Math.round(camY));
 
       // ── 3. Draw Grid & Background ──
-      const W = logicalWidth * TILE;
-      const H = logicalHeight * TILE;
 
       // Draw Map Background Image if available
       if (bgImageRef.current) {
