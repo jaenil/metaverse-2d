@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
 import '../styles/dashboard.css';
 
-const WALLETS = ['Metamask', 'Phantom', 'WalletConnect'];
+
 
 export function ProfilePage() {
   const [nickname, setNickname] = useState('User');
@@ -62,7 +62,7 @@ export function ProfilePage() {
 
       {/* ── Body ──────────────────────────────── */}
       <div className="dash-body">
-        
+
         <div className="dash-title-row">
           <div className="dash-title-row-left">
             <span className="dash-eyebrow">// identity</span>
@@ -71,21 +71,21 @@ export function ProfilePage() {
         </div>
 
         <div className="space-grid" style={{ gridTemplateColumns: 'minmax(300px, 1fr) minmax(300px, 1fr)', gap: '2rem' }}>
-          
+
           {/* Identity Panel */}
           <div className="space-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', cursor: 'default', border: '1px solid var(--border)' }}>
             <h3 style={{ fontFamily: 'var(--font-retro)', letterSpacing: '0.05em', color: 'var(--fg)', margin: 0 }}>Identity</h3>
             <p style={{ color: 'var(--subdued)', fontSize: '0.85rem', marginTop: '-0.5rem' }}>Customize your display name across spaces.</p>
-            
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--subdued)', fontWeight: 600 }}>Nickname</label>
               <div className="modal-input-wrap">
                 <span className="modal-input-icon">◉</span>
-                <input 
-                  type="text" 
-                  value={nickname} 
-                  onChange={(e) => setNickname(e.target.value)} 
-                  placeholder="Enter Nickname" 
+                <input
+                  type="text"
+                  value={nickname}
+                  onChange={(e) => setNickname(e.target.value)}
+                  placeholder="Enter Nickname"
                 />
               </div>
             </div>
@@ -94,11 +94,11 @@ export function ProfilePage() {
               <label style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--subdued)', fontWeight: 600 }}>Asset Store Seller Name</label>
               <div className="modal-input-wrap">
                 <span className="modal-input-icon">◈</span>
-                <input 
-                  type="text" 
-                  value={sellerName} 
-                  onChange={(e) => setSellerName(e.target.value)} 
-                  placeholder="Enter Seller Name" 
+                <input
+                  type="text"
+                  value={sellerName}
+                  onChange={(e) => setSellerName(e.target.value)}
+                  placeholder="Enter Seller Name"
                 />
               </div>
             </div>
@@ -112,7 +112,7 @@ export function ProfilePage() {
           <div className="space-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', cursor: 'default', border: '1px solid var(--border)' }}>
             <h3 style={{ fontFamily: 'var(--font-retro)', letterSpacing: '0.05em', color: 'var(--text)', margin: 0 }}>Choose Avatar</h3>
             <p style={{ color: 'var(--subdued)', fontSize: '0.85rem', marginTop: '-0.5rem' }}>Select your appearance in the metaverse.</p>
-            
+
             <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem', flexWrap: 'wrap' }}>
               {loading ? (
                 [1, 2, 3, 4, 5].map((i) => (
@@ -122,12 +122,12 @@ export function ProfilePage() {
                 ))
               ) : avatars.length > 0 ? (
                 avatars.map(av => (
-                  <div 
+                  <div
                     key={av.id}
                     onClick={() => handleSelectAvatar(av.id)}
                     style={{
-                      width: '64px', height: '64px', 
-                      borderRadius: '8px', 
+                      width: '64px', height: '64px',
+                      borderRadius: '8px',
                       background: selectedAvatarId === av.id ? 'rgba(var(--accent-raw), 0.3)' : 'rgba(0,0,0,0.3)',
                       border: selectedAvatarId === av.id ? '2px solid var(--accent)' : '1px solid var(--border)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
@@ -136,7 +136,7 @@ export function ProfilePage() {
                     onMouseOver={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)' }}
                     onMouseOut={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)' }}
                   >
-                    <img src={av.imageUrl} alt={av.name} style={{ width: '40px', height: '40px', imageRendering: 'pixelated' }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}/>
+                    <img src={av.imageUrl} alt={av.name} style={{ width: '40px', height: '40px', imageRendering: 'pixelated' }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                   </div>
                 ))
               ) : (
@@ -145,18 +145,25 @@ export function ProfilePage() {
             </div>
           </div>
 
-          {/* Web3 / Wallet Panel */}
+          {/* Google Account Panel */}
           <div className="space-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', cursor: 'default', border: '1px solid var(--border)' }}>
-            <h3 style={{ fontFamily: 'var(--font-retro)', letterSpacing: '0.05em', color: 'var(--fg)', margin: 0 }}>Web3 Integration</h3>
-            <p style={{ color: 'var(--subdued)', fontSize: '0.85rem', marginTop: '-0.5rem' }}>Connect a wallet to buy or sell map elements and skins.</p>
-            
+            <h3 style={{ fontFamily: 'var(--font-retro)', letterSpacing: '0.05em', color: 'var(--fg)', margin: 0 }}>Connected Accounts</h3>
+            <p style={{ color: 'var(--subdued)', fontSize: '0.85rem', marginTop: '-0.5rem' }}>Link your Google account for faster login and account recovery.</p>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
-              {WALLETS.map((w) => (
-                <div key={w} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
-                  <span style={{ fontSize: '0.9rem', color: 'var(--fg)' }}>{w}</span>
-                  <button className="space-enter-btn" style={{ flex: 'none', padding: '0.25rem 0.75rem', fontSize: '0.75rem' }}>Connect</button>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    <path d="M1 1h22v22H1z" fill="none"/>
+                  </svg>
+                  <span style={{ fontSize: '0.9rem', color: 'var(--fg)', fontWeight: 500 }}>Google</span>
                 </div>
-              ))}
+                <button className="space-enter-btn" style={{ flex: 'none', padding: '0.5rem 1.25rem', fontSize: '0.9rem', fontWeight: 600 }}>Connect</button>
+              </div>
             </div>
           </div>
 
@@ -164,7 +171,7 @@ export function ProfilePage() {
           <div className="space-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', cursor: 'default', border: '1px solid var(--border)' }}>
             <h3 style={{ fontFamily: 'var(--font-retro)', letterSpacing: '0.05em', color: 'var(--text)', margin: 0 }}>UI Theme</h3>
             <p style={{ color: 'var(--subdued)', fontSize: '0.85rem', marginTop: '-0.5rem' }}>Customize your dashboard aesthetic.</p>
-            
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
               {[
                 { id: 'ember', label: 'Ember & Charcoal' },
@@ -173,7 +180,7 @@ export function ProfilePage() {
                 { id: 'midnight', label: 'Midnight' },
                 { id: 'hacker', label: 'Hacker' }
               ].map((t) => (
-                <button 
+                <button
                   key={t.id}
                   onClick={() => setTheme(t.id)}
                   className={`dash-new-btn ${theme === t.id ? 'active' : ''}`}

@@ -136,7 +136,8 @@ export function useArena(_myUserId: string) {
   }, []);
 
   const handleClose = useCallback(() => {
-    setState((prev) => ({ ...prev, connected: false }));
+    setState((prev) => ({ ...prev, connected: false, myPos: null, users: new Map() }));
+    myPosRef.current = null;
   }, []);
 
   // Optimistic local move — server will reject if invalid

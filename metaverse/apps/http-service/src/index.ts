@@ -25,7 +25,6 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1', router);
 
-const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-app.listen(port, '0.0.0.0', () => {
-    console.log(`Server started on port ${port}`);
+app.listen(process.env.PORT || 3000, '0.0.0.0', () => {
+    console.log(`Server started on port ${process.env.PORT || 3000}`);
 })

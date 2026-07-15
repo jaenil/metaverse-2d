@@ -52,6 +52,7 @@ export function useWebSocket({
     wsRef.current = ws;
 
     ws.onopen = () => {
+      if (wsRef.current !== ws) return;
       // First thing: join the space
       ws.send(JSON.stringify({
         type: 'join',
@@ -61,6 +62,7 @@ export function useWebSocket({
     };
 
     ws.onmessage = (event) => {
+      if (intentionalClose.current || wsRef.current !== ws) return;
       try {
         const msg: ServerMessage = JSON.parse(event.data as string);
         onMessage(msg);
@@ -70,6 +72,7 @@ export function useWebSocket({
     };
 
     ws.onclose = () => {
+      if (wsRef.current !== ws) return;
       onClose?.();
       if (!intentionalClose.current) {
         // Exponential backoff reconnect (capped at 5s)
@@ -78,6 +81,7 @@ export function useWebSocket({
     };
 
     ws.onerror = (err) => {
+      if (wsRef.current !== ws) return;
       console.error('WS error', err);
       ws.close();
     };

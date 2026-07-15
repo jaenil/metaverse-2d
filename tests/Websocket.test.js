@@ -285,12 +285,12 @@ describe("Websocket tests", () => {
         ws3.send(
             JSON.stringify({ type: "emote", payload: { emote: "👋" } })
         );
-        
+
         const message = await waitForAndPopLatestMessage(ws2Messages);
         expect(message.type).toBe("emote");
         expect(message.payload.emote).toBe("👋");
         expect(message.payload.userId).toBe(adminUserId);
-        
+
         ws3.close();
         await waitForAndPopLatestMessage(ws2Messages); // consume user-left
     });
@@ -328,14 +328,14 @@ describe("Websocket tests", () => {
         ws5.send(
             JSON.stringify({ type: "join", payload: { spaceId, token: adminToken } })
         );
-        
+
         const message = await waitForAndPopLatestMessage(ws5Messages);
         expect(message.type).toBe("space-joined");
-        
+
         // Users list should only contain ws2 (userId), and NOT ws1 (adminUserId) since ws1 left
         expect(message.payload.users.length).toBe(1);
-        expect(message.payload.users[0].userId).toBe(userId);
-        
+        expect(message.payload.users[0].id).toBe(userId);
+
         ws5.close();
         await waitForAndPopLatestMessage(ws2Messages); // consume user-left from ws5 joining and leaving
     });

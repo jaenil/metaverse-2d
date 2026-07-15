@@ -22,6 +22,7 @@ export function SpacePage() {
   const [spaceError, setSpaceError] = useState('');
   const [isCreator, setIsCreator] = useState(false);
   const [placementError, setPlacementError] = useState<string | null>(null);
+  const [worldReady, setWorldReady] = useState(false);
 
   // Auto-dismiss the placement error after 2.5 seconds
   useEffect(() => {
@@ -81,6 +82,34 @@ export function SpacePage() {
 
   const { weather = 'none', timeOfDay = 'day' } = arenaState;
 
+  const [loadingProgress, setLoadingProgress] = useState(0);
+
+  useEffect(() => {
+    if (!spaceLoading && arenaState.myPos) {
+      let startTime = performance.now();
+      let raf: number;
+      const duration = 1500;
+      
+      const updateProgress = (now: number) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        setLoadingProgress(Math.floor(progress * 100));
+        
+        if (progress < 1) {
+          raf = requestAnimationFrame(updateProgress);
+        } else {
+          setWorldReady(true);
+        }
+      };
+      
+      raf = requestAnimationFrame(updateProgress);
+      return () => cancelAnimationFrame(raf);
+    } else {
+      setWorldReady(false);
+      setLoadingProgress(0);
+    }
+  }, [spaceLoading, arenaState.myPos]);
+
   const openSettings = () => {
     setDraftWeather((weather || 'none') as any);
     setDraftTimeOfDay((timeOfDay || 'day') as any);
@@ -90,6 +119,9 @@ export function SpacePage() {
   // Fetch space details (dimensions + elements)
   useEffect(() => {
     if (!spaceId) return;
+    setSpaceLoading(true);
+    setWorldReady(false);
+    setLoadingProgress(0);
     getSpace(spaceId).then((res) => {
       if (res.data.space) {
         setDimensions({
@@ -208,13 +240,6 @@ export function SpacePage() {
     return null;
   }
 
-  if (spaceLoading || !arenaState.myPos) {
-    return (
-      <div className="space-loading">
-        <div className="glitch-text" data-text="INITIALIZING...">INITIALIZING...</div>
-      </div>
-    );
-  }
 
   if (spaceError) {
     return (
@@ -231,6 +256,19 @@ export function SpacePage() {
 
   return (
     <div className="space-root">
+      {/* Loading Overlay */}
+      {!worldReady && (
+        <div className="space-loading" style={{ position: 'absolute', inset: 0, zIndex: 1000, display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center' }}>
+          <div className="glitch-text" data-text="LINKING TO SERVER..." style={{ fontFamily: 'var(--font-retro)', fontSize: '2rem', letterSpacing: '0.1em' }}>LINKING TO SERVER...</div>
+          <div style={{ width: '300px', height: '6px', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--border)', borderRadius: '8px', overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${loadingProgress}%`, background: 'var(--accent)', transition: 'width 0.1s linear', boxShadow: '0 0 10px var(--accent)' }} />
+          </div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--accent)', fontFamily: 'var(--font-retro)' }}>
+            {loadingProgress}%
+          </div>
+        </div>
+      )}
+
       {/* HUD Layer */}
       <div className="hud-overlay">
         
