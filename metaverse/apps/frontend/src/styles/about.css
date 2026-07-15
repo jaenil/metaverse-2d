@@ -133,7 +133,7 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.2rem;
-  color: #fff;
+  color: var(--btn-text, #fff);
   box-shadow: 0 4px 12px rgba(var(--accent-raw), 0.3);
 }
 
