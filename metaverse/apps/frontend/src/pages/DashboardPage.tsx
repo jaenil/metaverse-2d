@@ -215,22 +215,18 @@ const [joinSpaceId, setJoinSpaceId] = useState('');
           </div>
           <button
             id="dashboard-new-space"
-            className="dash-new-btn glitch-hover"
-            data-text="＋ New Space"
+            className="dash-new-btn"
             onClick={() => setShowModal(true)}
           >
             <span>＋</span> New Space
           </button>
           <button
             id="dashboard-join-space"
-            className="dash-new-btn glitch-hover"
-            data-text="⤢ Join Space"
+            className="dash-new-btn"
             onClick={() => setShowJoinModal(true)}
           >
             <span>⤢</span> Join Space
           </button>
-
-
         </div>
 
         {/* Content */}
@@ -419,8 +415,7 @@ const [joinSpaceId, setJoinSpaceId] = useState('');
               </button>
               <button
                 id="modal-create-btn"
-                className="modal-create-btn glitch-hover"
-                data-text="Create Space →"
+                className="modal-create-btn"
                 onClick={handleCreate}
                 disabled={creating || !newName.trim()}
               >
@@ -470,8 +465,7 @@ const [joinSpaceId, setJoinSpaceId] = useState('');
               </button>
               <button
                 id="modal-join-btn"
-                className="modal-join-btn glitch-hover"
-                data-text="Join Space →"
+                className="modal-join-btn"
                 onClick={handleJoin}
                 disabled={!joinSpaceId.trim()}
               >

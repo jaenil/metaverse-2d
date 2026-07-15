@@ -16,7 +16,7 @@ export function ProfilePage() {
   const [selectedAvatarId, setSelectedAvatarId] = useState<string | null>(null);
 
   const { clearAuth } = useAuthStore();
-  const { theme, setTheme } = useThemeStore();
+  const { theme, setTheme, customBaseColor, customSurfaceColor, customBorderColor, customAccentColor, setCustomColors } = useThemeStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -172,23 +172,84 @@ export function ProfilePage() {
             <h3 style={{ fontFamily: 'var(--font-retro)', letterSpacing: '0.05em', color: 'var(--text)', margin: 0 }}>UI Theme</h3>
             <p style={{ color: 'var(--subdued)', fontSize: '0.85rem', marginTop: '-0.5rem' }}>Customize your dashboard aesthetic.</p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '0.5rem' }}>
               {[
-                { id: 'ember', label: 'Ember & Charcoal' },
-                { id: 'cyberpunk', label: 'Cyberpunk Neon' },
-                { id: 'synthwave', label: 'Synthwave' },
-                { id: 'midnight', label: 'Midnight' },
-                { id: 'hacker', label: 'Hacker' }
+                { id: 'ember', label: 'Ember' },
+                { id: 'midnight', label: 'Midnight (Default)' },
+                { id: 'obsidian', label: 'Obsidian' },
+                { id: 'ocean', label: 'Deep Ocean' },
+                { id: 'amethyst', label: 'Amethyst' },
+                { id: 'matcha', label: 'Matcha' },
+                { id: 'dracula', label: 'Dracula' },
+                { id: 'solarized', label: 'Solarized' },
+                { id: 'ghost', label: 'Ghost' },
+                { id: 'matrix', label: 'Matrix' },
+                { id: 'cobalt', label: 'Cobalt' },
+                { id: 'custom', label: 'Custom Theme...' }
               ].map((t) => (
                 <button
                   key={t.id}
                   onClick={() => setTheme(t.id)}
                   className={`dash-new-btn ${theme === t.id ? 'active' : ''}`}
-                  style={{ flex: 1, justifyContent: 'center', background: theme === t.id ? 'var(--accent)' : 'rgba(0,0,0,0.2)' }}
+                  style={{ 
+                    justifyContent: 'center', 
+                    background: theme === t.id ? 'var(--accent)' : 'rgba(0,0,0,0.2)',
+                    color: theme === t.id ? 'var(--btn-text, #ffffff)' : 'var(--text)',
+                    gridColumn: t.id === 'custom' ? 'span 2' : 'auto'
+                  }}
                 >
                   {t.label}
                 </button>
               ))}
+
+              {theme === 'custom' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem', padding: '1rem', background: 'rgba(0,0,0,0.1)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+                  
+                  <h4 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--subdued)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Colors</h4>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <label style={{ fontSize: '0.8rem', color: 'var(--text)' }}>Background</label>
+                      <input 
+                        type="color" 
+                        value={customBaseColor} 
+                        onChange={(e) => setCustomColors(e.target.value, customSurfaceColor, customBorderColor, customAccentColor)}
+                        style={{ width: '100%', height: '32px', cursor: 'pointer', padding: 0, border: 'none', borderRadius: 'var(--radius-sm)' }}
+                      />
+                    </div>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <label style={{ fontSize: '0.8rem', color: 'var(--text)' }}>Surface</label>
+                      <input 
+                        type="color" 
+                        value={customSurfaceColor} 
+                        onChange={(e) => setCustomColors(customBaseColor, e.target.value, customBorderColor, customAccentColor)}
+                        style={{ width: '100%', height: '32px', cursor: 'pointer', padding: 0, border: 'none', borderRadius: 'var(--radius-sm)' }}
+                      />
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <label style={{ fontSize: '0.8rem', color: 'var(--text)' }}>Border</label>
+                      <input 
+                        type="color" 
+                        value={customBorderColor} 
+                        onChange={(e) => setCustomColors(customBaseColor, customSurfaceColor, e.target.value, customAccentColor)}
+                        style={{ width: '100%', height: '32px', cursor: 'pointer', padding: 0, border: 'none', borderRadius: 'var(--radius-sm)' }}
+                      />
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <label style={{ fontSize: '0.8rem', color: 'var(--text)' }}>Accent</label>
+                      <input 
+                        type="color" 
+                        value={customAccentColor} 
+                        onChange={(e) => setCustomColors(customBaseColor, customSurfaceColor, customBorderColor, e.target.value)}
+                        style={{ width: '100%', height: '32px', cursor: 'pointer', padding: 0, border: 'none', borderRadius: 'var(--radius-sm)' }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

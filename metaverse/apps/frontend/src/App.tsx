@@ -10,10 +10,9 @@ import { ProfilePage } from './pages/ProfilePage';
 import { AvatarsPage } from './pages/AvatarsPage';
 import { MapsPage } from './pages/MapsPage';
 import { AboutPage } from './pages/AboutPage';
-import { BackgroundFX } from './components/BackgroundFX';
 import { useAuthStore } from './store/authStore';
 import { useThemeStore } from './store/themeStore';
-import './styles/retro-fx.css';
+import { PremiumBackground } from './components/PremiumBackground';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = useAuthStore((s) => s.token);
@@ -21,20 +20,36 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const theme = useThemeStore((s) => s.theme);
+  const { theme, customBaseColor, customSurfaceColor, customBorderColor, customAccentColor } = useThemeStore();
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
+    if (theme === 'custom') {
+      document.documentElement.style.setProperty('--bg', customBaseColor);
+      document.documentElement.style.setProperty('--surface', customSurfaceColor);
+      document.documentElement.style.setProperty('--border', customBorderColor);
+      document.documentElement.style.setProperty('--accent', customAccentColor);
+      
+      const hexToRgb = (hex: string) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? `${parseInt(result[1] ?? '0', 16)}, ${parseInt(result[2] ?? '0', 16)}, ${parseInt(result[3] ?? '0', 16)}` : '0, 0, 0';
+      };
+      document.documentElement.style.setProperty('--accent-raw', hexToRgb(customAccentColor));
+    } else {
+      document.documentElement.style.removeProperty('--bg');
+      document.documentElement.style.removeProperty('--surface');
+      document.documentElement.style.removeProperty('--border');
+      document.documentElement.style.removeProperty('--accent');
+      document.documentElement.style.removeProperty('--accent-raw');
+    }
+  }, [theme, customBaseColor, customSurfaceColor, customBorderColor, customAccentColor]);
 
   return (
     <BrowserRouter>
-      {/* Dynamic Animated Background */}
-      <BackgroundFX />
       
-      {/* Global Retro CRT Overlay */}
-      <div className="crt-overlay" />
-      
+      {/* Dynamic Premium Backgrounds */}
+      <PremiumBackground style="combined" />
+
       <Routes>
         <Route path="/" element={<AuthPage />} />
         <Route path="/signup" element={<SignupPage />} />

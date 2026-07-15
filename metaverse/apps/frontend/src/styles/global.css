@@ -1,68 +1,38 @@
-/* Must be the absolute first line in the file */
-@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+/* Standard UI Font Setup */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
-/* ── Design tokens: Ember & Charcoal ── */
+/* ── Design tokens: Ember (Default) ── */
 :root {
-  --bg:           #0c0808;   /* Deep warm charcoal */
-  --surface:      #140d0c;   /* Slightly lighter matte card */
-  --surface-elev: #1c1311;
-  --border:       #2e1f1d;
-  --muted:        #4a3330;
-  --text:         #e8dddb;   /* Warm off-white */
-  --subdued:      #8c7a77;
+  --bg:           #0f172a;   /* Clean slate background */
+  --surface:      #1e293b;   /* Slightly lighter slate card */
+  --surface-elev: #334155;
+  --border:       #334155;
+  --muted:        #475569;
+  --text:         #f8fafc;   /* Crisp white */
+  --subdued:      #94a3b8;
 
-  --accent:       #d9381e;   /* Matte Fire Red */
-  --accent-dim:   #5c180d;
-  --accent-hi:    #f25c43;
-  --accent-raw:   217, 56, 30;
+  --accent:       #f97316;   /* Orange accent */
+  --accent-dim:   #9a3412;
+  --accent-hi:    #fdba74;
+  --accent-raw:   249, 115, 22;
 
   --danger:       #ef4444;
   --online:       #10b981;
-  --offline:      #8c7a77;
+  --offline:      #64748b;
 
   /* Font mappings */
-  --font-ui:      'Inter', 'Segoe UI', system-ui, sans-serif;
-  --font-retro:   'VT323', monospace;
+  --font-ui:      'Inter', system-ui, sans-serif;
+  --font-retro:   'Inter', system-ui, sans-serif; /* Fallback for anywhere hardcoding font-retro */
   --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
 
-  --radius-sm:    4px;
-  --radius-md:    6px;
-  --radius-lg:    8px;
-}
-
-[data-theme="cyberpunk"] {
-  --bg:           #050514;
-  --surface:      #0a0a20;
-  --surface-elev: #0f0f2a;
-  --border:       #20204d;
-  --muted:        #2d2d66;
-  --text:         #e0e0ff;
-  --subdued:      #8c8cba;
-
-  --accent:       #00f0ff;
-  --accent-dim:   #004d4d;
-  --accent-hi:    #66f5ff;
-  --accent-raw:   0, 240, 255;
-}
-
-[data-theme="synthwave"] {
-  --bg:           #1a0b2e;
-  --surface:      #2d1b4e;
-  --surface-elev: #432c7a;
-  --border:       #7928ca;
-  --muted:        #4c2a7a;
-  --text:         #f8f8ff;
-  --subdued:      #b39bc8;
-
-  --accent:       #ff0080;
-  --accent-dim:   #7a003d;
-  --accent-hi:    #ff4da6;
-  --accent-raw:   255, 0, 128;
+  --radius-sm:    6px;
+  --radius-md:    8px;
+  --radius-lg:    12px;
 }
 
 [data-theme="midnight"] {
@@ -73,26 +43,147 @@
   --muted:        #52525b;
   --text:         #f4f4f5;
   --subdued:      #a1a1aa;
-
   --accent:       #3b82f6;
   --accent-dim:   #1e3a8a;
   --accent-hi:    #60a5fa;
   --accent-raw:   59, 130, 246;
 }
 
-[data-theme="hacker"] {
+/* 1. Obsidian */
+[data-theme="obsidian"] {
   --bg:           #000000;
-  --surface:      #051005;
-  --surface-elev: #0a1f0a;
-  --border:       #004400;
-  --muted:        #003300;
-  --text:         #00ff00;
-  --subdued:      #00aa00;
+  --surface:      #111111;
+  --surface-elev: #222222;
+  --border:       #333333;
+  --muted:        #666666;
+  --text:         #ffffff;
+  --subdued:      #a3a3a3;
+  --accent:       #ffffff;
+  --accent-dim:   #a3a3a3;
+  --accent-hi:    #ffffff;
+  --accent-raw:   255, 255, 255;
+  --btn-text:     #000000;
+}
 
-  --accent:       #00ff00;
-  --accent-dim:   #004400;
-  --accent-hi:    #88ff88;
-  --accent-raw:   0, 255, 0;
+/* 2. Deep Ocean */
+[data-theme="ocean"] {
+  --bg:           #020617;
+  --surface:      #0f172a;
+  --surface-elev: #1e293b;
+  --border:       #334155;
+  --muted:        #475569;
+  --text:         #f8fafc;
+  --subdued:      #94a3b8;
+  --accent:       #06b6d4;
+  --accent-dim:   #0891b2;
+  --accent-hi:    #22d3ee;
+  --accent-raw:   6, 182, 212;
+}
+
+/* 3. Amethyst */
+[data-theme="amethyst"] {
+  --bg:           #1e1b4b;
+  --surface:      #312e81;
+  --surface-elev: #3730a3;
+  --border:       #4338ca;
+  --muted:        #4f46e5;
+  --text:         #e0e7ff;
+  --subdued:      #a5b4fc;
+  --accent:       #d946ef;
+  --accent-dim:   #c026d3;
+  --accent-hi:    #e879f9;
+  --accent-raw:   217, 70, 239;
+}
+
+/* 4. Matcha / Forest */
+[data-theme="matcha"] {
+  --bg:           #022c22;
+  --surface:      #064e3b;
+  --surface-elev: #065f46;
+  --border:       #047857;
+  --muted:        #059669;
+  --text:         #d1fae5;
+  --subdued:      #6ee7b7;
+  --accent:       #84cc16;
+  --accent-dim:   #65a30d;
+  --accent-hi:    #a3e635;
+  --accent-raw:   132, 204, 22;
+}
+
+/* 5. Dracula */
+[data-theme="dracula"] {
+  --bg:           #282a36;
+  --surface:      #44475a;
+  --surface-elev: #6272a4;
+  --border:       #6272a4;
+  --muted:        #6272a4;
+  --text:         #f8f8f2;
+  --subdued:      #bfbfbf;
+  --accent:       #ff79c6;
+  --accent-dim:   #bd93f9;
+  --accent-hi:    #ff92df;
+  --accent-raw:   255, 121, 198;
+}
+
+/* 6. Solarized */
+[data-theme="solarized"] {
+  --bg:           #002b36;
+  --surface:      #073642;
+  --surface-elev: #586e75;
+  --border:       #586e75;
+  --muted:        #657b83;
+  --text:         #fdf6e3;
+  --subdued:      #eee8d5;
+  --accent:       #b58900;
+  --accent-dim:   #cb4b16;
+  --accent-hi:    #eecb46;
+  --accent-raw:   181, 137, 0;
+}
+
+/* 7. Ghost */
+[data-theme="ghost"] {
+  --bg:           #18181b;
+  --surface:      #27272a;
+  --surface-elev: #3f3f46;
+  --border:       #52525b;
+  --muted:        #71717a;
+  --text:         #f4f4f5;
+  --subdued:      #a1a1aa;
+  --accent:       #e4e4e7;
+  --accent-dim:   #a1a1aa;
+  --accent-hi:    #ffffff;
+  --accent-raw:   228, 228, 231;
+  --btn-text:     #000000;
+}
+
+/* 9. Matrix (Clean) */
+[data-theme="matrix"] {
+  --bg:           #000000;
+  --surface:      #052e16;
+  --surface-elev: #064e3b;
+  --border:       #065f46;
+  --muted:        #047857;
+  --text:         #ecfdf5;
+  --subdued:      #6ee7b7;
+  --accent:       #10b981;
+  --accent-dim:   #059669;
+  --accent-hi:    #34d399;
+  --accent-raw:   16, 185, 129;
+}
+
+/* 10. Cobalt */
+[data-theme="cobalt"] {
+  --bg:           #0f172a;
+  --surface:      #1e293b;
+  --surface-elev: #334155;
+  --border:       #475569;
+  --muted:        #64748b;
+  --text:         #f1f5f9;
+  --subdued:      #cbd5e1;
+  --accent:       #3b82f6;
+  --accent-dim:   #2563eb;
+  --accent-hi:    #60a5fa;
+  --accent-raw:   59, 130, 246;
 }
 
 *, *::before, *::after {
@@ -101,15 +192,16 @@
   padding: 0;
 }
 
-html, body, #root {
-  height: 100%;
-  background-color: transparent;
+body {
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: 0 0;
   color: var(--text);
-  
-  /* Base text remains clean and readable */
   font-family: var(--font-ui);
-  font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.5;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Smooth Theme Transitions */
@@ -132,7 +224,7 @@ label, .tag, h1, h2, h3, .admin-feedback, .ws-status, .space-id-label {
 /* ── Shared buttons ── */
 .btn-primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--btn-text, #fff);
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   padding: 0.5rem 1.25rem;
@@ -188,7 +280,7 @@ label, .tag, h1, h2, h3, .admin-feedback, .ws-status, .space-id-label {
 
 .back-btn {
   background: var(--accent);
-  color: #ffffff;
+  color: var(--btn-text, #ffffff);
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   padding: 0.45rem 1rem;

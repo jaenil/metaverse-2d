@@ -243,9 +243,9 @@ export function SpacePage() {
 
   if (spaceError) {
     return (
-      <div className="space-loading">
-        <div className="glitch-text" data-text={spaceError}>{spaceError}</div>
-        <button onClick={() => navigate('/dashboard')} style={{ marginTop: '2rem', padding: '1rem', background: 'var(--accent)', border: 'none', color: '#000', cursor: 'pointer' }}>
+      <div className="space-loading" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+        <div style={{ fontSize: '1.5rem', color: 'var(--danger)', fontWeight: 600 }}>{spaceError}</div>
+        <button onClick={() => navigate('/dashboard')} style={{ marginTop: '2rem', padding: '1rem', background: 'var(--accent)', border: 'none', color: '#000', cursor: 'pointer', borderRadius: 'var(--radius-sm)' }}>
           RETURN TO HUB
         </button>
       </div>
@@ -258,12 +258,12 @@ export function SpacePage() {
     <div className="space-root">
       {/* Loading Overlay */}
       {!worldReady && (
-        <div className="space-loading" style={{ position: 'absolute', inset: 0, zIndex: 1000, display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center' }}>
-          <div className="glitch-text" data-text="LINKING TO SERVER..." style={{ fontFamily: 'var(--font-retro)', fontSize: '2rem', letterSpacing: '0.1em' }}>LINKING TO SERVER...</div>
+        <div className="space-loading" style={{ position: 'absolute', inset: 0, zIndex: 1000, display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 600, letterSpacing: '0.05em' }}>LINKING TO SERVER...</div>
           <div style={{ width: '300px', height: '6px', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--border)', borderRadius: '8px', overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${loadingProgress}%`, background: 'var(--accent)', transition: 'width 0.1s linear', boxShadow: '0 0 10px var(--accent)' }} />
           </div>
-          <div style={{ fontSize: '0.8rem', color: 'var(--accent)', fontFamily: 'var(--font-retro)' }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--accent)', fontFamily: 'var(--font-ui)' }}>
             {loadingProgress}%
           </div>
         </div>
@@ -303,16 +303,16 @@ export function SpacePage() {
 
         {/* Bottom Center: Action Bar */}
         <div className="hud-action-bar">
-          <div className="action-slot clickable glitch-hover" data-text="Leave" onClick={() => navigate('/dashboard')}>
+          <div className="action-slot clickable" onClick={() => navigate('/dashboard')}>
             <span className="slot-icon">←</span>
             <span className="slot-label">Leave</span>
           </div>
-          <div className="action-slot clickable glitch-hover" data-text="Build" onClick={toggleBuildMode} style={{ background: buildMode ? 'rgba(var(--accent-raw), 0.2)' : '' }}>
+          <div className="action-slot clickable" onClick={toggleBuildMode} style={{ background: buildMode ? 'rgba(var(--accent-raw), 0.2)' : '' }}>
             <span className="slot-icon">◈</span>
             <span className="slot-label">Build</span>
           </div>
           <div style={{ position: 'relative' }}>
-            <div className="action-slot clickable glitch-hover" data-text="Emote" onClick={() => setShowEmotes(!showEmotes)}>
+            <div className="action-slot clickable" onClick={() => setShowEmotes(!showEmotes)}>
               <span className="slot-icon">◉</span>
               <span className="slot-label">Emote</span>
             </div>
@@ -337,7 +337,7 @@ export function SpacePage() {
             )}
           </div>
           {isCreator && (
-            <div className="action-slot clickable glitch-hover" data-text="Settings" onClick={openSettings}>
+            <div className="action-slot clickable" onClick={openSettings}>
             <span className="slot-icon">⚙</span>
             <span className="slot-label">Settings</span>
           </div>
