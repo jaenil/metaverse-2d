@@ -182,6 +182,7 @@ export class User{
                     }
                 };
                 
+                this.send(broadcastPayload);
                 RoomManager.getInstance().broadcast(broadcastPayload, this, this.spaceId);
                 break;
             }
