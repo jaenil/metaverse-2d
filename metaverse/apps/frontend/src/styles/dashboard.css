@@ -378,7 +378,7 @@
   flex: 1;
   padding: 0.5rem 0.75rem;
   background: var(--accent);
-  color: #fff;
+  color: var(--btn-text, #fff);
   border: none;
   border-radius: var(--radius-md);
   font-family: var(--font-retro);
@@ -661,7 +661,7 @@
 .modal-create-btn {
   padding: 0.65rem 1.5rem;
   background: var(--accent);
-  color: #fff;
+  color: var(--btn-text, #fff);
   border: none;
   border-radius: var(--radius-md);
   font-family: var(--font-retro);

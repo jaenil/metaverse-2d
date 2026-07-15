@@ -123,28 +123,13 @@ const [joinSpaceId, setJoinSpaceId] = useState('');
         </div>
 
         <nav className="dash-nav">
-          <select 
-            value={theme}
-            onChange={(e) => setTheme(e.target.value)}
-            style={{
-              background: 'var(--surface)',
-              border: '1px solid var(--border)',
-              color: 'var(--text)',
-              borderRadius: 'var(--radius-sm)',
-              padding: '0.3rem 0.5rem',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
-              cursor: 'pointer',
-              outline: 'none',
-              textAlign: 'center'
-            }}
+          <button
+            className="dash-nav-btn"
+            onClick={() => navigate('/about')}
+            id="dashboard-about-btn"
           >
-            <option value="ember" style={{ background: 'var(--surface)', color: 'var(--text)' }}>Ember</option>
-            <option value="cyberpunk" style={{ background: 'var(--surface)', color: 'var(--text)' }}>Cyberpunk</option>
-            <option value="synthwave" style={{ background: 'var(--surface)', color: 'var(--text)' }}>Synthwave</option>
-            <option value="midnight" style={{ background: 'var(--surface)', color: 'var(--text)' }}>Midnight</option>
-            <option value="hacker" style={{ background: 'var(--surface)', color: 'var(--text)' }}>Hacker</option>
-          </select>
+            ℹ About
+          </button>
           <div className="dash-nav-divider" />
           {userType === 'admin' && (
             <>

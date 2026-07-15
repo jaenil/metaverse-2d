@@ -383,7 +383,7 @@
   flex-shrink: 0;
   transition: all 0.2s;
   font-size: 10px;
-  color: #fff;
+  color: var(--btn-text, #fff);
 }
 .admin-checkbox-wrap.checked .admin-checkbox-box {
   background: var(--accent);
@@ -416,7 +416,7 @@
   gap: 8px;
   padding: 0.7rem 1.5rem;
   background: var(--accent);
-  color: #fff;
+  color: var(--btn-text, #fff);
   border: none;
   border-radius: var(--radius-md);
   font-family: var(--font-retro);
