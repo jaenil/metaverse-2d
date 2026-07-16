@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAvailableAvatars, updateMetadata } from '../api';
+import { getAvailableAvatars, updateMetadata, getCurrentUser } from '../api';
 import type { Avatar } from '../types';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
@@ -14,6 +14,8 @@ export function ProfilePage() {
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAvatarId, setSelectedAvatarId] = useState<string | null>(null);
+  const [googleConnected, setGoogleConnected] = useState(false);
+  const [email, setEmail] = useState('');
 
   const { clearAuth } = useAuthStore();
   const { theme, setTheme, customBaseColor, customSurfaceColor, customBorderColor, customAccentColor, setCustomColors } = useThemeStore();
@@ -24,6 +26,15 @@ export function ProfilePage() {
       if (res.status === 200) setAvatars(res.data.avatars);
       setLoading(false);
     }).catch(() => { setLoading(false); });
+
+    getCurrentUser().then(res => {
+      if (res.status === 200 && res.data.user) {
+        setNickname(res.data.user.username);
+        setGoogleConnected(!!res.data.user.googleId);
+        setEmail(res.data.user.email || '');
+        setSelectedAvatarId(res.data.user.avatarId);
+      }
+    }).catch(() => {});
   }, []);
 
   async function handleSelectAvatar(avatarId: string) {
@@ -160,9 +171,16 @@ export function ProfilePage() {
                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                     <path d="M1 1h22v22H1z" fill="none"/>
                   </svg>
-                  <span style={{ fontSize: '0.9rem', color: 'var(--fg)', fontWeight: 500 }}>Google</span>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '0.9rem', color: 'var(--fg)', fontWeight: 500 }}>Google</span>
+                    {email && <span style={{ fontSize: '0.75rem', color: 'var(--subdued)' }}>{email}</span>}
+                  </div>
                 </div>
-                <button className="space-enter-btn" style={{ flex: 'none', padding: '0.5rem 1.25rem', fontSize: '0.9rem', fontWeight: 600 }}>Connect</button>
+                {googleConnected ? (
+                  <span style={{ color: 'var(--accent)', fontSize: '0.85rem', fontWeight: 600, padding: '0.5rem 1.25rem' }}>✓ Connected</span>
+                ) : (
+                  <button className="space-enter-btn" style={{ flex: 'none', padding: '0.5rem 1.25rem', fontSize: '0.9rem', fontWeight: 600 }}>Connect</button>
+                )}
               </div>
             </div>
           </div>

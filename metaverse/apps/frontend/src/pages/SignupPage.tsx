@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { signup, signin } from '../api';
+import { signup, signin, googleSignin } from '../api';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from '../store/authStore';
 import '../styles/auth.css';
 
@@ -135,6 +136,37 @@ export function SignupPage() {
         setError(message);
       } else {
         setError('An unexpected error occurred. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleGoogleSuccess(credentialResponse: any) {
+    if (!credentialResponse.credential) {
+      setError('Google Sign-In failed.');
+      return;
+    }
+    setError('');
+    setLoading(true);
+    try {
+      const res = await googleSignin(credentialResponse.credential);
+      if (res.status !== 200) {
+        setError('Invalid Google token.');
+        return;
+      }
+      const payloadBase64 = res.data.token.split('.')[1];
+      const decodedJson = JSON.parse(atob(payloadBase64));
+      const userId = decodedJson.userId || '';
+      const role = decodedJson.role?.toLowerCase() || 'user';
+      setAuth(res.data.token, userId, role);
+      navigate('/dashboard');
+    } catch (err) {
+      if(axios.isAxiosError(err) && err.response){
+        const message = err.response.data?.message;
+        setError(message);
+      } else {
+        setError('An unexpected error occurred with Google Sign-in.');
       }
     } finally {
       setLoading(false);
@@ -307,6 +339,13 @@ export function SignupPage() {
                 ? <><span className="auth-btn-spinner" />Creating account…</>
                 : 'Enter the metaverse →'}
             </button>
+            <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError('Google sign-in failed')}
+                text="signup_with"
+              />
+            </div>
           </form>
 
           <p className="auth-switch">

@@ -20,7 +20,13 @@ export const signup = (data: SignupPayload) =>
 export const signin = (data: SigninPayload) =>
   client.post<AuthResponse>('/signin', data);
 
+export const googleSignin = (credential: string) =>
+  client.post<AuthResponse>('/google-signin', { credential });
+
 // ─── User ────────────────────────────────────────────────────────────────────
+
+export const getCurrentUser = () =>
+  client.get<{ user: { id: string, username: string, email: string | null, googleId: string | null, avatarId: string | null } }>('/user/me');
 
 export const updateMetadata = (avatarId: string) =>
   client.post('/user/metadata', { avatarId });

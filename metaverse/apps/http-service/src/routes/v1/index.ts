@@ -8,6 +8,9 @@ import { compare, hash } from '../../scrypt.js';
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from '../../config.js';
 import { userMiddleware } from '../../middleware/user.js';
+import { OAuth2Client } from 'google-auth-library';
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const router = Router();
 
@@ -51,6 +54,10 @@ router.post('/signin', async (req, res) => {
             res.status(403).json({ message: "Invalid username" })
             return
         }
+        if (!user.password) {
+            res.status(403).json({ message: "Account created with Google. Please sign in with Google." })
+            return
+        }
         const isValid = await compare(parsedData.data.password, user.password)
         if (!isValid) {
             res.status(403).json({ message: "Invalid password" })
@@ -67,6 +74,75 @@ router.post('/signin', async (req, res) => {
         res.status(400).json({ message: "User doesn't exist" })
     }
 })
+
+router.post('/google-signin', async (req, res) => {
+    const { credential } = req.body;
+    if (!credential) {
+        res.status(400).json({ message: "Missing Google credential" });
+        return;
+    }
+
+    try {
+        const ticket = await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID as string,
+        });
+        const payload = ticket.getPayload();
+        if (!payload || !payload.email) {
+            res.status(400).json({ message: "Invalid Google token payload" });
+            return;
+        }
+
+        const email = payload.email as string;
+        const googleId = payload.sub as string;
+
+        // Check if user exists by email or googleId
+        let user = await client.user.findFirst({
+            where: {
+                OR: [
+                    { email: email },
+                    { googleId: googleId }
+                ]
+            }
+        });
+
+        if (!user) {
+            // Create a new user. Generate a unique username
+            let baseUsername = email.split('@')[0] || 'user';
+            let uniqueUsername: string = baseUsername;
+            let counter = 1;
+            while (await client.user.findUnique({ where: { username: uniqueUsername } })) {
+                uniqueUsername = `${baseUsername}_${counter}`;
+                counter++;
+            }
+
+            user = await client.user.create({
+                data: {
+                    username: uniqueUsername,
+                    email: email,
+                    googleId: googleId,
+                    role: "User",
+                }
+            });
+        } else if (!user.googleId) {
+            // Link google account to existing user if email matched but googleId was empty
+            user = await client.user.update({
+                where: { id: user.id },
+                data: { googleId: googleId }
+            });
+        }
+
+        const token = jwt.sign({
+            userId: user.id,
+            role: user.role
+        }, JWT_SECRET, { expiresIn: '15d' });
+
+        res.status(200).json({ token: token });
+    } catch (e) {
+        console.error("[GOOGLE SIGNIN ERROR]", e);
+        res.status(401).json({ message: "Invalid Google token" });
+    }
+});
 
 router.get('/elements', userMiddleware, async (req, res) => {
     try{

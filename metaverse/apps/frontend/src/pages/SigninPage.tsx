@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { signin } from '../api';
+import { signin, googleSignin } from '../api';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from '../store/authStore';
 import '../styles/auth.css';
 
@@ -124,6 +125,42 @@ export function SigninPage() {
         setError(message);
       } else {
         setError('An unexpected error occurred. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleGoogleSuccess(credentialResponse: any) {
+    if (!credentialResponse.credential) {
+      setError('Google Sign-In failed.');
+      return;
+    }
+    setError('');
+    setLoading(true);
+    try {
+      const res = await googleSignin(credentialResponse.credential);
+      if (res.status !== 200) {
+        setError('Invalid Google token.');
+        return;
+      }
+      // Decode JWT to get userId and role (or we can just store the token and let store handle it)
+      // Wait, the existing signin returns res.data.userId? Ah, the standard signin returned token only,
+      // but in SigninPage it uses res.data.userId. Wait, signin returns { token }, the userId is in the token!
+      // Let's check what authStore requires. In SigninPage it was: setAuth(res.data.token, res.data.userId ?? '', 'user');
+      // I'll extract userId from JWT for now, or just use what we have.
+      const payloadBase64 = res.data.token.split('.')[1];
+      const decodedJson = JSON.parse(atob(payloadBase64));
+      const userId = decodedJson.userId || '';
+      const role = decodedJson.role?.toLowerCase() || 'user';
+      setAuth(res.data.token, userId, role);
+      navigate('/dashboard');
+    } catch (err) {
+      if(axios.isAxiosError(err) && err.response){
+        const message = err.response.data?.message;
+        setError(message);
+      } else {
+        setError('An unexpected error occurred with Google Sign-in.');
       }
     } finally {
       setLoading(false);
@@ -274,6 +311,12 @@ export function SigninPage() {
                 ? <><span className="auth-btn-spinner" />Signing in…</>
                 : 'Sign in →'}
             </button>
+            <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError('Google sign-in failed')}
+              />
+            </div>
           </form>
 
           <p className="auth-switch">

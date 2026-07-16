@@ -4,6 +4,25 @@ import { UpdateMetadataSchema } from '@repo/types';
 import client from "@repo/db" ;
 export const userRouter = Router() ;
 
+userRouter.get('/me', userMiddleware, async (req, res) => {
+    try {
+        if (!req.userId) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+        const user = await client.user.findUnique({
+            where: { id: req.userId },
+            select: { id: true, username: true, email: true, googleId: true, avatarId: true }
+        });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        return res.status(200).json({ user });
+    } catch (e: any) {
+        console.error("[GET /user/me ERROR]", e);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 userRouter.post('/metadata',userMiddleware, async (req,res)=>{
     const parsedData = UpdateMetadataSchema.safeParse(req.body) 
     if(!parsedData.success){
