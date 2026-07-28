@@ -1,5 +1,5 @@
 import type { User } from "./User.js";
-import type { OutgoingMessage } from "./types.js";
+import type { ServerMessage as OutgoingMessage } from "@repo/types";
 //we have added getinstance because for our entire application we need only one room manager
 //no new room manager instances must be allowed 
 //so we made the constructor private and are returning the same instance again and again

@@ -9,13 +9,14 @@ export const envSchema = z.object({
 export const SignupSchema = z.object({
     username: z.string(),
     password: z.string(),
+    email: z.string().email().optional(),
     type: z.enum(["admin", "user"])
 });
 
-export const SigninSchema = z.object({
-    username: z.string(),
-    password: z.string(),
-});
+export const SigninSchema = z.union([
+    z.object({ username: z.string(), password: z.string() }),
+    z.object({ email: z.string().email(), password: z.string() }),
+]);
 
 export const UpdateMetadataSchema = z.object({
     avatarId: z.string(),

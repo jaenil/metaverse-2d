@@ -21,12 +21,13 @@ router.post('/signup', async (req, res) => {
     if (!parsedData.success) {
         return res.status(400).json({ message: "Invalid data" });
     }
-    const hashedPassword = await hash(parsedData.data.password)
     try {
+        const hashedPassword = await hash(parsedData.data.password)  // BUG FIX: moved inside try — hash() errors were previously unhandled
         const user = await client.user.create({
             data: {
                 username: parsedData.data.username,
                 password: hashedPassword,
+                email: parsedData.data.email ?? null,
                 role: parsedData.data.type == 'admin' ? "Admin" : "User",
             }
         })
@@ -37,6 +38,7 @@ router.post('/signup', async (req, res) => {
     }
 })
 
+
 router.post('/signin', async (req, res) => {
     const parsedData = SigninSchema.safeParse(req.body)
     if (!parsedData.success) {
@@ -45,11 +47,12 @@ router.post('/signin', async (req, res) => {
     }
 
     try {
-        const user = await client.user.findUnique({
-            where: {
-                username: parsedData.data.username,
-            }
-        })
+        // Support both username-based and email-based signin via the union schema
+        const whereClause = 'email' in parsedData.data
+            ? { email: parsedData.data.email }
+            : { username: (parsedData.data as { username: string; password: string }).username };
+
+        const user = await client.user.findUnique({ where: whereClause })
         if (!user) {
             res.status(403).json({ message: "Invalid username" })
             return
@@ -137,7 +140,7 @@ router.post('/google-signin', async (req, res) => {
             role: user.role
         }, JWT_SECRET, { expiresIn: '15d' });
 
-        res.status(200).json({ token: token });
+        res.status(200).json({ token: token, userId: user.id });
     } catch (e) {
         console.error("[GOOGLE SIGNIN ERROR]", e);
         res.status(401).json({ message: "Invalid Google token" });
