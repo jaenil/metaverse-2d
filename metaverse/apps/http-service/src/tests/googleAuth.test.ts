@@ -4,11 +4,21 @@ vi.mock('../config.js', () => ({
     JWT_SECRET: 'test-secret'
 }));
 
+// vi.hoisted() runs before vi.mock factories, so the spy is available when the mock factory executes
+const { mockVerifyIdToken } = vi.hoisted(() => ({
+    mockVerifyIdToken: vi.fn()
+}));
+
+vi.mock('google-auth-library', () => ({
+    OAuth2Client: class {
+        verifyIdToken = mockVerifyIdToken;
+    }
+}));
+
 import request from 'supertest';
 import express from 'express';
 import { router } from '../routes/v1/index.js';
 import client from '@repo/db';
-import { OAuth2Client } from 'google-auth-library';
 
 // Mock dependencies
 vi.mock('@repo/db', () => ({
@@ -22,25 +32,13 @@ vi.mock('@repo/db', () => ({
     }
 }));
 
-vi.mock('google-auth-library', () => {
-    return {
-        OAuth2Client: class {
-            verifyIdToken = vi.fn();
-        }
-    };
-});
-
 const app = express();
 app.use(express.json());
 app.use('/api/v1', router);
 
 describe('Google Authentication Routes', () => {
-    let mockVerifyIdToken: any;
-
     beforeEach(() => {
         vi.clearAllMocks();
-        const clientInstance = new OAuth2Client();
-        mockVerifyIdToken = clientInstance.verifyIdToken;
     });
 
     it('should return 400 if google credential is missing', async () => {
@@ -90,6 +88,8 @@ describe('Google Authentication Routes', () => {
             
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('token');
+        expect(res.body).toHaveProperty('userId');
+        expect(res.body.userId).toBe('new-user-id');
         expect(client.user.create).toHaveBeenCalledWith(expect.objectContaining({
             data: expect.objectContaining({ email: 'test@gmail.com', googleId: 'google-123' })
         }));
@@ -112,6 +112,8 @@ describe('Google Authentication Routes', () => {
             
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('token');
+        expect(res.body).toHaveProperty('userId');
+        expect(res.body.userId).toBe('existing-id');
         expect(client.user.create).not.toHaveBeenCalled();
         expect(client.user.update).not.toHaveBeenCalled();
     });
@@ -138,6 +140,8 @@ describe('Google Authentication Routes', () => {
             .send({ credential: 'good-token' });
             
         expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('token');
+        expect(res.body).toHaveProperty('userId');
         expect(client.user.create).toHaveBeenCalledWith(expect.objectContaining({
             data: expect.objectContaining({ username: 'test_2' })
         }));

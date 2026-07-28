@@ -47,7 +47,7 @@ const [showJoinModal, setShowJoinModal] = useState(false);
 const [joinSpaceId, setJoinSpaceId] = useState('');
 
   const { userType, clearAuth } = useAuthStore();
-  const { theme, setTheme } = useThemeStore();
+  useThemeStore();  // imported for future use — theme toggle not yet wired in dashboard
   const navigate = useNavigate();
 
   async function loadSpaces() {
