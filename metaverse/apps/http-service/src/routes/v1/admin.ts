@@ -6,19 +6,25 @@ import client from "@repo/db" ;
 export const adminRouter = Router() ;
 
 adminRouter.post('/element', adminMiddleware, async (req, res) => {
-    const parsedData = CreateElementSchema.safeParse(req.body)
-    if (!parsedData.success) {
-        return res.status(400).json({ message: "Invalid data" })
-    }
-    const element = await client.element.create({
-        data: {
-            imageUrl: parsedData.data.imageUrl,
-            width: parsedData.data.width,
-            height: parsedData.data.height,
-            static: parsedData.data.static,
+    try {
+        const parsedData = CreateElementSchema.safeParse(req.body)
+        if (!parsedData.success) {
+            return res.status(400).json({ message: "Invalid data" })
         }
-    })
-    return res.json({ id: element.id })
+        const element = await client.element.create({
+            data: {
+                imageUrl: parsedData.data.imageUrl,
+                width: parsedData.data.width,
+                height: parsedData.data.height,
+                static: parsedData.data.static,
+            }
+        })
+        return res.json({ id: element.id })
+    } catch (error) {
+        console.error("Element create error", error);
+        res.status(500).json({ message: "Failed to create element" });
+    }
+    
 })
 
 adminRouter.put('/element/:elementId', adminMiddleware, async (req, res) => {
@@ -61,17 +67,23 @@ adminRouter.delete('/element/:elementId', adminMiddleware, async (req, res) => {
 })
 
 adminRouter.post('/avatar', adminMiddleware, async (req, res) => {
-    const parsedData = CreateAvatarSchema.safeParse(req.body)
-    if (!parsedData.success) {
-        return res.status(400).json({ message: "Invalid data" })
-    }
-    const avatar = await client.avatar.create({
-        data: {
-            imageUrl: parsedData.data.imageUrl,
-            name: parsedData.data.name,
+    try {
+        const parsedData = CreateAvatarSchema.safeParse(req.body)
+        if (!parsedData.success) {
+            return res.status(400).json({ message: "Invalid data" })
         }
-    })
-    return res.json({ avatarId: avatar.id })
+        const avatar = await client.avatar.create({
+            data: {
+                imageUrl: parsedData.data.imageUrl,
+                name: parsedData.data.name,
+            }
+        })
+        return res.json({ avatarId: avatar.id })
+    } catch (e) {
+        console.error("Avatar creation error ",e);
+        return res.status(500).json({ message: "Failed to create avatar" })
+    }
+    
 })
 
 adminRouter.post('/map', adminMiddleware, async (req, res) => {

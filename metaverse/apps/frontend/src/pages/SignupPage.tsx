@@ -155,10 +155,8 @@ export function SignupPage() {
         setError('Invalid Google token.');
         return;
       }
-      const payloadBase64 = res.data.token.split('.')[1];
-      const decodedJson = JSON.parse(atob(payloadBase64));
-      const userId = decodedJson.userId || '';
-      const role = decodedJson.role?.toLowerCase() || 'user';
+      const userId = res.data.userId || '';
+      const role = res.data.role || 'user';
       setAuth(res.data.token, userId, role);
       navigate('/dashboard');
     } catch (err) {

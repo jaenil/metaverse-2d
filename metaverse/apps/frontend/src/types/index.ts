@@ -1,19 +1,16 @@
+import type {SignupSchema, SigninSchema,SpaceElement} from '@repo/types';
+export type { IncomingClientMessage as ClientMessage, ServerMessage } from '@repo/types';
+import type {z} from 'zod';
 // ─── Auth ────────────────────────────────────────────────────────────────────
 
-export interface SignupPayload {
-  username: string;
-  password: string;
-  type: 'admin' | 'user';
-}
+export type SignupPayload = z.infer<typeof SignupSchema>;
 
-export interface SigninPayload {
-  username: string;
-  password: string;
-}
+export type SigninPayload = z.infer<typeof SigninSchema>;
 
 export interface AuthResponse {
   token: string;
-  userId?: string;
+  userId: string;
+  role?:'admin'|'user';
 }
 
 export interface SignupResponse {
@@ -63,16 +60,10 @@ export interface Space {
   thumbnail?: string;
 }
 
-import type { SpaceElement } from '@repo/types';
-
 export interface SpaceDetail {
   space: { width: number; height: number; thumbnail?: string; creatorId: string; weather: string; timeOfDay: string; };
   elements: SpaceElement[];
 }
-
-// ─── WebSocket Messages ───────────────────────────────────────────────────────
-
-export type { IncomingClientMessage as ClientMessage, ServerMessage } from '@repo/types';
 
 // ─── Arena State ─────────────────────────────────────────────────────────────
 

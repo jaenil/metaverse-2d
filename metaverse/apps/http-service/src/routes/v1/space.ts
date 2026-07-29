@@ -110,7 +110,8 @@ spaceRouter.post('/element', userMiddleware, async (req, res) => {
             id:parsedData.data.elementId
         }
     })
-    if (parsedData.data.x < 0 || parsedData.data.y < 0 || parsedData.data.x + (element?.width || 0)> space.width || parsedData.data.y + (element?.height || 0) > space.height) {
+    if(!element) return res.status(404).json({ message: "Element not found" });
+    if (parsedData.data.x < 0 || parsedData.data.y < 0 || parsedData.data.x + element.width > space.width || parsedData.data.y + element.height > space.height) {
         return res.status(400).json({ message: "Element out of bounds" })
     }
     //do not allow element to b3e added if there already exists an element in the same x and y
@@ -189,11 +190,6 @@ spaceRouter.delete('/:spaceId', userMiddleware, async (req, res) => {
         if (space?.creatorId !== req.userId) {
             return res.status(403).json({ message: "Unauthorised" })
         }
-
-        // Delete all elements inside the space first to satisfy foreign key constraints
-        await client.spaceElements.deleteMany({
-            where: { spaceId }
-        });
 
         await client.space.delete({
             where: {

@@ -70,7 +70,11 @@ router.post('/signin', async (req, res) => {
             userId: user.id,
             role: user.role
         }, JWT_SECRET,{expiresIn:'15d'});
-        res.status(200).json({ token: token })
+        res.status(200).json({ 
+            token: token, 
+            userId: user.id, 
+            role: user.role === 'Admin' ? 'admin' : 'user' 
+        });
     }
     catch (e) {
         console.error("[SIGNIN ERROR]", e)
@@ -140,7 +144,7 @@ router.post('/google-signin', async (req, res) => {
             role: user.role
         }, JWT_SECRET, { expiresIn: '15d' });
 
-        res.status(200).json({ token: token, userId: user.id });
+        res.status(200).json({ token: token, userId: user.id ,role: user.role === 'Admin' ? 'admin' : 'user' });
     } catch (e) {
         console.error("[GOOGLE SIGNIN ERROR]", e);
         res.status(401).json({ message: "Invalid Google token" });

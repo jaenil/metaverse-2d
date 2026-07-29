@@ -29,12 +29,23 @@ export class User{
         catch{
             this.send({
                 type:"event-rejected",
+                payload:{
+                    message:"Invalid JSON payload format",
+                    code:400
+                }
             })
             return ;
         }
         const result = IncomingClientMessageSchema.safeParse(parsedData);
         if (!result.success) {
             console.error("Invalid message format:", result.error);
+            this.send({
+                type: "event-rejected",
+                payload: {
+                    message: "Invalid message schema format",
+                    code: 400
+                }
+            });
             return;
         }
         const validatedData = result.data;
@@ -60,8 +71,8 @@ export class User{
                 if(!space) return ;
                 this.spaceId =spaceId 
                 
-                this.x = Math.floor(Math.random() * space?.width! );
-                this.y = Math.floor(Math.random() * space?.height! );
+                this.x = Math.floor(Math.random() * space?.width );
+                this.y = Math.floor(Math.random() * space?.height );
                 this.send({
                     type:"space-joined",
                     payload:{
@@ -97,10 +108,6 @@ export class User{
                 const disX = Math.abs(this.x - x) ;
                 const disY = Math.abs(this.y - y) ;
                 if((disX == 1 && disY == 0)||(disX == 0&& disY ==1)){
-                    //TODO:ou cannot break out of an outer function from inside a .forEach(). You should either:
-                    //Use a standard for...of loop so you can use break or continue.
-                    //Use an array method like .some() or .find() to check if a collision exists, and wrap the movement logic in an if (!collisionFound) block.
-
                     const collision = RoomManager.getInstance().getRoom(this.spaceId!)?.find((u)=>{
                         return u.x===x && u.y===y
                     })
@@ -162,7 +169,16 @@ export class User{
                 });
 
                 if (space?.creatorId !== this.id) {
-                    this.send({ type: "movement-rejected", payload: { x: this.x, y: this.y } });
+                    this.send(
+                        {
+                            type:"event-rejected",
+                            payload:{
+                                message:"Only space creator can modify room settings.",
+                                code:401,
+                                event:"update-settings"
+                            }
+                        }
+                    );
                     return;
                 }
 

@@ -28,11 +28,11 @@ export const CreateSpaceSchema = z.object({
     mapId: z.string().optional(),
 })
 
-export const JoinSpaceSchema = z.object({
-    name: z.string(),
-    dimensions: z.string().regex(/^[0-9]{1,4}x[0-9]{1,4}$/).transform(val => {const [width,height] = val.split("x"); return {width:Number(width),height:Number(height)}} ),
-    mapId: z.string(),
-})
+// export const JoinSpaceSchema = z.object({
+//     name: z.string(),
+//     dimensions: z.string().regex(/^[0-9]{1,4}x[0-9]{1,4}$/).transform(val => {const [width,height] = val.split("x"); return {width:Number(width),height:Number(height)}} ),
+//     mapId: z.string(),
+// })
 
 export const AddElementSchema = z.object({
     elementId: z.string(),
@@ -156,4 +156,4 @@ export type ServerMessage =
   | { type: 'settings-changed'; payload: { weather: string; timeOfDay: string } }
   | { type: 'element-added'; payload: SpaceElement }
   | { type: 'element-deleted'; payload: { id: string } }
-  | { type: 'event-rejected' };
+  | { type: 'event-rejected';payload:{message:string;code?:number; event?:string;} };

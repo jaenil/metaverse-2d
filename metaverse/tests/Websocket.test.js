@@ -300,6 +300,8 @@ describe("Websocket tests", () => {
         ws2.send("{ type: broken json");
         const message = await waitForAndPopLatestMessage(ws2Messages);
         expect(message.type).toBe("event-rejected");
+        expect(message.payload).toBeDefined();
+        expect(message.payload.message).toBe("Invalid JSON payload format");
     });
 
     test("Non-Existent Space: Should not receive space-joined", async () => {
@@ -334,7 +336,7 @@ describe("Websocket tests", () => {
 
         // Users list should only contain ws2 (userId), and NOT ws1 (adminUserId) since ws1 left
         expect(message.payload.users.length).toBe(1);
-        expect(message.payload.users[0].id).toBe(userId);
+        expect(message.payload.users[0].userId).toBe(userId);
 
         ws5.close();
         await waitForAndPopLatestMessage(ws2Messages); // consume user-left from ws5 joining and leaving

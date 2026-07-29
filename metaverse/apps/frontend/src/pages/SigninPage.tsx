@@ -144,15 +144,8 @@ export function SigninPage() {
         setError('Invalid Google token.');
         return;
       }
-      // Decode JWT to get userId and role (or we can just store the token and let store handle it)
-      // Wait, the existing signin returns res.data.userId? Ah, the standard signin returned token only,
-      // but in SigninPage it uses res.data.userId. Wait, signin returns { token }, the userId is in the token!
-      // Let's check what authStore requires. In SigninPage it was: setAuth(res.data.token, res.data.userId ?? '', 'user');
-      // I'll extract userId from JWT for now, or just use what we have.
-      const payloadBase64 = res.data.token.split('.')[1];
-      const decodedJson = JSON.parse(atob(payloadBase64));
-      const userId = decodedJson.userId || '';
-      const role = decodedJson.role?.toLowerCase() || 'user';
+      const userId = res.data.userId || '';
+      const role = res.data.role || 'user';
       setAuth(res.data.token, userId, role);
       navigate('/dashboard');
     } catch (err) {
