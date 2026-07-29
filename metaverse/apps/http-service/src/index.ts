@@ -8,13 +8,11 @@ import { envSchema } from '@repo/types';
 envSchema.parse(process.env);
 
 const app = express();
+const rawOrigins = process.env.ALLOWED_ORIGINS ?? '';
+const corsOrigin = rawOrigins === '*' ? '*' : rawOrigins.split(',').map(s => s.trim());
 
 // 2. Use the cors middleware BEFORE your routes!
-app.use(cors(
-    {
-        origin: process.env.ALLOWED_ORIGINS?.split(',')
-    }
-));
+app.use(cors({ origin: corsOrigin }));
 
 app.use(express.json());
 
