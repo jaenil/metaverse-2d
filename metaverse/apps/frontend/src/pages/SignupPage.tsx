@@ -33,6 +33,7 @@ const ROLES: { value: 'user' | 'admin'; label: string; icon: string; desc: strin
 
 export function SignupPage() {
   const [username, setUsername] = useState('');
+  const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState<'admin' | 'user'>('user');
   const [error, setError]       = useState('');
@@ -117,7 +118,11 @@ export function SignupPage() {
     setError('');
     setLoading(true);
     try {
-      const res = await signup({ username, password, type: userType });
+      const payload: any = { username, password, type: userType };
+      if (email.trim() !== '') {
+        payload.email = email.trim();
+      }
+      const res = await signup(payload);
       if (res.status !== 200) {
         setError('Signup failed. Username may already be taken.');
         return;
@@ -274,8 +279,23 @@ export function SignupPage() {
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="choose_a_username"
                   required
-                  autoFocus
                   autoComplete="username"
+                />
+              </div>
+            </div>
+
+            {/* Email (Optional) */}
+            <div className="auth-field">
+              <label htmlFor="signup-email">Email (Optional)</label>
+              <div className="auth-input-wrap">
+                <span className="auth-input-icon">✉</span>
+                <input
+                  id="signup-email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  autoComplete="email"
                 />
               </div>
             </div>

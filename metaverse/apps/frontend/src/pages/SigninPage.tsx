@@ -27,7 +27,7 @@ function PixelSprite({ color }: { color: string }) {
 }
 
 export function SigninPage() {
-  const [username, setUsername] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError]       = useState('');
   const [loading, setLoading]   = useState(false);
@@ -111,7 +111,10 @@ export function SigninPage() {
     setError('');
     setLoading(true);
     try {
-      const res = await signin({ username, password });
+      const payload = identifier.includes('@') 
+        ? { email: identifier, password } 
+        : { username: identifier, password };
+      const res = await signin(payload);
       if (res.status !== 200) {
         setError('Invalid username or password.');
         return;
@@ -251,20 +254,19 @@ export function SigninPage() {
           <div className="auth-divider" />
 
           <form onSubmit={handleSubmit} className="auth-form">
-            {/* Username */}
+            {/* Identifier */}
             <div className="auth-field">
-              <label htmlFor="signin-username">Username</label>
+              <label htmlFor="signin-identifier">Username or Email</label>
               <div className="auth-input-wrap">
                 <span className="auth-input-icon">◉</span>
                 <input
-                  id="signin-username"
+                  id="signin-identifier"
                   type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="your_username"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  placeholder="username or email"
                   required
-                  autoFocus
-                  autoComplete="username"
+                  autoComplete="username email"
                 />
               </div>
             </div>
