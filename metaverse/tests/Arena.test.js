@@ -76,4 +76,32 @@ describe("Arena endpoints", () => {
         });
         expect(newResponse.data.elements.length).toBe(3);
     });
+
+    test("Adding element fails if elementId does not exist", async () => {
+        const response = await axios.post(
+            `${BACKEND_URL}/api/v1/space/element`,
+            { elementId: "nonExistentElement123", spaceId, x: 10, y: 10 },
+            { headers: { authorization: `Bearer ${userToken}` } }
+        );
+
+        expect(response.status).toBe(404);
+        expect(response.data.message).toBe("Element not found");
+    });
+
+    test("Adding element fails if colliding with another static element", async () => {
+        await axios.post(
+            `${BACKEND_URL}/api/v1/space/element`,
+            { elementId: element1Id, spaceId, x: 30, y: 30 },
+            { headers: { authorization: `Bearer ${userToken}` } }
+        );
+
+        const response = await axios.post(
+            `${BACKEND_URL}/api/v1/space/element`,
+            { elementId: element1Id, spaceId, x: 30, y: 30 },
+            { headers: { authorization: `Bearer ${userToken}` } }
+        );
+
+        expect(response.status).toBe(400);
+        expect(response.data.message).toBe("Element is colliding with another element");
+    });
 });

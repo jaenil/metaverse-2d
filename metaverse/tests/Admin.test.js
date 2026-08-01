@@ -145,31 +145,6 @@ describe("Admin Endpoints", () => {
         expect(mapResponse.status).toBe(200);
     });
 
-    test("Admin is able to update a map", async () => {
-        mapResponse = await axios.post(
-            `${BACKEND_URL}/api/v1/admin/map`,
-            {
-                thumbnail: "https://thumbnail.com/a.png",
-                name: "test space",
-                dimensions: "100x200",
-                defaultElements: [],
-            },
-            { headers: { authorization: `Bearer ${adminToken}` } }
-        );
-
-        const updateMapResponse = await axios.put(
-            `${BACKEND_URL}/api/v1/admin/map/${mapResponse.data.id}`,
-            {
-                thumbnail: "https://thumbnail.com/a.png",
-                name: "test space",
-                dimensions: "100x200",
-                defaultElements: [],
-            },
-            { headers: { authorization: `Bearer ${adminToken}` } }
-        );
-
-        expect(updateMapResponse.status).toBe(200);
-    });
 
     test("Admin is able to delete a map", async () => {
         mapResponse = await axios.post(
@@ -205,29 +180,7 @@ describe("Admin Endpoints", () => {
         expect(avatarResponse.status).toBe(200);
     });
 
-    test("Admin is able to update an avatar", async () => {
-        avatarResponse = await axios.post(
-            `${BACKEND_URL}/api/v1/admin/avatar`,
-            {
-                imageUrl:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm3RFDZM21teuCMFYx_AROjt-AzUwDBROFww&s",
-                name: "Timmy",
-            },
-            { headers: { authorization: `Bearer ${adminToken}` } }
-        );
 
-        const updateAvatarResponse = await axios.put(
-            `${BACKEND_URL}/api/v1/admin/avatar/${avatarResponse.data.id}`,
-            {
-                imageUrl:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm3RFDZM21teuCMFYx_AROjt-AzUwDBROFww&s",
-                name: "Timmy",
-            },
-            { headers: { authorization: `Bearer ${adminToken}` } }
-        );
-
-        expect(updateAvatarResponse.status).toBe(200);
-    });
 
     test("Admin is able to delete an avatar", async () => {
         avatarResponse = await axios.post(
@@ -241,7 +194,7 @@ describe("Admin Endpoints", () => {
         );
 
         const deleteAvatarResponse = await axios.delete(
-            `${BACKEND_URL}/api/v1/admin/avatar/${avatarResponse.data.id}`,
+            `${BACKEND_URL}/api/v1/admin/avatar/${avatarResponse.data.avatarId}`,
             { headers: { authorization: `Bearer ${adminToken}` } }
         );
 

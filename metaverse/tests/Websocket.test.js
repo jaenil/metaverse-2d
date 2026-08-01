@@ -4,10 +4,6 @@ const { createAdminAndUser, createMapWithElements, BACKEND_URL } = require("./he
 
 const WS_URL = "ws://localhost:3001";
 
-/**
- * Waits until messageArray is non-empty, then shifts and returns the first message.
- * Polls every 100ms.
- */
 function waitForAndPopLatestMessage(messageArray, timeoutMs = 4000) {
     return new Promise((resolve, reject) => {
         if (messageArray.length > 0) {
@@ -21,8 +17,7 @@ function waitForAndPopLatestMessage(messageArray, timeoutMs = 4000) {
             }
         }, 100);
 
-        // Reject after timeoutMs so tests fail with a useful message
-        // instead of a generic "test timed out" from Jest
+
         setTimeout(() => {
             clearInterval(interval);
             reject(
@@ -86,7 +81,6 @@ describe("Websocket tests", () => {
         await new Promise((r) => ws2.on("open", r));
     }
 
-    // 30s: setupHTTP does ~6–7 HTTP requests before WS connections open
     beforeAll(async () => {
         console.log("[WS beforeAll] Starting HTTP setup...");
         await setupHTTP();
@@ -148,7 +142,6 @@ describe("Websocket tests", () => {
     });
 
     test("User should not be able to move into a static element", async () => {
-        // Create a 2x1 space
         const spaceResponse = await axios.post(
             `${BACKEND_URL}/api/v1/space`,
             { name: "Tiny Element Space", dimensions: "2x1", mapId: globalMapId },
@@ -156,7 +149,6 @@ describe("Websocket tests", () => {
         );
         const tinySpaceId = spaceResponse.data.spaceId;
 
-        // Add a static element at (1,0)
         await axios.post(
             `${BACKEND_URL}/api/v1/space/element`,
             { elementId: globalElementId, x: 1, y: 0, spaceId: tinySpaceId },
@@ -177,17 +169,15 @@ describe("Websocket tests", () => {
         wsD.on("message", (event) => wsDMsgs.push(JSON.parse(event.toString())));
         await new Promise((r) => wsD.on("open", r));
         wsD.send(JSON.stringify({ type: "join", payload: { spaceId: tinySpaceId, token: userToken } }));
-        await waitForAndPopLatestMessage(wsDMsgs); // space-joined
-        await waitForAndPopLatestMessage(wsCMsgs); // user-join
+        await waitForAndPopLatestMessage(wsDMsgs);
+        await waitForAndPopLatestMessage(wsCMsgs);
 
-        // If it spawned on (1,0)
         if (cx === 1) {
             wsC.send(JSON.stringify({ type: "move", payload: { x: 0, y: 0 } }));
-            await waitForAndPopLatestMessage(wsDMsgs); // consume movement
+            await waitForAndPopLatestMessage(wsDMsgs);
             cx = 0;
         }
 
-        // Now cx is 0. Try to move to (1,0) where the element is!
         wsC.send(JSON.stringify({ type: "move", payload: { x: 1, y: 0 } }));
         const rejectMsg = await waitForAndPopLatestMessage(wsCMsgs);
         expect(rejectMsg.type).toBe("movement-rejected");
@@ -197,7 +187,6 @@ describe("Websocket tests", () => {
     });
 
     test("User should not be able to move into another user", async () => {
-        // Create a tiny 2x1 space
         const spaceResponse = await axios.post(
             `${BACKEND_URL}/api/v1/space`,
             { name: "Tiny User Space", dimensions: "2x1", mapId: globalMapId },
@@ -225,19 +214,15 @@ describe("Websocket tests", () => {
         let bx = msgB.payload.spawn.x;
         let by = msgB.payload.spawn.y;
 
-        // consume the user-join from wsA
         await waitForAndPopLatestMessage(wsAMsgs);
 
-        // If they spawned on the same spot, move one of them
         if (ax === bx) {
             let nextX = ax === 0 ? 1 : 0;
             wsA.send(JSON.stringify({ type: "move", payload: { x: nextX, y: ay } }));
-            // wsB receives movement, pop it
             await waitForAndPopLatestMessage(wsBMsgs);
             ax = nextX;
         }
 
-        // They are now adjacent. A tries to move into B.
         wsA.send(JSON.stringify({ type: "move", payload: { x: bx, y: by } }));
         const rejectMsg = await waitForAndPopLatestMessage(wsAMsgs);
         expect(rejectMsg.type).toBe("movement-rejected");
@@ -270,7 +255,6 @@ describe("Websocket tests", () => {
         ws2.send(
             JSON.stringify({ type: "emote", payload: { emote: "👋" } })
         );
-        // We reconnect ws1 just to receive it? Wait, ws1 is closed. Let's create ws3.
         const ws3 = new WebSocket(WS_URL);
         const ws3Messages = [];
         ws3.on("message", (event) => ws3Messages.push(JSON.parse(event.toString())));
@@ -279,8 +263,8 @@ describe("Websocket tests", () => {
         ws3.send(
             JSON.stringify({ type: "join", payload: { spaceId, token: adminToken } })
         );
-        await waitForAndPopLatestMessage(ws3Messages); // space-joined
-        await waitForAndPopLatestMessage(ws2Messages); // user-join
+        await waitForAndPopLatestMessage(ws3Messages);
+        await waitForAndPopLatestMessage(ws2Messages);
 
         ws3.send(
             JSON.stringify({ type: "emote", payload: { emote: "👋" } })
@@ -292,11 +276,10 @@ describe("Websocket tests", () => {
         expect(message.payload.userId).toBe(adminUserId);
 
         ws3.close();
-        await waitForAndPopLatestMessage(ws2Messages); // consume user-left
+        await waitForAndPopLatestMessage(ws2Messages);
     });
 
     test("Malformed Messages: Server should send event-rejected and not crash", async () => {
-        // Send broken JSON
         ws2.send("{ type: broken json");
         const message = await waitForAndPopLatestMessage(ws2Messages);
         expect(message.type).toBe("event-rejected");
@@ -314,14 +297,11 @@ describe("Websocket tests", () => {
             JSON.stringify({ type: "join", payload: { spaceId: "invalid-space-id", token: userToken } })
         );
 
-        // We expect it to timeout and not receive space-joined, meaning the promise rejects
         await expect(waitForAndPopLatestMessage(ws4Messages, 1000)).rejects.toThrow();
         ws4.close();
     });
 
     test("State Consistency: New users joining should not see users who have left", async () => {
-        // Currently, ws1 is closed, ws2 is still in the room.
-        // Let's create ws5 and check the space-joined users list.
         const ws5 = new WebSocket(WS_URL);
         const ws5Messages = [];
         ws5.on("message", (event) => ws5Messages.push(JSON.parse(event.toString())));
@@ -334,11 +314,54 @@ describe("Websocket tests", () => {
         const message = await waitForAndPopLatestMessage(ws5Messages);
         expect(message.type).toBe("space-joined");
 
-        // Users list should only contain ws2 (userId), and NOT ws1 (adminUserId) since ws1 left
         expect(message.payload.users.length).toBe(1);
         expect(message.payload.users[0].userId).toBe(userId);
 
         ws5.close();
-        await waitForAndPopLatestMessage(ws2Messages); // consume user-left from ws5 joining and leaving
+        await waitForAndPopLatestMessage(ws2Messages);
+    });
+
+    test("Update Settings: Non-creator attempting settings change receives event-rejected", async () => {
+        const wsNonCreator = new WebSocket(WS_URL);
+        const msgs = [];
+        wsNonCreator.on("message", (event) => msgs.push(JSON.parse(event.toString())));
+        await new Promise((r) => wsNonCreator.on("open", r));
+
+        wsNonCreator.send(JSON.stringify({ type: "join", payload: { spaceId, token: adminToken } }));
+        await waitForAndPopLatestMessage(msgs);
+        await waitForAndPopLatestMessage(ws2Messages);
+
+        wsNonCreator.send(
+            JSON.stringify({
+                type: "update-settings",
+                payload: { weather: "rain", timeOfDay: "night" },
+            })
+        );
+
+        const message = await waitForAndPopLatestMessage(msgs);
+        expect(message.type).toBe("event-rejected");
+        expect(message.payload.code).toBe(401);
+        expect(message.payload.event).toBe("update-settings");
+
+
+        global.wsNonCreator = wsNonCreator;
+        global.wsNonCreatorMsgs = msgs;
+    });
+
+    test("Update Settings: Space creator updating settings broadcasts settings-changed", async () => {
+        ws2.send(
+            JSON.stringify({
+                type: "update-settings",
+                payload: { weather: "snow", timeOfDay: "night" },
+            })
+        );
+
+        const message = await waitForAndPopLatestMessage(global.wsNonCreatorMsgs);
+        expect(message.type).toBe("settings-changed");
+        expect(message.payload.weather).toBe("snow");
+        expect(message.payload.timeOfDay).toBe("night");
+
+        global.wsNonCreator.close();
+        await waitForAndPopLatestMessage(ws2Messages);
     });
 });

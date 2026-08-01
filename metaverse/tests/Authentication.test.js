@@ -74,12 +74,14 @@ describe("Authentication", () => {
     });
 
     test("Signup fails when using a duplicate email address", async () => {
+        const uniqueEmail = `dup-${Math.random().toString(36).substring(7)}@example.com`;
+        
         // Create 1st user with email
-        const user1 = await createUserWithEmail("user", "dup@example.com");
+        const user1 = await createUserWithEmail("user", uniqueEmail);
         expect(user1.signupResponse.status).toBe(200);
 
         // Attempt 2nd signup with same email
-        const user2 = await createUserWithEmail("user", "dup@example.com");
+        const user2 = await createUserWithEmail("user", uniqueEmail);
         expect(user2.signupResponse.status).toBe(400);
         expect(user2.signupResponse.data.message).toBe("user already exists");
     });
@@ -136,5 +138,13 @@ describe("Google Authentication", () => {
 
         expect(response.status).toBe(401);
         expect(response.data.message).toBe("Invalid Google token");
+    });
+
+    // TODO: Google auth token ko mock karna zaroori hai is test ke liye
+    // Abhi ke liye isko skip (xtest) kar rahe hain
+    xtest("Password-based signin fails on Google-only account with 403", async () => {
+        // 1. Ek Google account DB me insert karenge (ya google-signin se mock karke banayenge)
+        // 2. Uske email se normal /signin API call karenge password daal ke
+        // 3. Expected: response.status === 403, response.data.message === "Account created with Google. Please use Google Sign-In."
     });
 });
