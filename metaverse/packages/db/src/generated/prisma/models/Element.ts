@@ -230,7 +230,7 @@ export type ElementOrderByWithRelationInput = {
   height?: Prisma.SortOrder
   static?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
-  spaces?: Prisma.spaceElementsOrderByRelationAggregateInput
+  spaces?: Prisma.SpaceElementsOrderByRelationAggregateInput
   mapElements?: Prisma.MapElementsOrderByRelationAggregateInput
 }
 
@@ -277,7 +277,7 @@ export type ElementCreateInput = {
   height: number
   static: boolean
   imageUrl: string
-  spaces?: Prisma.spaceElementsCreateNestedManyWithoutElementInput
+  spaces?: Prisma.SpaceElementsCreateNestedManyWithoutElementInput
   mapElements?: Prisma.MapElementsCreateNestedManyWithoutElementInput
 }
 
@@ -287,7 +287,7 @@ export type ElementUncheckedCreateInput = {
   height: number
   static: boolean
   imageUrl: string
-  spaces?: Prisma.spaceElementsUncheckedCreateNestedManyWithoutElementInput
+  spaces?: Prisma.SpaceElementsUncheckedCreateNestedManyWithoutElementInput
   mapElements?: Prisma.MapElementsUncheckedCreateNestedManyWithoutElementInput
 }
 
@@ -297,7 +297,7 @@ export type ElementUpdateInput = {
   height?: Prisma.IntFieldUpdateOperationsInput | number
   static?: Prisma.BoolFieldUpdateOperationsInput | boolean
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  spaces?: Prisma.spaceElementsUpdateManyWithoutElementNestedInput
+  spaces?: Prisma.SpaceElementsUpdateManyWithoutElementNestedInput
   mapElements?: Prisma.MapElementsUpdateManyWithoutElementNestedInput
 }
 
@@ -307,7 +307,7 @@ export type ElementUncheckedUpdateInput = {
   height?: Prisma.IntFieldUpdateOperationsInput | number
   static?: Prisma.BoolFieldUpdateOperationsInput | boolean
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  spaces?: Prisma.spaceElementsUncheckedUpdateManyWithoutElementNestedInput
+  spaces?: Prisma.SpaceElementsUncheckedUpdateManyWithoutElementNestedInput
   mapElements?: Prisma.MapElementsUncheckedUpdateManyWithoutElementNestedInput
 }
 
@@ -464,7 +464,7 @@ export type ElementCreateWithoutMapElementsInput = {
   height: number
   static: boolean
   imageUrl: string
-  spaces?: Prisma.spaceElementsCreateNestedManyWithoutElementInput
+  spaces?: Prisma.SpaceElementsCreateNestedManyWithoutElementInput
 }
 
 export type ElementUncheckedCreateWithoutMapElementsInput = {
@@ -473,7 +473,7 @@ export type ElementUncheckedCreateWithoutMapElementsInput = {
   height: number
   static: boolean
   imageUrl: string
-  spaces?: Prisma.spaceElementsUncheckedCreateNestedManyWithoutElementInput
+  spaces?: Prisma.SpaceElementsUncheckedCreateNestedManyWithoutElementInput
 }
 
 export type ElementCreateOrConnectWithoutMapElementsInput = {
@@ -498,7 +498,7 @@ export type ElementUpdateWithoutMapElementsInput = {
   height?: Prisma.IntFieldUpdateOperationsInput | number
   static?: Prisma.BoolFieldUpdateOperationsInput | boolean
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  spaces?: Prisma.spaceElementsUpdateManyWithoutElementNestedInput
+  spaces?: Prisma.SpaceElementsUpdateManyWithoutElementNestedInput
 }
 
 export type ElementUncheckedUpdateWithoutMapElementsInput = {
@@ -507,7 +507,7 @@ export type ElementUncheckedUpdateWithoutMapElementsInput = {
   height?: Prisma.IntFieldUpdateOperationsInput | number
   static?: Prisma.BoolFieldUpdateOperationsInput | boolean
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  spaces?: Prisma.spaceElementsUncheckedUpdateManyWithoutElementNestedInput
+  spaces?: Prisma.SpaceElementsUncheckedUpdateManyWithoutElementNestedInput
 }
 
 
@@ -539,7 +539,7 @@ export type ElementCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
  * ElementCountOutputType without action
  */
 export type ElementCountOutputTypeCountSpacesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.spaceElementsWhereInput
+  where?: Prisma.SpaceElementsWhereInput
 }
 
 /**
@@ -597,7 +597,7 @@ export type ElementIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $ElementPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Element"
   objects: {
-    spaces: Prisma.$spaceElementsPayload<ExtArgs>[]
+    spaces: Prisma.$SpaceElementsPayload<ExtArgs>[]
     mapElements: Prisma.$MapElementsPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1000,7 +1000,7 @@ readonly fields: ElementFieldRefs;
  */
 export interface Prisma__ElementClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  spaces<T extends Prisma.Element$spacesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Element$spacesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$spaceElementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  spaces<T extends Prisma.Element$spacesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Element$spacesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SpaceElementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   mapElements<T extends Prisma.Element$mapElementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Element$mapElementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MapElementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1433,20 +1433,20 @@ export type ElementDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
  */
 export type Element$spacesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the spaceElements
+   * Select specific fields to fetch from the SpaceElements
    */
-  select?: Prisma.spaceElementsSelect<ExtArgs> | null
+  select?: Prisma.SpaceElementsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the spaceElements
+   * Omit specific fields from the SpaceElements
    */
-  omit?: Prisma.spaceElementsOmit<ExtArgs> | null
+  omit?: Prisma.SpaceElementsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.spaceElementsInclude<ExtArgs> | null
-  where?: Prisma.spaceElementsWhereInput
-  orderBy?: Prisma.spaceElementsOrderByWithRelationInput | Prisma.spaceElementsOrderByWithRelationInput[]
-  cursor?: Prisma.spaceElementsWhereUniqueInput
+  include?: Prisma.SpaceElementsInclude<ExtArgs> | null
+  where?: Prisma.SpaceElementsWhereInput
+  orderBy?: Prisma.SpaceElementsOrderByWithRelationInput | Prisma.SpaceElementsOrderByWithRelationInput[]
+  cursor?: Prisma.SpaceElementsWhereUniqueInput
   take?: number
   skip?: number
   distinct?: Prisma.SpaceElementsScalarFieldEnum | Prisma.SpaceElementsScalarFieldEnum[]

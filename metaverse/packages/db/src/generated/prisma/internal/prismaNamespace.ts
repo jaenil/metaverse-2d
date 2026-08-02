@@ -386,7 +386,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Space: 'Space',
-  spaceElements: 'spaceElements',
+  SpaceElements: 'SpaceElements',
   Element: 'Element',
   Map: 'Map',
   MapElements: 'MapElements',
@@ -558,76 +558,76 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    spaceElements: {
-      payload: Prisma.$spaceElementsPayload<ExtArgs>
-      fields: Prisma.spaceElementsFieldRefs
+    SpaceElements: {
+      payload: Prisma.$SpaceElementsPayload<ExtArgs>
+      fields: Prisma.SpaceElementsFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.spaceElementsFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$spaceElementsPayload> | null
+          args: Prisma.SpaceElementsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpaceElementsPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.spaceElementsFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$spaceElementsPayload>
+          args: Prisma.SpaceElementsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpaceElementsPayload>
         }
         findFirst: {
-          args: Prisma.spaceElementsFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$spaceElementsPayload> | null
+          args: Prisma.SpaceElementsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpaceElementsPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.spaceElementsFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$spaceElementsPayload>
+          args: Prisma.SpaceElementsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpaceElementsPayload>
         }
         findMany: {
-          args: Prisma.spaceElementsFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$spaceElementsPayload>[]
+          args: Prisma.SpaceElementsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpaceElementsPayload>[]
         }
         create: {
-          args: Prisma.spaceElementsCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$spaceElementsPayload>
+          args: Prisma.SpaceElementsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpaceElementsPayload>
         }
         createMany: {
-          args: Prisma.spaceElementsCreateManyArgs<ExtArgs>
+          args: Prisma.SpaceElementsCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.spaceElementsCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$spaceElementsPayload>[]
+          args: Prisma.SpaceElementsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpaceElementsPayload>[]
         }
         delete: {
-          args: Prisma.spaceElementsDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$spaceElementsPayload>
+          args: Prisma.SpaceElementsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpaceElementsPayload>
         }
         update: {
-          args: Prisma.spaceElementsUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$spaceElementsPayload>
+          args: Prisma.SpaceElementsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpaceElementsPayload>
         }
         deleteMany: {
-          args: Prisma.spaceElementsDeleteManyArgs<ExtArgs>
+          args: Prisma.SpaceElementsDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.spaceElementsUpdateManyArgs<ExtArgs>
+          args: Prisma.SpaceElementsUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.spaceElementsUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$spaceElementsPayload>[]
+          args: Prisma.SpaceElementsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpaceElementsPayload>[]
         }
         upsert: {
-          args: Prisma.spaceElementsUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$spaceElementsPayload>
+          args: Prisma.SpaceElementsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpaceElementsPayload>
         }
         aggregate: {
           args: Prisma.SpaceElementsAggregateArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AggregateSpaceElements>
         }
         groupBy: {
-          args: Prisma.spaceElementsGroupByArgs<ExtArgs>
+          args: Prisma.SpaceElementsGroupByArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SpaceElementsGroupByOutputType>[]
         }
         count: {
-          args: Prisma.spaceElementsCountArgs<ExtArgs>
+          args: Prisma.SpaceElementsCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SpaceElementsCountAggregateOutputType> | number
         }
       }
@@ -971,6 +971,8 @@ export const UserScalarFieldEnum = {
   id: 'id',
   username: 'username',
   password: 'password',
+  email: 'email',
+  googleId: 'googleId',
   avatarId: 'avatarId',
   role: 'role'
 } as const
@@ -984,7 +986,9 @@ export const SpaceScalarFieldEnum = {
   width: 'width',
   height: 'height',
   thumbnail: 'thumbnail',
-  creatorId: 'creatorId'
+  creatorId: 'creatorId',
+  timeOfDay: 'timeOfDay',
+  weather: 'weather'
 } as const
 
 export type SpaceScalarFieldEnum = (typeof SpaceScalarFieldEnum)[keyof typeof SpaceScalarFieldEnum]
@@ -1014,6 +1018,7 @@ export type ElementScalarFieldEnum = (typeof ElementScalarFieldEnum)[keyof typeo
 
 export const MapScalarFieldEnum = {
   id: 'id',
+  creatorId: 'creatorId',
   width: 'width',
   height: 'height',
   name: 'name',
@@ -1247,7 +1252,7 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   space?: Prisma.SpaceOmit
-  spaceElements?: Prisma.spaceElementsOmit
+  spaceElements?: Prisma.SpaceElementsOmit
   element?: Prisma.ElementOmit
   map?: Prisma.MapOmit
   mapElements?: Prisma.MapElementsOmit

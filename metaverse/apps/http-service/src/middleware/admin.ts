@@ -1,6 +1,6 @@
 //middleware for getting user id from json web token 
 import type { NextFunction, Request, Response } from "express"
-import { JWT_PASSWORD } from "../config.js"
+import { JWT_SECRET } from "../config.js"
 import jwt from "jsonwebtoken"
  
 export const adminMiddleware = async (req:Request, res:Response, next:NextFunction) => {
@@ -11,8 +11,8 @@ export const adminMiddleware = async (req:Request, res:Response, next:NextFuncti
         return 
     }
     try{
-        const verifiedUser = jwt.verify(token,JWT_PASSWORD) as {userId:string,role:string}
-        if(verifiedUser.role !="Admin"){
+        const verifiedUser = jwt.verify(token,JWT_SECRET) as {userId:string,role:string}
+        if(verifiedUser.role !=="Admin"){
             res.status(403).json({message:"Incorrect role access"})
             return 
         }

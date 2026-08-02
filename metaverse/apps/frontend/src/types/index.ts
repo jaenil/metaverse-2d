@@ -1,19 +1,16 @@
+import type {SignupSchema, SigninSchema,SpaceElement} from '@repo/types';
+export type { IncomingClientMessage as ClientMessage, ServerMessage } from '@repo/types';
+import type {z} from 'zod';
 // ─── Auth ────────────────────────────────────────────────────────────────────
 
-export interface SignupPayload {
-  username: string;
-  password: string;
-  type: 'admin' | 'user';
-}
+export type SignupPayload = z.infer<typeof SignupSchema>;
 
-export interface SigninPayload {
-  username: string;
-  password: string;
-}
+export type SigninPayload = z.infer<typeof SigninSchema>;
 
 export interface AuthResponse {
   token: string;
-  userId?: string;
+  userId: string;
+  role?:'admin'|'user';
 }
 
 export interface SignupResponse {
@@ -37,21 +34,7 @@ export interface UserAvatar {
 
 // ─── Element ─────────────────────────────────────────────────────────────────
 
-export interface Element {
-  id: string;
-  imageUrl: string;
-  width: number;
-  height: number;
-  static: boolean;
-}
-
-export interface SpaceElement {
-  id: string;           // SpaceElements row id (used for deletion)
-  elementId: string;
-  x: number;
-  y: number;
-  element?: Element;
-}
+export type { Element, SpaceElement } from '@repo/types';
 
 // ─── Map ─────────────────────────────────────────────────────────────────────
 
@@ -59,8 +42,11 @@ export interface GameMap {
   id: string;
   name: string;
   thumbnail: string;
-  dimensions: string;
-  defaultElements: { elementId: string; x: number; y: number }[];
+  dimensions?: string;
+  width?: number;
+  height?: number;
+  defaultElements?: { elementId: string; x: number; y: number }[];
+  creator?: { id: string; username: string };
 }
 
 // ─── Space ───────────────────────────────────────────────────────────────────
@@ -75,30 +61,9 @@ export interface Space {
 }
 
 export interface SpaceDetail {
-  space: { width: number; height: number };
+  space: { width: number; height: number; thumbnail?: string; creatorId: string; weather: string; timeOfDay: string; };
   elements: SpaceElement[];
 }
-
-// ─── WebSocket Messages ───────────────────────────────────────────────────────
-
-// Client → Server
-export type ClientMessage =
-  | { type: 'join'; payload: { spaceId: string; token: string } }
-  | { type: 'move'; payload: { x: number; y: number } };
-
-// Server → Client
-export type ServerMessage =
-  | {
-      type: 'space-joined';
-      payload: {
-        spawn: { x: number; y: number };
-        users: { userId: string; x: number; y: number }[];
-      };
-    }
-  | { type: 'user-joined'; payload: { userId: string; x: number; y: number } }
-  | { type: 'movement'; payload: { userId: string; x: number; y: number } }
-  | { type: 'movement-rejected'; payload: { x: number; y: number } }
-  | { type: 'user-left'; payload: { userId: string } };
 
 // ─── Arena State ─────────────────────────────────────────────────────────────
 
@@ -107,10 +72,15 @@ export interface ArenaUser {
   x: number;
   y: number;
   avatarUrl?: string;
+  emote?: string;
+  emoteExpiresAt?: number;
 }
 
 export interface ArenaState {
   myPos: { x: number; y: number } | null;
+  myEmote?: string;
+  myEmoteExpiresAt?: number;
   users: Map<string, ArenaUser>;
   connected: boolean;
+  myAvatarUrl?: string; // added manually if needed
 }

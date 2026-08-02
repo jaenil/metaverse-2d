@@ -6,7 +6,7 @@ import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto';
 const keyLength = 32;
 
 /**
- * Has a password or a secret with a password hashing algorithm (scrypt)
+ * Hashes a password or a secret with a password hashing algorithm (scrypt)
  * @param {string} password
  * @returns {string} The salt+hash
  */
@@ -16,7 +16,7 @@ export const hash = async (password: string): Promise<string> => {
     const salt = randomBytes(16).toString('hex');
 
     scrypt(password, salt, keyLength, (error, derivedKey) => {
-      if (error) reject(error);
+      if (error) return reject(error);
       // derivedKey is of type Buffer
       resolve(`${salt}.${derivedKey.toString('hex')}`);
     });
@@ -35,7 +35,7 @@ export const compare = async (password: string, hash: string): Promise<boolean> 
     // we need to pass buffer values to timingSafeEqual
     const hashKeyBuff = Buffer.from(hashKey, 'hex');
     scrypt(password, salt, keyLength, (error, derivedKey) => {
-      if (error) reject(error);
+      if (error) return reject(error);
       // compare the new supplied password with the hashed password using timeSafeEqual
       resolve(timingSafeEqual(hashKeyBuff, derivedKey));
     });

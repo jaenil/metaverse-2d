@@ -1,26 +1,60 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllSpaces, createSpace, deleteSpace, getMaps } from '../api';
-
+import { useAuthStore } from '../store/authStore';
+import { useThemeStore } from '../store/themeStore';
 import type { Space, GameMap } from '../types';
+import '../styles/dashboard.css';
+
+/* ── Random seed tiles/sprites for each card preview ── */
+const CARD_CONFIGS = [
+  { sprites: [{ x: 25, y: 60 }, { x: 65, y: 45 }], glowTile: { x: 45, y: 35 } },
+  { sprites: [{ x: 30, y: 55 }, { x: 70, y: 65 }], glowTile: { x: 55, y: 28 } },
+  { sprites: [{ x: 20, y: 50 }, { x: 60, y: 60 }], glowTile: { x: 38, y: 42 } },
+  { sprites: [{ x: 40, y: 58 }, { x: 75, y: 42 }], glowTile: { x: 62, y: 30 } },
+];
+
+function PixelSpriteSmall({ color = '#d9381e' }: { color?: string }) {
+  return (
+    <svg width="12" height="15" viewBox="0 0 16 20" fill="none">
+      <rect x="4" y="8" width="8" height="8" fill={color} />
+      <rect x="5" y="2" width="6" height="6" fill="#e8dddb" />
+      <rect x="4" y="16" width="3" height="4" fill="#4a3330" />
+      <rect x="9" y="16" width="3" height="4" fill="#4a3330" />
+      <rect x="6" y="4" width="1" height="1" fill="#0c0808" />
+      <rect x="9" y="4" width="1" height="1" fill="#0c0808" />
+    </svg>
+  );
+}
+
+const SPRITE_COLORS = ['#d9381e', '#c084fc', '#10b981', '#f59e0b', '#60a5fa'];
+const DIM_PRESETS = ['50x50', '100x100', '200x200', '500x500'];
 
 export function DashboardPage() {
-  const [spaces, setSpaces] = useState<Space[]>([]);
-  const [maps, setMaps] = useState<GameMap[]>([]);
+  const [spaces,  setSpaces]  = useState<Space[]>([]);
+  const [maps,    setMaps]    = useState<GameMap[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
-  const [showCreate, setShowCreate] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  const [newName, setNewName] = useState('');
+  // Create form state
+  const [newName,       setNewName]       = useState('');
   const [newDimensions, setNewDimensions] = useState('100x100');
-  const [selectedMap, setSelectedMap] = useState('');
+  const [selectedMap,   setSelectedMap]   = useState('');
 
+  // In DashboardPage.tsx
+const [showJoinModal, setShowJoinModal] = useState(false);
+const [joinSpaceId, setJoinSpaceId] = useState('');
 
+  const { userType, clearAuth } = useAuthStore();
+  useThemeStore();  // imported for future use — theme toggle not yet wired in dashboard
   const navigate = useNavigate();
 
   async function loadSpaces() {
-    const res = await getAllSpaces();
-    if (res.status === 200) setSpaces(res.data.spaces);
+    try {
+      const res = await getAllSpaces();
+      if (res.status === 200) setSpaces(res.data.spaces);
+    } catch { /* ignore */ }
     setLoading(false);
   }
 
@@ -28,7 +62,7 @@ export function DashboardPage() {
     try {
       const res = await getMaps();
       if (res.status === 200) setMaps(res.data.maps);
-    } catch {}
+    } catch { /* maps may not exist yet */ }
   }
 
   useEffect(() => {
@@ -39,169 +73,393 @@ export function DashboardPage() {
   async function handleCreate() {
     if (!newName.trim()) return;
     setCreating(true);
-    const res = await createSpace({
-      name: newName,
-      dimensions: newDimensions,
-      ...(selectedMap ? { mapId: selectedMap } : {}),
-    });
-    if (res.status === 200) {
-      setShowCreate(false);
-      setNewName('');
-      setSelectedMap('');
-      await loadSpaces();
+    try {
+      const res = await createSpace({
+        name: newName,
+        dimensions: newDimensions,
+        ...(selectedMap ? { mapId: selectedMap } : {}),
+      });
+      if (res.status === 200) {
+        setShowModal(false);
+        setNewName('');
+        setSelectedMap('');
+        setNewDimensions('100x100');
+        await loadSpaces();
+      }
+    } finally {
+      setCreating(false);
     }
-    setCreating(false);
   }
-
+  function handleJoin(){
+    navigate(`/space/${joinSpaceId}`) 
+  }
   async function handleDelete(spaceId: string) {
-    if (!confirm('Delete this space?')) return;
-    await deleteSpace(spaceId);
-    await loadSpaces();
+    try {
+      await deleteSpace(spaceId);
+      setSpaces((prev) => prev.filter((s) => s.id !== spaceId));
+    } catch (e) {
+      console.error("Failed to delete space", e);
+    }
   }
 
-  // removed handleLogout
+  function handleLogout() {
+    clearAuth();
+    navigate('/');
+  }
+
+  /* Close modal on backdrop click */
+  function handleBackdropClick(e: React.MouseEvent<HTMLDivElement>) {
+    if (e.target === e.currentTarget) setShowModal(false);
+  }
+
   return (
-    <>
-      <div className="max-w-7xl mx-auto px-8 md:px-16">
-          <header className="mb-12 flex justify-between items-end">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="font-technical-data text-label-sm text-primary tracking-[0.2em]">03.</span>
-                <span className="font-display-2xl text-[48px] md:text-[36px] leading-tight text-on-background">SPACE_CONSTRUCTOR</span>
-              </div>
-              <div className="mt-2 flex items-center gap-4">
-                <code className="text-on-surface-variant/60 font-technical-data text-[12px]">
-                  PROTOCOL: GET /api/v1/spaces // ACTIVE_SANDBOX_INSTANCES
-                </code>
-              </div>
-            </div>
-            <div className="text-right">
-              <button 
-                className="px-6 py-2 bg-primary/20 border border-primary text-primary font-technical-data text-[12px] hover:bg-primary hover:text-on-primary transition-colors flex items-center gap-2"
-                onClick={() => setShowCreate(!showCreate)}
+    <div className="dash-root">
+
+      {/* ── Navigation ────────────────────────── */}
+      <header className="dash-header">
+        <div className="dash-brand" onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>
+          <span className="dash-dot" />
+          METAVERSE
+        </div>
+
+        <nav className="dash-nav">
+          <button
+            className="dash-nav-btn"
+            onClick={() => navigate('/about')}
+            id="dashboard-about-btn"
+          >
+            ℹ About
+          </button>
+          <div className="dash-nav-divider" />
+          {userType === 'admin' && (
+            <>
+              <button
+                className="dash-nav-btn admin"
+                onClick={() => navigate('/admin')}
+                id="dashboard-admin-btn"
               >
-                <span className="material-symbols-outlined text-[16px]">add</span>
-                NEW_PROJECT
+                ⚙ Admin Panel
+              </button>
+              <div className="dash-nav-divider" />
+            </>
+          )}
+          <button
+            className="dash-nav-btn"
+            onClick={() => navigate('/profile')}
+            id="dashboard-profile-btn"
+          >
+            Profile
+          </button>
+          <div className="dash-nav-divider" />
+          <button
+            className="dash-nav-btn logout"
+            onClick={handleLogout}
+            id="dashboard-logout-btn"
+          >
+            Sign out
+          </button>
+        </nav>
+      </header>
+
+      {/* ── Body ──────────────────────────────── */}
+      <div className="dash-body">
+
+        {/* Stats bar */}
+        <div className="dash-stats">
+          <div className="dash-stat">
+            <span className={`dash-stat-value${loading ? '' : ' accent'}`}>
+              {loading ? '…' : spaces.length}
+            </span>
+            <span className="dash-stat-label">Spaces</span>
+          </div>
+          <div className="dash-stat" onClick={() => navigate('/maps')} style={{ cursor: 'pointer' }}>
+            <span className="dash-stat-value accent">
+              {maps.length}
+            </span>
+            <span className="dash-stat-label">Maps available</span>
+          </div>
+          <div className="dash-stat">
+            <span className="dash-stat-value" style={{ color: '#10b981' }}>
+              ●
+            </span>
+            <span className="dash-stat-label">Connected</span>
+          </div>
+          <div className="dash-stat">
+            <span className="dash-stat-value" style={{ fontSize: '1rem', color: 'var(--subdued)' }}>
+              {userType === 'admin' ? 'BUILDER' : 'PLAYER'}
+            </span>
+            <span className="dash-stat-label">Role</span>
+          </div>
+        </div>
+
+        {/* Title row */}
+        <div className="dash-title-row">
+          <div className="dash-title-row-left">
+            <span className="dash-eyebrow">// your lobby</span>
+            <h2>Your Spaces</h2>
+          </div>
+          <button
+            id="dashboard-new-space"
+            className="dash-new-btn"
+            onClick={() => setShowModal(true)}
+          >
+            <span>＋</span> New Space
+          </button>
+          <button
+            id="dashboard-join-space"
+            className="dash-new-btn"
+            onClick={() => setShowJoinModal(true)}
+          >
+            <span>⤢</span> Join Space
+          </button>
+        </div>
+
+        {/* Content */}
+        {loading ? (
+          <div className="space-grid">
+            {[1, 2, 3].map((i) => (
+              <div className="dash-skeleton" key={i}>
+                <div className="dash-skeleton-inner" />
+              </div>
+            ))}
+          </div>
+        ) : spaces.length === 0 ? (
+          <div className="dash-empty-state">
+            <span className="dash-empty-icon">◈</span>
+            <h3 style={{ fontFamily: 'var(--font-retro)', fontSize: '1.1rem', letterSpacing: '0.06em' }}>
+              No spaces yet
+            </h3>
+            <p>Create your first space to start exploring the metaverse with your team.</p>
+            <button className="dash-new-btn" onClick={() => setShowModal(true)}>
+              ＋ Create first space
+            </button>
+          </div>
+        ) : (
+          <div className="space-grid">
+            {spaces.map((space, idx) => {
+              const cfg = CARD_CONFIGS[idx % CARD_CONFIGS.length]!;
+              const col1 = SPRITE_COLORS[idx % SPRITE_COLORS.length]!;
+              const col2 = SPRITE_COLORS[(idx + 2) % SPRITE_COLORS.length]!;
+              return (
+                <div className="space-card" key={space.id}>
+                  {/* Preview */}
+                  <div className="space-card-preview">
+                    <div className="space-card-overlay">Enter Space →</div>
+                    {space.thumbnail ? (
+                      <img 
+                        src={space.thumbnail} 
+                        alt={space.name} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'relative', zIndex: 1 }} 
+                      />
+                    ) : (
+                      <>
+                        <div className="preview-tile solid" style={{ left: '20%', top: '40%' }} />
+                        <div className="preview-tile solid" style={{ left: '75%', top: '60%' }} />
+                        <div className="preview-tile solid" style={{ left: '88%', top: '30%' }} />
+                        <div
+                          className="preview-tile glow"
+                          style={{ left: `${cfg.glowTile.x}%`, top: `${cfg.glowTile.y}%` }}
+                        />
+                        {cfg.sprites.map((s, si) => (
+                          <div
+                            key={si}
+                            className="preview-sprite"
+                            style={{ left: `${s.x}%`, top: `${s.y}%` }}
+                          >
+                            <PixelSpriteSmall color={si === 0 ? col1 : col2} />
+                          </div>
+                        ))}
+                      </>
+                    )}
+                  </div>
+
+                  {/* Card body */}
+                  <div className="space-card-body">
+                    <div className="space-card-meta">
+                      <span className="space-card-name">{space.name}</span>
+                      <span className="space-card-dim">
+                        {space.dimensions ?? `${space.width}×${space.height}`}
+                      </span>
+                    </div>
+                    <span className="space-card-id">
+                      id: {space.id.slice(0, 8)}…
+                    </span>
+                    <div className="space-card-actions">
+                      <button
+                        id={`space-enter-${space.id}`}
+                        className="space-enter-btn"
+                        onClick={() => navigate(`/space/${space.id}`)}
+                      >
+                        Enter →
+                      </button>
+                      <button
+                        id={`space-delete-${space.id}`}
+                        className="space-delete-btn"
+                        onClick={() => handleDelete(space.id)}
+                        title="Delete space"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* ════════════════════════════════════════ */}
+      {/* NEW SPACE MODAL                          */}
+      {/* ════════════════════════════════════════ */}
+      {showModal && (
+        <div className="modal-backdrop" onClick={handleBackdropClick}>
+          <div className="modal-card" role="dialog" aria-modal="true" aria-label="Create space">
+            <div className="modal-header">
+              <h3>⬡ New Space</h3>
+              <button
+                className="modal-close"
+                onClick={() => setShowModal(false)}
+                aria-label="Close"
+              >
+                ✕
               </button>
             </div>
-          </header>
 
-          {showCreate && (
-            <div className="glass-panel rounded-xl p-8 neon-border-glow bg-surface-container-low/80 mb-12">
-              <h3 className="font-technical-data text-primary text-[14px] font-bold mb-6 tracking-widest border-b border-primary/30 pb-2">INITIALIZE_NEW_SPACE</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <div className="space-y-2 group">
-                  <label className="font-technical-data text-[10px] text-tertiary uppercase tracking-wider block transition-colors group-focus-within:text-primary">PROJECT_NAME</label>
+            <div className="modal-body">
+              {/* Name */}
+              <div className="modal-field">
+                <label htmlFor="modal-space-name">Space name</label>
+                <div className="modal-input-wrap">
+                  <span className="modal-input-icon">◉</span>
                   <input
-                    className="w-full bg-surface-container-lowest/50 border border-outline-variant/30 rounded-none px-4 py-3 font-technical-data text-[12px] focus:border-tertiary focus:ring-0 transition-all text-on-surface placeholder:text-on-surface-variant/30 outline-none"
-                    placeholder="ENTER_DESIGNATION"
+                    id="modal-space-name"
+                    type="text"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
+                    placeholder="My office, Team plaza…"
                     autoFocus
-                  />
-                </div>
-                <div className="space-y-2 group">
-                  <label className="font-technical-data text-[10px] text-tertiary uppercase tracking-wider block transition-colors group-focus-within:text-primary">DIMENSIONS</label>
-                  <input
-                    className="w-full bg-surface-container-lowest/50 border border-outline-variant/30 rounded-none px-4 py-3 font-technical-data text-[12px] focus:border-tertiary focus:ring-0 transition-all text-on-surface placeholder:text-on-surface-variant/30 outline-none"
-                    placeholder="100x100"
-                    value={newDimensions}
-                    onChange={(e) => setNewDimensions(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleCreate(); }}
                   />
                 </div>
               </div>
 
-              {maps.length > 0 && (
-                <div className="space-y-2 group mb-8">
-                  <label className="font-technical-data text-[10px] text-tertiary uppercase tracking-wider block transition-colors group-focus-within:text-primary">SELECT_MAP (OPTIONAL)</label>
-                  <select
-                    className="w-full bg-surface-container-lowest/50 border border-outline-variant/30 rounded-none px-4 py-3 font-technical-data text-[12px] focus:border-tertiary focus:ring-0 transition-all text-on-surface outline-none appearance-none"
-                    value={selectedMap}
-                    onChange={(e) => setSelectedMap(e.target.value)}
-                  >
-                    <option value="" className="bg-surface text-on-surface">EMPTY_VOID</option>
-                    {maps.map((m) => (
-                      <option key={m.id} value={m.id} className="bg-surface text-on-surface">{m.name}</option>
+              {/* Dimensions */}
+              {!selectedMap && (
+                <div className="modal-field">
+                  <label>Dimensions</label>
+                  <div className="dim-presets">
+                    {DIM_PRESETS.map((d) => (
+                      <button
+                        key={d}
+                        type="button"
+                        className={`dim-preset-btn${newDimensions === d ? ' active' : ''}`}
+                        onClick={() => setNewDimensions(d)}
+                      >
+                        {d}
+                      </button>
                     ))}
-                  </select>
+                  </div>
+                  <div className="modal-input-wrap" style={{ marginTop: '0.4rem' }}>
+                    <span className="modal-input-icon">⬡</span>
+                    <input
+                      id="modal-space-dim"
+                      type="text"
+                      value={newDimensions}
+                      onChange={(e) => setNewDimensions(e.target.value)}
+                      placeholder="100x100"
+                    />
+                  </div>
                 </div>
               )}
 
-              <div className="flex gap-4">
-                <button 
-                  className="px-8 py-3 bg-primary text-on-primary font-technical-data font-bold text-[12px] hover:bg-primary-fixed hover:glow-cyan transition-all disabled:opacity-50"
-                  onClick={handleCreate}
-                  disabled={creating}
-                >
-                  {creating ? 'COMPILING...' : 'COMPILE_PROJECT'}
-                </button>
-                <button 
-                  className="px-8 py-3 border border-outline-variant text-on-surface-variant font-technical-data text-[12px] hover:bg-surface-container-highest transition-colors"
-                  onClick={() => setShowCreate(false)}
-                >
-                  ABORT
-                </button>
-              </div>
-            </div>
-          )}
-
-          {loading ? (
-            <div className="flex items-center gap-4 text-tertiary font-technical-data">
-              <span className="material-symbols-outlined animate-spin">refresh</span>
-              FETCHING_INSTANCES...
-            </div>
-          ) : spaces.length === 0 ? (
-            <div className="glass-panel p-12 text-center text-on-surface-variant/50 font-technical-data">
-              NO_ACTIVE_INSTANCES_FOUND. INITIALIZE_NEW_SPACE.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
-              {spaces.map((space) => (
-                <div key={space.id} className="glass-panel rounded-xl overflow-hidden group hover:-translate-y-1 transition-transform border border-outline-variant/20 hover:border-primary/50 relative">
-                  <div className="h-2 bg-primary/20 w-full overflow-hidden">
-                    <div className="h-full bg-primary w-1/3 animate-[pulse_2s_ease-in-out_infinite]"></div>
-                  </div>
-                  <div className="p-6">
-                    <div className="flex justify-between items-start mb-4">
-                      <h3 className="font-headline-lg-mobile text-[18px] text-on-background font-bold uppercase truncate">{space.name}</h3>
-                      <button 
-                        className="text-error/70 hover:text-error transition-colors"
-                        onClick={() => handleDelete(space.id)}
-                        title="TERMINATE_INSTANCE"
-                      >
-                        <span className="material-symbols-outlined text-[18px]">delete</span>
-                      </button>
-                    </div>
-                    
-                    <div className="space-y-2 font-technical-data text-[10px] text-on-surface-variant/70 mb-6">
-                      <div className="flex justify-between">
-                        <span>DIM:</span>
-                        <span className="text-tertiary">{space.dimensions}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>ID:</span>
-                        <span className="truncate ml-4">{space.id}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>STATUS:</span>
-                        <span className="text-primary animate-pulse">ONLINE</span>
-                      </div>
-                    </div>
-
-                    <button 
-                      className="w-full py-2 bg-surface-container-highest hover:bg-primary hover:text-on-primary transition-colors font-technical-data text-[12px] border border-outline-variant/30 hover:border-primary flex items-center justify-center gap-2"
-                      onClick={() => navigate(`/space/${space.id}`)}
+              {/* Map selector */}
+              {maps.length > 0 && (
+                <div className="modal-field">
+                  <label htmlFor="modal-space-map">Map template (optional)</label>
+                  <div className="modal-input-wrap">
+                    <span className="modal-input-icon">◈</span>
+                    <select
+                      id="modal-space-map"
+                      value={selectedMap}
+                      onChange={(e) => setSelectedMap(e.target.value)}
                     >
-                      <span className="material-symbols-outlined text-[16px]">login</span>
-                      ENTER_INSTANCE
-                    </button>
+                      <option value="">Empty space</option>
+                      {maps.map((m) => (
+                        <option key={m.id} value={m.id}>{m.name}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
-              ))}
+              )}
             </div>
-          )}
-      </div>
-    </>
+
+            <div className="modal-footer">
+              <button className="modal-cancel-btn" onClick={() => setShowModal(false)}>
+                Cancel
+              </button>
+              <button
+                id="modal-create-btn"
+                className="modal-create-btn"
+                onClick={handleCreate}
+                disabled={creating || !newName.trim()}
+              >
+                {creating ? 'Creating…' : 'Create Space →'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Join with code Modal */}
+      {showJoinModal && (
+        <div className="modal-backdrop" onClick={handleBackdropClick}>
+          <div className="modal-card" role="dialog" aria-modal="true" aria-label="Join space">
+            <div className="modal-header">
+              <h3>⬡ Join Space</h3>
+              <button
+                className="modal-close"
+                onClick={() => setShowJoinModal(false)}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="modal-body">
+              {/* Code */}
+              <div className="modal-field">
+                <label htmlFor="modal-space-code">Space code</label>
+                <div className="modal-input-wrap">
+                  <span className="modal-input-icon">⬡</span>
+                  <input
+                    id="modal-space-code"
+                    type="text"
+                    value={joinSpaceId}
+                    onChange={(e) => setJoinSpaceId(e.target.value)}
+                    placeholder="Enter space code"
+                    autoFocus
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleJoin(); }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button className="modal-cancel-btn" onClick={() => setShowJoinModal(false)}>
+                Cancel
+              </button>
+              <button
+                id="modal-join-btn"
+                className="modal-join-btn"
+                onClick={handleJoin}
+                disabled={!joinSpaceId.trim()}
+              >
+                Join Space
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

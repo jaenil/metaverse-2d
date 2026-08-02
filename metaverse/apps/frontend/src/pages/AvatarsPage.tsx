@@ -1,172 +1,145 @@
-import { useState } from 'react';
-
-const AVATARS = [
-  {
-    id: '1',
-    name: 'UNIT_734',
-    class: 'COMBAT_DISSIDENT',
-    modelId: 'WAR_MACHINE',
-    sync: '88.4',
-    tierCode: 'A',
-    imgUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDUdg5V_fk5NtW8fWfsuBEY4NVTcGwP8kNK5w8VGy5W_WW4t8dLfHDjl8xu0mdb7-htHl2yqs7SdibgWhA2bJKtIfmoZNZKm5-xT0RhPArcOmLieYsHNiBeCED2X63ejFfUZCCxrT93PtI66xXogOzB26CKUXoTmyYM5GoLlo8LytXScf17V9_G_SzfUaiaBkmEHv5EOtuHjx2D4TVodnUxNbR1ubymbRhonDNnD607iiMiHGkGwS5Wivfi-hW8m8DH63LlCl-iG2E',
-    imgPosition: '0% 0%'
-  },
-  {
-    id: '2',
-    name: 'PROTOS-5',
-    class: 'EXPLORER_PRIME',
-    modelId: 'ORBIT_WALKER',
-    sync: '92.1',
-    tierCode: 'B',
-    imgUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDUdg5V_fk5NtW8fWfsuBEY4NVTcGwP8kNK5w8VGy5W_WW4t8dLfHDjl8xu0mdb7-htHl2yqs7SdibgWhA2bJKtIfmoZNZKm5-xT0RhPArcOmLieYsHNiBeCED2X63ejFfUZCCxrT93PtI66xXogOzB26CKUXoTmyYM5GoLlo8LytXScf17V9_G_SzfUaiaBkmEHv5EOtuHjx2D4TVodnUxNbR1ubymbRhonDNnD607iiMiHGkGwS5Wivfi-hW8m8DH63LlCl-iG2E',
-    imgPosition: '50% 0%'
-  },
-  {
-    id: '3',
-    name: 'BEAM-BOT',
-    class: 'HYBRID_BIO_TECH',
-    modelId: 'VOID_BEAST',
-    sync: '76.8',
-    tierCode: 'C',
-    imgUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDUdg5V_fk5NtW8fWfsuBEY4NVTcGwP8kNK5w8VGy5W_WW4t8dLfHDjl8xu0mdb7-htHl2yqs7SdibgWhA2bJKtIfmoZNZKm5-xT0RhPArcOmLieYsHNiBeCED2X63ejFfUZCCxrT93PtI66xXogOzB26CKUXoTmyYM5GoLlo8LytXScf17V9_G_SzfUaiaBkmEHv5EOtuHjx2D4TVodnUxNbR1ubymbRhonDNnD607iiMiHGkGwS5Wivfi-hW8m8DH63LlCl-iG2E',
-    imgPosition: '100% 0%'
-  },
-  {
-    id: '4',
-    name: 'NAVIGATOR',
-    class: 'SYSTEM_ARCHITECT',
-    modelId: 'SURVEY_ARCHITECT',
-    sync: '99.9',
-    tierCode: 'D',
-    imgUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDUdg5V_fk5NtW8fWfsuBEY4NVTcGwP8kNK5w8VGy5W_WW4t8dLfHDjl8xu0mdb7-htHl2yqs7SdibgWhA2bJKtIfmoZNZKm5-xT0RhPArcOmLieYsHNiBeCED2X63ejFfUZCCxrT93PtI66xXogOzB26CKUXoTmyYM5GoLlo8LytXScf17V9_G_SzfUaiaBkmEHv5EOtuHjx2D4TVodnUxNbR1ubymbRhonDNnD607iiMiHGkGwS5Wivfi-hW8m8DH63LlCl-iG2E',
-    imgPosition: '0% 50%'
-  },
-];
-
-const TIERS: Record<string, string> = { 'A': 'ALPHA', 'B': 'BETA', 'C': 'GAMMA', 'D': 'SIGMA' };
-const MODULES: Record<string, string> = { 'A': 'V-AXIS 0.9', 'B': 'ORBIT-7', 'C': 'BIO-SYNTH', 'D': 'CORE-LOGIC' };
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getAvailableAvatars, updateMetadata } from '../api';
+import type { Avatar } from '../types';
+import '../styles/dashboard.css'; // Reusing dashboard styles
 
 export function AvatarsPage() {
-  const [selected, setSelected] = useState(AVATARS[0]);
-  const [fade, setFade] = useState(false);
+  const [avatars, setAvatars] = useState<Avatar[]>([]);
+  const [selected, setSelected] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSelect = (avatar: typeof AVATARS[0]) => {
-    setSelected(avatar);
-    setFade(true);
-    setTimeout(() => setFade(false), 300);
-  };
+  useEffect(() => {
+    getAvailableAvatars()
+      .then((res) => {
+        if (res.status === 200) {
+          setAvatars(res.data.avatars);
+          if (res.data.avatars.length > 0) setSelected(res.data.avatars[0].id);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
 
-  return (
-    <>
-      <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop">
-          <header className="mb-12">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#c0c1ff]"></span>
-              <span className="font-technical-data text-label-sm text-primary tracking-[0.2em]">GATEWAY_SEQUENCE_01</span>
-            </div>
-            <h1 className="font-display-2xl text-[48px] md:text-display-2xl leading-tight text-on-background mb-4">Character Customization</h1>
-            <p className="font-body-md text-on-surface-variant max-w-2xl">
-              Select your digital manifestation. Synchronization requires a stable neural link and validated biometric signature. All avatars are rendered from high-fidelity metadata.
-            </p>
-            <div className="mt-6 flex items-center gap-4">
-              <code className="px-3 py-1.5 rounded-lg bg-surface-container-highest text-tertiary font-technical-data text-[12px] border border-outline-variant/30">
-                GET /api/v1/avatars
-              </code>
-              <span className="text-on-surface-variant/40 font-technical-data text-[12px]">RESPONSE: 200 OK [Latency: 14ms]</span>
-            </div>
-          </header>
+  const handleSelect = async (avatarId: string) => {
+    setSelected(avatarId);
+    setSaving(true);
+    try {
+      await updateMetadata(avatarId);
+      // Optional: Show toast here
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setSaving(false);
+    }
+  };  return (
+    <div className="dash-root">
+      
+      {/* ── Navigation ────────────────────────── */}
+      <header className="dash-header">
+        <div className="dash-brand" onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>
+          <span className="dash-dot" />
+          METAVERSE
+        </div>
+        <nav className="dash-nav">
+          <button
+            className="dash-nav-btn logout"
+            onClick={() => navigate('/dashboard')}
+          >
+            ← Back to Dashboard
+          </button>
+        </nav>
+      </header>
 
-          <div className="mb-16">
-            <div className="flex overflow-x-auto gap-8 pb-8 custom-scrollbar snap-x">
-              {AVATARS.map((a) => (
-                <div key={a.id} className="flex-none w-[320px] snap-center group">
-                  <div
-                    className={`character-card glass-panel rounded-xl overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 border-2 ${selected.id === a.id ? 'active' : 'border-transparent'}`}
-                    onClick={() => handleSelect(a)}
-                  >
-                    <div className="h-64 bg-surface-container-high/50 relative overflow-hidden">
-                      <img alt={`${a.name} 2D Avatar`} className="absolute w-full h-full object-cover opacity-90 group-hover:scale-110 transition-transform duration-700" src={a.imgUrl} style={{ objectPosition: a.imgPosition, scale: '1.5' }} />
-                      <div className="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-60"></div>
-                    </div>
-                    <div className="p-6">
-                      <div className="font-headline-lg-mobile text-on-background mb-1">{a.name}</div>
-                      <div className="font-technical-data text-label-sm text-on-surface-variant/60">CLASS: {a.class}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+      {/* ── Body ──────────────────────────────── */}
+      <div className="dash-body">
+
+        {/* Title row */}
+        <div className="dash-title-row">
+          <div className="dash-title-row-left">
+            <span className="dash-eyebrow">// character customization</span>
+            <h2>Select Avatar</h2>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
-            <div className={`lg:col-span-2 glass-panel rounded-xl p-8 neon-border-glow transition-opacity duration-300 ${fade ? 'opacity-50' : 'opacity-100'}`}>
-              <div className="flex items-center justify-between mb-8">
-                <h3 className="font-headline-lg-mobile text-primary">TECHNICAL_METADATA</h3>
-                <div className="flex gap-2">
-                  <span className="px-2 py-1 bg-primary/20 text-primary-fixed text-[10px] rounded font-technical-data">ENCRYPTED</span>
-                  <span className="px-2 py-1 bg-tertiary/20 text-tertiary text-[10px] rounded font-technical-data">STABLE</span>
-                </div>
+        {/* Content */}
+        {loading ? (
+          <div className="space-grid">
+            {[1, 2, 3].map((i) => (
+              <div className="dash-skeleton" key={i}>
+                <div className="dash-skeleton-inner" />
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-                <div className="space-y-1">
-                  <div className="font-label-sm text-on-surface-variant/50">MODEL_ID</div>
-                  <div className="font-technical-data text-on-background font-bold">{selected.modelId}</div>
-                </div>
-                <div className="space-y-1">
-                  <div className="font-label-sm text-on-surface-variant/50">SYNC_RATIO</div>
-                  <div className="font-technical-data text-primary font-bold">{selected.sync}%</div>
-                </div>
-                <div className="space-y-1">
-                  <div className="font-label-sm text-on-surface-variant/50">CORE_MODULE</div>
-                  <div className="font-technical-data text-on-background font-bold">{MODULES[selected.tierCode]}</div>
-                </div>
-                <div className="space-y-1">
-                  <div className="font-label-sm text-on-surface-variant/50">TIER</div>
-                  <div className="font-technical-data text-tertiary font-bold">{TIERS[selected.tierCode]}</div>
-                </div>
-              </div>
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <div className="flex justify-between font-label-sm">
-                    <span className="text-on-surface-variant">PROCESSING_POWER</span>
-                    <span className="text-tertiary">74%</span>
-                  </div>
-                  <div className="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-primary to-tertiary w-[74%] relative">
-                      <div className="absolute right-0 top-0 bottom-0 w-1 bg-white shadow-[0_0_10px_white]"></div>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between font-label-sm">
-                    <span className="text-on-surface-variant">NEURAL_STABILITY</span>
-                    <span className="text-tertiary">92%</span>
-                  </div>
-                  <div className="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-primary to-tertiary w-[92%] relative">
-                      <div className="absolute right-0 top-0 bottom-0 w-1 bg-white shadow-[0_0_10px_white]"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="glass-panel rounded-xl p-8 bg-primary/5 flex flex-col items-center justify-center text-center">
-              <div className="mb-8 w-24 h-24 rounded-full border-2 border-primary border-dashed p-2 animate-[spin_10s_linear_infinite]">
-                <div className="w-full h-full rounded-full bg-primary/20 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-primary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
-                </div>
-              </div>
-              <h4 className="font-headline-lg-mobile text-on-background mb-4">READY FOR SYNC</h4>
-              <p className="font-technical-data text-[12px] text-on-surface-variant mb-8 leading-relaxed">
-                Once initialized, your consciousness will be ported to the AETHER grid. This action is irreversible within the current session.
-              </p>
-              <button className="w-full py-4 bg-primary text-on-primary font-technical-data font-bold rounded-lg shadow-[0_0_20px_rgba(192,193,255,0.4)] hover:shadow-[0_0_35px_rgba(192,193,255,0.6)] hover:scale-[1.02] active:scale-95 transition-all duration-300">
-                INITIALIZE_ENTRY
-              </button>
-            </div>
+            ))}
           </div>
+        ) : avatars.length === 0 ? (
+          <div className="dash-empty-state">
+            <span className="dash-empty-icon">◉</span>
+            <h3 style={{ fontFamily: 'var(--font-retro)', fontSize: '1.1rem', letterSpacing: '0.06em' }}>
+              No avatars found
+            </h3>
+            <p>Ask an admin to create some avatars in the Admin Panel.</p>
+          </div>
+        ) : (
+          <div className="space-grid">
+            {avatars.map((avatar) => {
+              const isSelected = selected === avatar.id;
+              return (
+                <div 
+                  className="space-card" 
+                  key={avatar.id} 
+                  onClick={() => handleSelect(avatar.id)}
+                  style={{ 
+                    cursor: 'pointer',
+                    borderColor: isSelected ? 'var(--accent)' : 'var(--border)',
+                    boxShadow: isSelected ? '0 0 0 1px var(--accent), 0 8px 30px rgba(var(--accent-raw),0.15)' : 'none',
+                    transform: isSelected ? 'translateY(-2px)' : 'none'
+                  }}
+                >
+                  {/* Pixel art preview */}
+                  <div className="space-card-preview" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {avatar.imageUrl ? (
+                      <img 
+                        src={avatar.imageUrl} 
+                        alt={avatar.name} 
+                        style={{ width: '64px', height: '64px', imageRendering: 'pixelated', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))' }}
+                      />
+                    ) : (
+                      <div style={{ fontSize: '2rem', color: 'var(--muted)' }}>◉</div>
+                    )}
+                  </div>
+
+                  {/* Card body */}
+                  <div className="space-card-body">
+                    <div className="space-card-meta">
+                      <span className="space-card-name" style={{ color: isSelected ? 'var(--accent-hi)' : 'var(--text)' }}>
+                        {avatar.name}
+                      </span>
+                    </div>
+                    <span className="space-card-id">
+                      id: {avatar.id.slice(0, 8)}…
+                    </span>
+                    <div className="space-card-actions">
+                      <button 
+                        className={isSelected ? 'space-enter-btn' : 'dash-nav-btn'} 
+                        style={{ width: '100%' }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelect(avatar.id);
+                        }}
+                      >
+                        {saving && isSelected ? 'Saving...' : isSelected ? '✓ Selected' : 'Select'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
       </div>
-    </>
+    </div>
   );
 }

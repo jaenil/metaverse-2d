@@ -1,33 +1,189 @@
-@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-@import "tailwindcss";
-@config "../../tailwind.config.js";
+/* Standard UI Font Setup */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* ── Design tokens: Ember & Charcoal ── */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* ── Design tokens: Ember (Default) ── */
 :root {
-  --bg:           #0c0808;
-  --surface:      #140d0c;
-  --surface-elev: #1c1311;
-  --border:       #2e1f1d;
-  --muted:        #4a3330;
-  --text:         #e8dddb;
-  --subdued:      #8c7a77;
+  --bg:           #0f172a;   /* Clean slate background */
+  --surface:      #1e293b;   /* Slightly lighter slate card */
+  --surface-elev: #334155;
+  --border:       #334155;
+  --muted:        #475569;
+  --text:         #f8fafc;   /* Crisp white */
+  --subdued:      #94a3b8;
 
-  --accent:       #d9381e;
-  --accent-dim:   #5c180d;
-  --accent-hi:    #f25c43;
-  --accent-raw:   217, 56, 30;
+  --accent:       #f97316;   /* Orange accent */
+  --accent-dim:   #9a3412;
+  --accent-hi:    #fdba74;
+  --accent-raw:   249, 115, 22;
 
   --danger:       #ef4444;
   --online:       #10b981;
-  --offline:      #8c7a77;
+  --offline:      #64748b;
 
-  --font-ui:      'Inter', 'Segoe UI', system-ui, sans-serif;
-  --font-retro:   'VT323', monospace;
+  /* Font mappings */
+  --font-ui:      'Inter', system-ui, sans-serif;
+  --font-retro:   'Inter', system-ui, sans-serif; /* Fallback for anywhere hardcoding font-retro */
   --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
 
-  --radius-sm:    4px;
-  --radius-md:    6px;
-  --radius-lg:    8px;
+  --radius-sm:    6px;
+  --radius-md:    8px;
+  --radius-lg:    12px;
+}
+
+[data-theme="midnight"] {
+  --bg:           #09090b;
+  --surface:      #18181b;
+  --surface-elev: #27272a;
+  --border:       #3f3f46;
+  --muted:        #52525b;
+  --text:         #f4f4f5;
+  --subdued:      #a1a1aa;
+  --accent:       #3b82f6;
+  --accent-dim:   #1e3a8a;
+  --accent-hi:    #60a5fa;
+  --accent-raw:   59, 130, 246;
+}
+
+/* 1. Obsidian */
+[data-theme="obsidian"] {
+  --bg:           #000000;
+  --surface:      #111111;
+  --surface-elev: #222222;
+  --border:       #333333;
+  --muted:        #666666;
+  --text:         #ffffff;
+  --subdued:      #a3a3a3;
+  --accent:       #ffffff;
+  --accent-dim:   #a3a3a3;
+  --accent-hi:    #ffffff;
+  --accent-raw:   255, 255, 255;
+  --btn-text:     #000000;
+}
+
+/* 2. Deep Ocean */
+[data-theme="ocean"] {
+  --bg:           #020617;
+  --surface:      #0f172a;
+  --surface-elev: #1e293b;
+  --border:       #334155;
+  --muted:        #475569;
+  --text:         #f8fafc;
+  --subdued:      #94a3b8;
+  --accent:       #06b6d4;
+  --accent-dim:   #0891b2;
+  --accent-hi:    #22d3ee;
+  --accent-raw:   6, 182, 212;
+}
+
+/* 3. Amethyst */
+[data-theme="amethyst"] {
+  --bg:           #1e1b4b;
+  --surface:      #312e81;
+  --surface-elev: #3730a3;
+  --border:       #4338ca;
+  --muted:        #4f46e5;
+  --text:         #e0e7ff;
+  --subdued:      #a5b4fc;
+  --accent:       #d946ef;
+  --accent-dim:   #c026d3;
+  --accent-hi:    #e879f9;
+  --accent-raw:   217, 70, 239;
+}
+
+/* 4. Matcha / Forest */
+[data-theme="matcha"] {
+  --bg:           #022c22;
+  --surface:      #064e3b;
+  --surface-elev: #065f46;
+  --border:       #047857;
+  --muted:        #059669;
+  --text:         #d1fae5;
+  --subdued:      #6ee7b7;
+  --accent:       #84cc16;
+  --accent-dim:   #65a30d;
+  --accent-hi:    #a3e635;
+  --accent-raw:   132, 204, 22;
+}
+
+/* 5. Dracula */
+[data-theme="dracula"] {
+  --bg:           #282a36;
+  --surface:      #44475a;
+  --surface-elev: #6272a4;
+  --border:       #6272a4;
+  --muted:        #6272a4;
+  --text:         #f8f8f2;
+  --subdued:      #bfbfbf;
+  --accent:       #ff79c6;
+  --accent-dim:   #bd93f9;
+  --accent-hi:    #ff92df;
+  --accent-raw:   255, 121, 198;
+}
+
+/* 6. Solarized */
+[data-theme="solarized"] {
+  --bg:           #002b36;
+  --surface:      #073642;
+  --surface-elev: #586e75;
+  --border:       #586e75;
+  --muted:        #657b83;
+  --text:         #fdf6e3;
+  --subdued:      #eee8d5;
+  --accent:       #b58900;
+  --accent-dim:   #cb4b16;
+  --accent-hi:    #eecb46;
+  --accent-raw:   181, 137, 0;
+}
+
+/* 7. Ghost */
+[data-theme="ghost"] {
+  --bg:           #18181b;
+  --surface:      #27272a;
+  --surface-elev: #3f3f46;
+  --border:       #52525b;
+  --muted:        #71717a;
+  --text:         #f4f4f5;
+  --subdued:      #a1a1aa;
+  --accent:       #e4e4e7;
+  --accent-dim:   #a1a1aa;
+  --accent-hi:    #ffffff;
+  --accent-raw:   228, 228, 231;
+  --btn-text:     #000000;
+}
+
+/* 9. Matrix (Clean) */
+[data-theme="matrix"] {
+  --bg:           #000000;
+  --surface:      #052e16;
+  --surface-elev: #064e3b;
+  --border:       #065f46;
+  --muted:        #047857;
+  --text:         #ecfdf5;
+  --subdued:      #6ee7b7;
+  --accent:       #10b981;
+  --accent-dim:   #059669;
+  --accent-hi:    #34d399;
+  --accent-raw:   16, 185, 129;
+}
+
+/* 10. Cobalt */
+[data-theme="cobalt"] {
+  --bg:           #0f172a;
+  --surface:      #1e293b;
+  --surface-elev: #334155;
+  --border:       #475569;
+  --muted:        #64748b;
+  --text:         #f1f5f9;
+  --subdued:      #cbd5e1;
+  --accent:       #3b82f6;
+  --accent-dim:   #2563eb;
+  --accent-hi:    #60a5fa;
+  --accent-raw:   59, 130, 246;
 }
 
 *, *::before, *::after {
@@ -36,53 +192,39 @@
   padding: 0;
 }
 
-html, body, #root {
-  height: 100%;
-  /* Base font only — no background here so each page controls its own */
-  font-family: var(--font-ui);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-/* ─────────────────────────────────────────────────────────
-   .ember-theme  ← apply this class to non-auth pages that
-   use the warm charcoal design system
-   ───────────────────────────────────────────────────────── */
-.ember-theme {
+body {
   background-color: var(--bg);
-  background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"),
-    repeating-linear-gradient(45deg, rgba(217, 56, 30, 0.03) 0px, rgba(217, 56, 30, 0.03) 1px, transparent 1px, transparent 50px),
-    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 80px),
-    radial-gradient(circle at 100% 0%, rgba(217, 56, 30, 0.06) 0%, transparent 40%);
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: 0 0;
   color: var(--text);
+  font-family: var(--font-ui);
+  line-height: 1.5;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ── Retro font: scoped only to .ember-theme ── */
-.ember-theme button,
-.ember-theme .btn-primary,
-.ember-theme .btn-ghost,
-.ember-theme .btn-danger,
-.ember-theme .back-btn,
-.ember-theme label,
-.ember-theme .tag,
-.ember-theme h1,
-.ember-theme h2,
-.ember-theme h3,
-.ember-theme .admin-feedback,
-.ember-theme .ws-status,
-.ember-theme .space-id-label {
+/* Smooth Theme Transitions */
+html, body, #root, .dash-root, .dash-header, .space-card, .modal-card, .admin-sidebar, .admin-content, .space-card-preview, .space-card-body, .admin-stat-card, input, select, button {
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* ── UI Typography Targeting ── */
+/* This targets ONLY buttons, labels, and system headers */
+button, .btn-primary, .btn-ghost, .btn-danger, .back-btn, 
+label, .tag, h1, h2, h3, .admin-feedback, .ws-status, .space-id-label {
   font-family: var(--font-retro);
   -webkit-font-smoothing: none;
   font-smooth: never;
-  font-size: 115%;
+  /* Pixel fonts naturally render smaller, so we bump up the size slightly for these specific elements */
+  font-size: 115%; 
   letter-spacing: 0.05em;
 }
 
 /* ── Shared buttons ── */
 .btn-primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--btn-text, #fff);
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   padding: 0.5rem 1.25rem;
@@ -92,8 +234,16 @@ html, body, #root {
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-.btn-primary:hover { background: var(--accent-hi); box-shadow: 0 4px 12px rgba(var(--accent-raw), 0.25); }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary:hover {
+  background: var(--accent-hi);
+  box-shadow: 0 4px 12px rgba(var(--accent-raw), 0.25);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .btn-ghost {
   background: transparent;
@@ -105,7 +255,12 @@ html, body, #root {
   font-size: 13px;
   transition: all 0.2s ease;
 }
-.btn-ghost:hover { border-color: var(--accent); color: var(--text); background: rgba(var(--accent-raw), 0.04); }
+
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: rgba(var(--accent-raw), 0.04);
+}
 
 .btn-danger {
   background: transparent;
@@ -117,30 +272,41 @@ html, body, #root {
   font-size: 12px;
   transition: all 0.2s ease;
 }
-.btn-danger:hover { background: var(--danger); color: #fff; }
+
+.btn-danger:hover {
+  background: var(--danger);
+  color: #fff;
+}
 
 .back-btn {
   background: var(--accent);
-  color: #ffffff;
+  color: var(--btn-text, #ffffff);
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   padding: 0.45rem 1rem;
   cursor: pointer;
+  
+  /* Enforcing the Retro Font explicitly */
   font-family: var(--font-retro) !important;
-  font-size: 18px;
+  font-size: 18px; 
   letter-spacing: 0.05em;
   -webkit-font-smoothing: none;
   font-smooth: never;
+  
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
-.back-btn:hover { background: var(--accent-hi); box-shadow: 0 4px 12px rgba(var(--accent-raw), 0.25); }
 
-/* ── Shared inputs — scoped to .ember-theme ── */
-.ember-theme label {
+.back-btn:hover { 
+  background: var(--accent-hi); 
+  box-shadow: 0 4px 12px rgba(var(--accent-raw), 0.25);
+}
+
+/* ── Shared inputs ── */
+label {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -149,9 +315,7 @@ html, body, #root {
   font-weight: 500;
 }
 
-.ember-theme input,
-.ember-theme select,
-.ember-theme textarea {
+input, select, textarea {
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -163,9 +327,7 @@ html, body, #root {
   font-family: var(--font-ui);
 }
 
-.ember-theme input:focus,
-.ember-theme select:focus,
-.ember-theme textarea:focus {
+input:focus, select:focus, textarea:focus {
   border-color: var(--accent);
   background: var(--surface);
   box-shadow: 0 0 0 2px rgba(var(--accent-raw), 0.15);
@@ -182,11 +344,24 @@ kbd {
 }
 
 /* ── Custom Scrollbars ── */
-::-webkit-scrollbar { width: 12px; height: 12px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-md); border: 3px solid var(--bg); }
-::-webkit-scrollbar-thumb:hover { background: var(--subdued); }
-::-webkit-scrollbar-corner { background: var(--bg); }
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-md);
+  border: 3px solid var(--bg); /* Creates a padded look */
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--subdued);
+}
+::-webkit-scrollbar-corner {
+  background: var(--bg);
+}
 
 /* ── Futuristic UI Custom Styles ── */
 .technical-grid {
@@ -195,11 +370,31 @@ kbd {
   background-size: 40px 40px;
 }
 
-.blueprint-sketch { pointer-events: none; position: absolute; opacity: 0.15; mix-blend-mode: screen; }
-.technical-line { height: 1px; background: linear-gradient(90deg, transparent, #464554, transparent); width: 100%; }
-.glass-panel { backdrop-filter: blur(8px); border: 1px solid rgba(192, 193, 255, 0.1); }
-.glow-cyan { box-shadow: 0 0 15px rgba(76, 215, 246, 0.3); }
-.neon-border-glow { box-shadow: inset 0 0 10px rgba(76, 215, 246, 0.1), 0 0 15px rgba(76, 215, 246, 0.05); }
+.blueprint-sketch {
+  pointer-events: none;
+  position: absolute;
+  opacity: 0.15;
+  mix-blend-mode: screen;
+}
+
+.technical-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #464554, transparent);
+  width: 100%;
+}
+
+.glass-panel {
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(192, 193, 255, 0.1);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 15px rgba(76, 215, 246, 0.3);
+}
+
+.neon-border-glow {
+  box-shadow: inset 0 0 10px rgba(76, 215, 246, 0.1), 0 0 15px rgba(76, 215, 246, 0.05);
+}
 
 .character-card.active {
   border-color: #c0c1ff;
@@ -207,12 +402,36 @@ kbd {
   box-shadow: 0 0 30px rgba(192, 193, 255, 0.15);
 }
 
-.custom-scrollbar::-webkit-scrollbar { height: 4px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #4cd7f6; border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar {
+  height: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #4cd7f6;
+  border-radius: 10px;
+}
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
 }
-.floating-sketch { animation: float 6s ease-in-out infinite; }
+.floating-sketch {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* ── Custom Cursor for Interactive Elements ── */
+button, 
+a, 
+select, 
+input[type="button"], 
+input[type="submit"], 
+[role="button"], 
+.dash-new-btn, 
+.space-enter-btn, 
+.space-delete-btn,
+.modal-close,
+.modal-join-btn {
+  cursor: crosshair !important;
+}

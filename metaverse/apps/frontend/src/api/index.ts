@@ -20,7 +20,13 @@ export const signup = (data: SignupPayload) =>
 export const signin = (data: SigninPayload) =>
   client.post<AuthResponse>('/signin', data);
 
+export const googleSignin = (credential: string) =>
+  client.post<AuthResponse>('/google-signin', { credential });
+
 // ─── User ────────────────────────────────────────────────────────────────────
+
+export const getCurrentUser = () =>
+  client.get<{ user: { id: string, username: string, email: string | null, googleId: string | null, avatarId: string | null } }>('/user/me');
 
 export const updateMetadata = (avatarId: string) =>
   client.post('/user/metadata', { avatarId });
@@ -69,6 +75,9 @@ export const adminCreateElement = (data: {
 export const adminUpdateElement = (elementId: string, imageUrl: string) =>
   client.put(`/admin/element/${elementId}`, { imageUrl });
 
+export const adminDeleteElement = (elementId: string) =>
+  client.delete(`/admin/element/${elementId}`);
+
 export const adminCreateMap = (data: {
   thumbnail: string;
   dimensions: string;
@@ -76,11 +85,17 @@ export const adminCreateMap = (data: {
   defaultElements: { elementId: string; x: number; y: number }[];
 }) => client.post<{ id: string }>('/admin/map', data);
 
+export const adminDeleteMap = (mapId: string) =>
+  client.delete(`/admin/map/${mapId}`);
+
 export const adminCreateAvatar = (data: { imageUrl: string; name: string }) =>
   client.post<{ avatarId: string }>('/admin/avatar', data);
 
+export const adminDeleteAvatar = (avatarId: string) =>
+  client.delete(`/admin/avatar/${avatarId}`);
+
 export const getElements = () =>
-  client.get<{ elements: Element[] }>('/admin/elements');
+  client.get<{ elements: Element[] }>('/elements');
 
 export const getMaps = () =>
-  client.get<{ maps: GameMap[] }>('/admin/maps');
+  client.get<{ maps: GameMap[] }>('/maps');

@@ -28,6 +28,37 @@ async function createAdmin() {
 }
 
 /**
+ * Signs up and signs in a user with an optional email.
+ * Returns { token, userId, email, username }
+ */
+async function createUserWithEmail(role = "user",customEmail=null) {
+    const username = `user-${Math.random().toString(36).substring(7)}`;
+    const password = "123456";
+    const email = customEmail || `${username}@test.com`;
+    const signupResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
+        username,
+        password,
+        email:email,
+        type: role,
+    });
+
+    const signinResponse = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
+        email:email,
+        password,
+    });
+
+    return {
+        signupResponse,
+        signinResponse,
+        token: signinResponse.data.token,
+        userId: signupResponse.data.userId,
+        email,
+        username,
+        password,
+    };
+}
+
+/**
  * Creates an admin + a regular user and returns tokens/ids for both.
  * Returns { adminToken, adminId, userToken, userId }
  */
@@ -119,4 +150,4 @@ async function createMapWithElements(adminToken) {
     };
 }
 
-module.exports = { createAdmin, createAdminAndUser, createMapWithElements, BACKEND_URL };
+module.exports = { createAdmin, createAdminAndUser, createMapWithElements, createUserWithEmail, BACKEND_URL };

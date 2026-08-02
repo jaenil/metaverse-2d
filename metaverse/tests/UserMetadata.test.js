@@ -4,9 +4,9 @@ const { createAdmin, BACKEND_URL } = require("./helpers/setup");
 describe("User metadata endpoint", () => {
     let token;
     let avatarId;
-
+    let admin;
     beforeAll(async () => {
-        const admin = await createAdmin();
+        admin = await createAdmin();
         token = admin.token;
 
         const avatarResponse = await axios.post(
@@ -46,4 +46,27 @@ describe("User metadata endpoint", () => {
         });
         expect(response.status).toBe(403);
     });
+
+    test("User can see their profile with correct user id and token id", async()=>{
+        const response = await axios.get(`${BACKEND_URL}/api/v1/user/me`,{
+            headers:{ authorization: `Bearer ${token}` }
+        });
+        expect(response.status).toBe(200);
+        expect(response.data.user).toBeDefined();
+        expect(response.data.user.id).toBeDefined();
+        expect(response.data.user.username).toBeDefined();
+    })
+
+    test("User is not able to see their profile if the auth header is not present", async()=>{
+        const response = await axios.get(`${BACKEND_URL}/api/v1/user/me`);
+        expect(response.status).toBe(403);
+    })
+
+    test("User is not able to see their profile with wrong token", async()=>{
+        const response = await axios.get(`${BACKEND_URL}/api/v1/user/me`,{
+            headers:{ authorization: 'Bearer 1234444444' }
+        });
+        expect(response.status).toBe(401);
+    })
+    
 });

@@ -53,7 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Space: 'Space',
-  spaceElements: 'spaceElements',
+  SpaceElements: 'SpaceElements',
   Element: 'Element',
   Map: 'Map',
   MapElements: 'MapElements',
@@ -80,6 +80,8 @@ export const UserScalarFieldEnum = {
   id: 'id',
   username: 'username',
   password: 'password',
+  email: 'email',
+  googleId: 'googleId',
   avatarId: 'avatarId',
   role: 'role'
 } as const
@@ -93,7 +95,9 @@ export const SpaceScalarFieldEnum = {
   width: 'width',
   height: 'height',
   thumbnail: 'thumbnail',
-  creatorId: 'creatorId'
+  creatorId: 'creatorId',
+  timeOfDay: 'timeOfDay',
+  weather: 'weather'
 } as const
 
 export type SpaceScalarFieldEnum = (typeof SpaceScalarFieldEnum)[keyof typeof SpaceScalarFieldEnum]
@@ -123,6 +127,7 @@ export type ElementScalarFieldEnum = (typeof ElementScalarFieldEnum)[keyof typeo
 
 export const MapScalarFieldEnum = {
   id: 'id',
+  creatorId: 'creatorId',
   width: 'width',
   height: 'height',
   name: 'name',

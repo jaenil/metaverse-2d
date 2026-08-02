@@ -31,11 +31,28 @@ export function useWebSocket({
     send({ type: 'move', payload: { x, y } });
   }, [send]);
 
+  const sendSettingsUpdate = useCallback((weather: 'none' | 'rain' | 'snow', timeOfDay: 'day' | 'night') => {
+    send({ type: 'update-settings', payload: { weather, timeOfDay } });
+  }, [send]);
+
+  const sendElementAdded = useCallback((element: any) => {
+    send({ type: 'element-added', payload: element });
+  }, [send]);
+
+  const sendElementDeleted = useCallback((id: string) => {
+    send({ type: 'element-deleted', payload: { id } });
+  }, [send]);
+
+  const sendEmote = useCallback((emote: string) => {
+    send({ type: 'emote', payload: { emote } });
+  }, [send]);
+
   const connect = useCallback(() => {
     const ws = new WebSocket(WS_URL);
     wsRef.current = ws;
 
     ws.onopen = () => {
+      if (wsRef.current !== ws) return;
       // First thing: join the space
       ws.send(JSON.stringify({
         type: 'join',
@@ -45,6 +62,7 @@ export function useWebSocket({
     };
 
     ws.onmessage = (event) => {
+      if (intentionalClose.current || wsRef.current !== ws) return;
       try {
         const msg: ServerMessage = JSON.parse(event.data as string);
         onMessage(msg);
@@ -54,6 +72,7 @@ export function useWebSocket({
     };
 
     ws.onclose = () => {
+      if (wsRef.current !== ws) return;
       onClose?.();
       if (!intentionalClose.current) {
         // Exponential backoff reconnect (capped at 5s)
@@ -62,6 +81,7 @@ export function useWebSocket({
     };
 
     ws.onerror = (err) => {
+      if (wsRef.current !== ws) return;
       console.error('WS error', err);
       ws.close();
     };
@@ -78,5 +98,5 @@ export function useWebSocket({
     };
   }, [connect]);
 
-  return { sendMove };
+  return { sendMove, sendEmote, sendSettingsUpdate, sendElementAdded, sendElementDeleted };
 }

@@ -103,4 +103,38 @@ describe("Space information", () => {
         expect(response.data.spaces.length).toBe(1);
         expect(filteredSpace).toBeDefined();
     });
+
+    test("GET space by non-existent ID returns 404", async () => {
+        const response = await axios.get(
+            `${BACKEND_URL}/api/v1/space/nonExistentId123`,
+            { headers: { authorization: `Bearer ${userToken}` } }
+        );
+
+        expect(response.status).toBe(404);
+        expect(response.data.message).toBe("Space not found");
+    });
+
+    test("GET space by ID returns space details and elements", async () => {
+        const createResponse = await axios.post(
+            `${BACKEND_URL}/api/v1/space`,
+            { name: "Test", dimensions: "100x200", mapId },
+            { headers: { authorization: `Bearer ${userToken}` } }
+        );
+        const spaceId = createResponse.data.spaceId;
+
+        const response = await axios.get(
+            `${BACKEND_URL}/api/v1/space/${spaceId}`,
+            { headers: { authorization: `Bearer ${userToken}` } }
+        );
+
+        expect(response.status).toBe(200);
+        expect(response.data.space.width).toBe(100);
+        expect(response.data.space.height).toBe(200);
+        expect(response.data.space.creatorId).toBeDefined();
+        expect(response.data.space.timeOfDay).toBeDefined();
+        expect(response.data.space.weather).toBeDefined();
+        expect(Array.isArray(response.data.elements)).toBe(true);
+        expect(response.data.elements.length).toBe(3);
+    });
+
 });

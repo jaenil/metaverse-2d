@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run --passWithNoTests",
     "build": "npx esbuild src/index.ts --format=esm --bundle --packages=external --outfile=dist/index.js --platform=node --tsconfig=tsconfig.json",
     "start": "node --env-file=.env dist/index.js",
     "dev:build": "tsc -b -w",
-    "dev:start": "nodemon dist/index.js",
+    "dev:start": "nodemon --watch src --exec \"tsx --env-file=.env\" src/index.ts",
     "dev": "concurrently \"npm run dev:build\" \"npm run dev:start\""
   },
   "keywords": [],
@@ -16,7 +16,13 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "ws": "^8.18.0",
-    "@types/ws": "^8.18.1"    
+    "@repo/db": "*",
+    "@repo/types": "*",
+    "@types/ws": "^8.18.1",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.1",
+    "vitest": "^4.1.10"
   }
 }

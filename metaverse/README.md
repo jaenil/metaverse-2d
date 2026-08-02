@@ -1,159 +1,113 @@
-# Turborepo starter
+# Metaverse 2D
 
-This Turborepo starter is maintained by the Turborepo core team.
+A real-time 2D pixel-art metaverse application featuring customizable spaces, live WebSocket character movement, and user authentication with optional Google Sign-In.
 
-## Using this example
+---
 
-Run the following command:
+## 📁 Abstract Folder Structure
 
-```sh
-npx create-turbo@latest
+```text
+metaverse/
+├── apps/
+│   ├── frontend/         # React + Vite frontend UI (Pages, Game Canvas, Zustand state)
+│   ├── http-service/     # Express HTTP REST API (Auth, Spaces, Admin, User Metadata)
+│   └── ws-service/       # WebSocket Server for real-time movement and space synchronization
+├── packages/
+│   ├── db/               # Prisma ORM schema & database client
+│   ├── types/            # Shared TypeScript types & Zod validation schemas
+│   ├── ui/               # Shared UI component primitives
+│   └── typescript-config/# Shared tsconfig configurations
+└── tests/                # Integration and end-to-end test suites
 ```
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## ⚡ Installation & Setup Guide
 
-### Apps and Packages
+### 1. Prerequisites
+- **Node.js**: `v18+` or `v20+`
+- **npm** / **turbo**
+- **PostgreSQL Database** (e.g., Supabase or local PostgreSQL)
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### 2. Installation & Environment Setup
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+Clone the repository and install dependencies:
+```bash
+cd metaverse
+npm install
 ```
 
-Without global `turbo`, use your package manager:
+Configure environment files:
 
-```sh
-cd my-turborepo
-npx turbo build
-npm dlx turbo build
-npm exec turbo build
+**Backend (`apps/http-service/.env`):**
+```env
+PORT=3000
+DATABASE_URL="your-postgresql-connection-string"
+DIRECT_URL="your-direct-postgresql-connection-string"
+JWT_SECRET="your-jwt-secret"
+ALLOWED_ORIGINS="*"
+GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"
+WS_INTERNAL_URL="http://127.0.0.1:3002"
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
+**WebSocket Service (`apps/ws-service/.env`):**
+```env
+PORT=3001
+JWT_SECRET="your-jwt-secret"
+WS_INTERNAL_URL="http://127.0.0.1:3002"
 ```
 
-Without global `turbo`:
-
-```sh
-npx turbo build --filter=docs
-npm exec turbo build --filter=docs
-npm exec turbo build --filter=docs
+**Frontend (`apps/frontend/.env`):**
+```env
+VITE_BACKEND_URL=http://localhost:3000
+VITE_WS_URL=ws://localhost:3001
+VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 ```
 
-### Develop
+---
 
-To develop all apps and packages, run the following command:
+## 🚀 Performance & Architecture
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+### In-Memory Caching & Server-Authoritative Physics
+- **Zero-DB Movement**: Player tile movements are validated against a high-performance in-memory cache (`CacheManager` in `ws-service/src/caching.ts`), eliminating database queries during active player movement.
+- **Shared Space Cache**: Elements and space metadata are loaded into memory once per active space and shared across all connected players in that space.
+- **Service-to-Service Cache Invalidation**: When elements are added or removed via the HTTP API, `http-service` sends a non-blocking notification to `ws-service` via `WS_INTERNAL_URL` (`http://127.0.0.1:3002/internal/invalidate-space-elements`), instantly updating the WebSocket server's collision map in real time.
+- **Automatic Garbage Collection**: When a space becomes empty (0 connected players), `clearSpaceCache` evicts space data from RAM to maintain a minimal memory footprint.
 
-```sh
-cd my-turborepo
-turbo dev
+---
+
+## 🌐 Running using ngrok
+
+To expose your local development environment to external devices or collaborators via **ngrok**:
+
+### 1. Expose standard services
+In separate terminal tabs, start ngrok tunnels for frontend, HTTP backend, and WS backend:
+
+```bash
+# Tunnel Frontend
+ngrok http 5173
+
+# Tunnel Backend HTTP API
+ngrok http 3000
+
+# Tunnel WebSocket Service
+ngrok http 3001
 ```
 
-Without global `turbo`, use your package manager:
+### 2. Update Frontend Environment
+Update your `apps/frontend/.env` with the generated ngrok URLs:
 
-```sh
-cd my-turborepo
-npx turbo dev
-npm exec turbo dev
-npm exec turbo dev
+```env
+VITE_BACKEND_URL=https://<your-http-ngrok-id>.ngrok-free.app
+VITE_WS_URL=wss://<your-ws-ngrok-id>.ngrok-free.app
+VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+### 3. Google OAuth Configuration (Important)
+If using Google Sign-In over ngrok:
+1. Go to **Google Cloud Console → APIs & Services → Credentials**.
+2. Select your OAuth 2.0 Client ID.
+3. Add your frontend ngrok origin to **Authorized JavaScript origins**:
+   `https://<your-frontend-ngrok-id>.ngrok-free.app`
+4. Save the configuration.
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-npm exec turbo dev --filter=web
-npm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-npm exec turbo login
-npm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-npm exec turbo link
-npm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)

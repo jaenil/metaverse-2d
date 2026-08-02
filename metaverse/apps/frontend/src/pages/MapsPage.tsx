@@ -1,131 +1,162 @@
-import { useEffect, useState } from 'react';
-
-const MAPS = [
-  {
-    id: '1',
-    name: 'NEON CITADEL',
-    dim: '100x100',
-    sector: 'Sector 7B // X: 45.21, Y: 19.87',
-    popDensity: 74,
-    latency: '12ms',
-    tag: 'STABLE_GRID',
-    imgUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDUdg5V_fk5NtW8fWfsuBEY4NVTcGwP8kNK5w8VGy5W_WW4t8dLfHDjl8xu0mdb7-htHl2yqs7SdibgWhA2bJKtIfmoZNZKm5-xT0RhPArcOmLieYsHNiBeCED2X63ejFfUZCCxrT93PtI66xXogOzB26CKUXoTmyYM5GoLlo8LytXScf17V9_G_SzfUaiaBkmEHv5EOtuHjx2D4TVodnUxNbR1ubymbRhonDNnD607iiMiHGkGwS5Wivfi-hW8m8DH63LlCl-iG2E',
-    imgPosition: '10% 80%'
-  },
-  {
-    id: '2',
-    name: 'FLOATING VOID GARDENS',
-    dim: '250x250',
-    sector: 'Sector 120 // X: 112.44, Y: 8.12',
-    popDensity: 12,
-    latency: '45ms',
-    tag: 'ORGANIC_OS',
-    imgUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDUdg5V_fk5NtW8fWfsuBEY4NVTcGwP8kNK5w8VGy5W_WW4t8dLfHDjl8xu0mdb7-htHl2yqs7SdibgWhA2bJKtIfmoZNZKm5-xT0RhPArcOmLieYsHNiBeCED2X63ejFfUZCCxrT93PtI66xXogOzB26CKUXoTmyYM5GoLlo8LytXScf17V9_G_SzfUaiaBkmEHv5EOtuHjx2D4TVodnUxNbR1ubymbRhonDNnD607iiMiHGkGwS5Wivfi-hW8m8DH63LlCl-iG2E',
-    imgPosition: '50% 80%'
-  },
-  {
-    id: '3',
-    name: 'DATA NEXUS',
-    dim: '500x500',
-    sector: 'Sector 00A // X: 0.00, Y: 0.00',
-    popDensity: 98,
-    latency: '8ms',
-    tag: 'RAW_PROCESSING',
-    imgUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDUdg5V_fk5NtW8fWfsuBEY4NVTcGwP8kNK5w8VGy5W_WW4t8dLfHDjl8xu0mdb7-htHl2yqs7SdibgWhA2bJKtIfmoZNZKm5-xT0RhPArcOmLieYsHNiBeCED2X63ejFfUZCCxrT93PtI66xXogOzB26CKUXoTmyYM5GoLlo8LytXScf17V9_G_SzfUaiaBkmEHv5EOtuHjx2D4TVodnUxNbR1ubymbRhonDNnD607iiMiHGkGwS5Wivfi-hW8m8DH63LlCl-iG2E',
-    imgPosition: '90% 80%'
-  }
-];
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getMaps } from '../api';
+import type { GameMap } from '../types';
+import '../styles/dashboard.css';
 
 export function MapsPage() {
-  const [selected, setSelected] = useState(MAPS[0]);
+  const [maps, setMaps] = useState<GameMap[]>([]);
+  const [selected, setSelected] = useState('');
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const selectedMap = maps.find((m) => m.id === selected);
+
+  useEffect(() => {
+    getMaps()
+      .then((res) => {
+        if (res.status === 200) {
+          setMaps(res.data.maps);
+          if (res.data.maps.length > 0) setSelected(res.data.maps[0].id);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
-    <>
-      <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop">
-          <header className="mb-12 flex justify-between items-end">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="font-technical-data text-label-sm text-primary tracking-[0.2em]">02.</span>
-                <span className="font-display-2xl text-[48px] md:text-[36px] leading-tight text-on-background">WORLD_SPAWN</span>
-              </div>
-              <div className="mt-2 flex items-center gap-4">
-                <code className="text-on-surface-variant/60 font-technical-data text-[12px]">
-                  PROTOCOL: GET /api/v1/maps // SELECT_GEOMETRIC_BUFFER
-                </code>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="font-technical-data text-[10px] text-tertiary">AVAILABILITY_INDEX: 99.4%</div>
-              <div className="font-technical-data text-[10px] text-tertiary">ENCRYPTION: RSA_4096_ACTIVE</div>
-            </div>
-          </header>
+    <div className="dash-root">
+      
+      {/* ── Navigation ────────────────────────── */}
+      <header className="dash-header">
+        <div className="dash-brand" onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>
+          <span className="dash-dot" />
+          METAVERSE
+        </div>
+        <nav className="dash-nav">
+          <button
+            className="dash-nav-btn logout"
+            onClick={() => navigate('/dashboard')}
+          >
+            ← Back to Dashboard
+          </button>
+        </nav>
+      </header>
 
-          <div className="mb-12">
-            <div className="flex overflow-x-auto gap-6 pb-8 custom-scrollbar">
-              {MAPS.map((m) => (
-                <div key={m.id} className="flex-none w-[340px] group">
-                  <div
-                    className={`character-card glass-panel rounded-xl overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 border-2 ${selected.id === m.id ? 'active' : 'border-transparent'}`}
-                    onClick={() => setSelected(m)}
-                  >
-                    <div className="h-48 bg-surface-container-high/50 relative overflow-hidden">
-                      <img alt={`${m.name} Map`} className="absolute w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700" src={m.imgUrl} style={{ objectPosition: m.imgPosition, scale: '1.5' }} />
-                      <div className="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-80"></div>
-                      <div className="absolute top-3 right-3 px-2 py-1 bg-surface-container-highest/80 text-[10px] font-technical-data text-tertiary rounded backdrop-blur-sm border border-outline-variant/30">
-                        {m.tag}
-                      </div>
+      {/* ── Body ──────────────────────────────── */}
+      <div className="dash-body">
+        {/* Title row */}
+        <div className="dash-title-row">
+          <div className="dash-title-row-left">
+            <span className="dash-eyebrow">// map selection</span>
+            <h2>Available Maps</h2>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '2rem', alignItems: 'flex-start', width: '100%' }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+          {/* Content */}
+        {loading ? (
+          <div className="space-grid">
+            {[1, 2, 3].map((i) => (
+              <div className="dash-skeleton" key={i}>
+                <div className="dash-skeleton-inner" />
+              </div>
+            ))}
+          </div>
+        ) : maps.length === 0 ? (
+          <div className="dash-empty-state">
+            <span className="dash-empty-icon">⬡</span>
+            <h3 style={{ fontFamily: 'var(--font-retro)', fontSize: '1.1rem', letterSpacing: '0.06em' }}>
+              No maps available
+            </h3>
+            <p>Maps can be created by an administrator in the Admin Panel.</p>
+          </div>
+        ) : (
+          <div className="space-grid">
+            {maps.map((m) => {
+              const isSelected = selected === m.id;
+              return (
+                <div 
+                  className="space-card" 
+                  key={m.id} 
+                  onClick={() => setSelected(m.id)}
+                  style={{ 
+                    cursor: 'pointer',
+                    borderColor: isSelected ? 'var(--accent)' : 'var(--border)',
+                    boxShadow: isSelected ? '0 0 0 1px var(--accent), 0 8px 30px rgba(217,56,30,0.15)' : 'none',
+                    transform: isSelected ? 'translateY(-2px)' : 'none'
+                  }}
+                >
+                  {/* Map preview */}
+                  <div className="space-card-preview" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {m.thumbnail ? (
+                      <img 
+                        src={m.thumbnail} 
+                        alt={m.name} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }}
+                      />
+                    ) : (
+                      <div style={{ fontSize: '2rem', color: 'var(--muted)' }}>⬡</div>
+                    )}
+                  </div>
+
+                  {/* Card body */}
+                  <div className="space-card-body">
+                    <div className="space-card-meta">
+                      <span className="space-card-name" style={{ color: isSelected ? 'var(--accent-hi)' : 'var(--text)' }}>
+                        {m.name}
+                      </span>
+                      <span className="space-card-dim">
+                        {m.dimensions ?? `${m.width}×${m.height}`}
+                      </span>
                     </div>
-                    <div className="p-5">
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="font-headline-lg-mobile text-[20px] text-on-background max-w-[200px] leading-tight">{m.name}</div>
-                        <div className="font-technical-data text-[12px] text-tertiary">DIM:<br/>{m.dim}</div>
-                      </div>
-                      <div className="font-technical-data text-[11px] text-on-surface-variant/60 mb-4">{m.sector}</div>
-                      
-                      <div className="mb-4">
-                        <div className="flex justify-between font-technical-data text-[10px] mb-1">
-                          <span className="text-on-surface-variant/60">POP_DENSITY: {m.popDensity}%</span>
-                        </div>
-                        <div className="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-primary to-tertiary" style={{ width: `${m.popDensity}%` }}></div>
-                        </div>
-                      </div>
-
-                      <button className={`w-full py-2 font-technical-data text-[12px] border transition-colors ${selected.id === m.id ? 'bg-primary/20 border-primary text-primary' : 'bg-surface border-outline-variant text-on-surface-variant hover:border-tertiary hover:text-tertiary'}`}>
-                        # SPAWN_HERE
+                    <span className="space-card-id">
+                      id: {m.id.slice(0, 8)}…
+                    </span>
+                    <div className="space-card-actions">
+                      <button 
+                        className={isSelected ? 'space-enter-btn' : 'dash-nav-btn'} 
+                        style={{ width: '100%' }}
+                        onClick={() => setSelected(m.id)}
+                      >
+                        {isSelected ? '✓ Selected' : 'Select'}
                       </button>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
+        )}
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
-            <div className="lg:col-span-2 glass-panel rounded-xl p-8 neon-border-glow bg-surface-container-low/80 flex justify-between items-center">
-              <div>
-                <h3 className="font-technical-data text-primary text-[14px] font-bold mb-2 tracking-widest">RECOMMENDED_SPAWN: {selected.name}</h3>
-                <p className="font-technical-data text-[12px] text-on-surface-variant/70">
-                  Optimal latency detected ({selected.latency}). All neural links synchronized.
-                </p>
+          {/* Sidebar */}
+          {selectedMap && (
+            <div className="map-sidebar" style={{ width: '320px', flexShrink: 0, padding: '1.5rem', backgroundColor: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'sticky', top: '2rem' }}>
+              <h3 style={{ fontSize: '1.2rem', margin: 0, color: 'var(--text)', fontFamily: 'var(--font-retro)' }}>Map Preview</h3>
+              
+              <div style={{ width: '100%', aspectRatio: '16/9', backgroundColor: 'var(--bg)', borderRadius: '8px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {selectedMap.thumbnail ? (
+                  <img src={selectedMap.thumbnail} alt={selectedMap.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <span style={{ fontSize: '2rem', color: 'var(--muted)' }}>⬡</span>
+                )}
               </div>
-              <div className="flex items-center gap-6">
-                <div className="font-display-2xl text-[32px] text-tertiary">98%</div>
-                <button className="px-6 py-2 border border-outline-variant text-on-surface-variant font-technical-data text-[12px] hover:bg-surface-container-highest transition-colors">
-                  AUTO_SELECT
-                </button>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}><strong style={{ color: 'var(--text)', marginBottom: '0.2rem' }}>Name</strong> {selectedMap.name}</div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}><strong style={{ color: 'var(--text)', marginBottom: '0.2rem' }}>ID</strong> <span style={{ fontFamily: 'monospace' }}>{selectedMap.id}</span></div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}><strong style={{ color: 'var(--text)', marginBottom: '0.2rem' }}>Dimensions</strong> {selectedMap.dimensions ?? `${selectedMap.width}x${selectedMap.height}`}</div>
+                {selectedMap.creator && (
+                  <div style={{ display: 'flex', flexDirection: 'column' }}><strong style={{ color: 'var(--text)', marginBottom: '0.2rem' }}>Creator</strong> {selectedMap.creator.username}</div>
+                )}
               </div>
             </div>
+          )}
 
-            <div className="glass-panel rounded-xl p-6 bg-surface-container-lowest flex flex-col items-center justify-center text-center cursor-pointer hover:bg-surface-container-highest transition-colors group">
-              <div className="w-10 h-10 rounded-full border-2 border-primary flex items-center justify-center mb-3">
-                <span className="material-symbols-outlined text-primary group-hover:animate-spin">radar</span>
-              </div>
-              <h4 className="font-technical-data text-on-background font-bold text-[14px]">SCANNING</h4>
-              <p className="font-technical-data text-[10px] text-on-surface-variant/50 mt-1 uppercase">New world buffers...</p>
-            </div>
-          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 }

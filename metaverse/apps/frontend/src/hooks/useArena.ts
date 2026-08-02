@@ -1,10 +1,17 @@
-import { useState, useCallback, useRef } from 'react';
-import type { ServerMessage, ArenaUser } from '../types';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { getBulkAvatars } from '../api';
+import type { ServerMessage, ArenaUser, SpaceElement } from '../types';
 
 interface ArenaState {
   myPos: { x: number; y: number } | null;
+  myAvatarUrl?: string;
+  myEmote?: string;
+  myEmoteExpiresAt?: number;
   users: Map<string, ArenaUser>;
   connected: boolean;
+  weather?: 'none' | 'rain' | 'snow';
+  timeOfDay?: 'day' | 'night';
+  elements: SpaceElement[];
 }
 
 export function useArena(_myUserId: string) {
@@ -12,7 +19,12 @@ export function useArena(_myUserId: string) {
     myPos: null,
     users: new Map(),
     connected: false,
+    elements: [],
   });
+
+  const setElements = useCallback((elements: SpaceElement[]) => {
+    setState(prev => ({ ...prev, elements }));
+  }, []);
 
   // Ref so canvas render loop can always read latest pos without stale closure
   const myPosRef = useRef<{ x: number; y: number } | null>(null);
@@ -20,20 +32,29 @@ export function useArena(_myUserId: string) {
   const handleMessage = useCallback((msg: ServerMessage) => {
     switch (msg.type) {
       case 'space-joined': {
-        const { spawn, users } = msg.payload;
-        myPosRef.current = spawn;
+        const payload = msg.payload as any;
+        myPosRef.current = payload.spawn;
         const userMap = new Map<string, ArenaUser>();
-        users.forEach((u) => userMap.set(u.userId, u));
-        setState({
-          myPos: spawn,
+        // Backend sends { id, x, y } in space-joined
+        payload.users.forEach((u: any) => {
+          const uid = u.id || u.userId;
+          if (uid && uid !== _myUserId) userMap.set(uid, { userId: uid, x: u.x, y: u.y });
+        });
+        setState(prev => ({
+          ...prev,
+          myPos: payload.spawn,
           users: userMap,
           connected: true,
-        });
+          weather: payload.weather,
+          timeOfDay: payload.timeOfDay
+        }));
         break;
       }
 
+      case 'user-join':
       case 'user-joined': {
         const { userId, x, y } = msg.payload;
+        if (userId === _myUserId) return;
         setState((prev) => {
           const next = new Map(prev.users);
           next.set(userId, { userId, x, y });
@@ -44,6 +65,7 @@ export function useArena(_myUserId: string) {
 
       case 'movement': {
         const { userId, x, y } = msg.payload;
+        if (userId === _myUserId) return;
         setState((prev) => {
           const next = new Map(prev.users);
           const existing = next.get(userId);
@@ -70,7 +92,43 @@ export function useArena(_myUserId: string) {
         });
         break;
       }
+
+      case 'emote': {
+        const { userId, emote } = msg.payload as any;
+        if (userId === _myUserId) return;
+        setState((prev) => {
+          const next = new Map(prev.users);
+          const u = next.get(userId);
+          if (u) {
+            next.set(userId, { ...u, emote, emoteExpiresAt: Date.now() + 3000 });
+          }
+          return { ...prev, users: next };
+        });
+        break;
+      }
+      case 'settings-changed': {
+        const payload = msg.payload as any;
+        setState(prev => ({
+          ...prev,
+          weather: payload.weather,
+          timeOfDay: payload.timeOfDay
+        }));
+        break;
+      }
+      case 'element-added': {
+        setState(prev => ({ ...prev, elements: [...prev.elements, msg.payload as SpaceElement] }));
+        break;
+      }
+      case 'element-deleted': {
+        const { id } = msg.payload as any;
+        setState(prev => ({ ...prev, elements: prev.elements.filter(e => e.id !== id) }));
+        break;
+      }
     }
+  }, [_myUserId]);
+
+  const setMyEmote = useCallback((emote: string) => {
+    setState(prev => ({ ...prev, myEmote: emote, myEmoteExpiresAt: Date.now() + 3000 }));
   }, []);
 
   const handleOpen = useCallback(() => {
@@ -78,7 +136,8 @@ export function useArena(_myUserId: string) {
   }, []);
 
   const handleClose = useCallback(() => {
-    setState((prev) => ({ ...prev, connected: false }));
+    setState((prev) => ({ ...prev, connected: false, myPos: null, users: new Map() }));
+    myPosRef.current = null;
   }, []);
 
   // Optimistic local move — server will reject if invalid
@@ -87,6 +146,48 @@ export function useArena(_myUserId: string) {
     setState((prev) => ({ ...prev, myPos: { x, y } }));
   }, []);
 
+  // Fetch missing avatars
+  useEffect(() => {
+    const missingAvatarUserIds: string[] = [];
+    
+    // Check if my avatar is missing
+    if (state.connected && !state.myAvatarUrl) {
+      missingAvatarUserIds.push(_myUserId);
+    }
+
+    state.users.forEach((user, id) => {
+      if (!user.avatarUrl && !missingAvatarUserIds.includes(id)) {
+        missingAvatarUserIds.push(id);
+      }
+    });
+
+    if (missingAvatarUserIds.length > 0) {
+      getBulkAvatars(missingAvatarUserIds).then(res => {
+        if (res.status === 200 && res.data.avatars) {
+          setState(prev => {
+            let myAvatarUrl = prev.myAvatarUrl;
+            const nextUsers = new Map(prev.users);
+            
+            res.data.avatars.forEach(a => {
+              // The backend maps avatar?.imageUrl to the avatarId field
+              const url = a.avatarId; 
+              if (a.userId === _myUserId) {
+                myAvatarUrl = url || myAvatarUrl;
+              } else {
+                const existing = nextUsers.get(a.userId);
+                if (existing) {
+                  nextUsers.set(a.userId, { ...existing, avatarUrl: url });
+                }
+              }
+            });
+
+            return { ...prev, myAvatarUrl, users: nextUsers };
+          });
+        }
+      }).catch(err => console.error("Failed to fetch avatars", err));
+    }
+  }, [state.connected, state.users, _myUserId, state.myAvatarUrl]);
+
   return {
     state,
     myPosRef,
@@ -94,5 +195,7 @@ export function useArena(_myUserId: string) {
     handleOpen,
     handleClose,
     applyOptimisticMove,
+    setMyEmote,
+    setElements,
   };
 }

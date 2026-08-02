@@ -9,16 +9,19 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
 }
 
 model User {
   id       String  @id @unique @default(cuid())
   username String  @unique
-  password String
+  password String?
+  email    String? @unique
+  googleId String? @unique
   avatarId String?
   role     Role
   spaces   Space[]
+  maps Map[]
   avatar    Avatar? @relation(fields: [avatarId], references: [id])
 }
 
@@ -29,18 +32,20 @@ model Space {
   height    Int
   thumbnail String?
   creatorId String
-  creator     User    @relation(fields: [creatorId], references: [id])
-  elements  spaceElements[]
+  timeOfDay String @default("day")
+  weather String @default("clear")
+  creator     User    @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  elements  SpaceElements[]
 }
 
-model spaceElements {
+model SpaceElements {
   id        String @id @unique @default(cuid())
   elementId String
   spaceId   String
   x         Int
   y         Int
-  space     Space  @relation(fields: [spaceId], references: [id])
-  element   Element @relation(fields: [elementId], references: [id])
+  space     Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  element   Element @relation(fields: [elementId], references: [id], onDelete: Cascade)
   @@unique([spaceId, x, y])
 }
 
@@ -50,17 +55,19 @@ model Element {
   height          Int
   static          Boolean
   imageUrl        String
-  spaces          spaceElements[]
+  spaces          SpaceElements[]
   mapElements     MapElements[]
 }
 
 model Map {
   id     String  @id @unique @default(cuid())
+  creatorId String
   width  Int
   height Int
   name   String
   thumbnail String
   mapElements MapElements[]
+  creator User @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 }
 
 model MapElements {
@@ -69,8 +76,8 @@ model MapElements {
   elementId String
   x         Int
   y         Int
-  map       Map     @relation(fields: [mapId], references: [id])
-  element   Element @relation(fields: [elementId], references: [id])
+  map       Map     @relation(fields: [mapId], references: [id], onDelete: Cascade)
+  element   Element @relation(fields: [elementId], references: [id], onDelete: Cascade)
 }
 
 model Avatar {
