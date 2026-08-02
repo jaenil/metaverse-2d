@@ -1,5 +1,6 @@
 import type { User } from "./User.js";
 import type { ServerMessage as OutgoingMessage } from "@repo/types";
+import { CacheManager } from "./CacheManager.js";
 //we have added getinstance because for our entire application we need only one room manager
 //no new room manager instances must be allowed 
 //so we made the constructor private and are returning the same instance again and again
@@ -7,6 +8,7 @@ import type { ServerMessage as OutgoingMessage } from "@repo/types";
 export class RoomManager {
     private rooms: Map<string, User[]> = new Map();
     private static instance: RoomManager;
+
     private constructor() {
         this.rooms = new Map();
     }
@@ -17,11 +19,12 @@ export class RoomManager {
         if (!this.rooms.has(spaceId)) {
             return;
         }
-        const remaining = this.rooms.get(spaceId)?.filter((u) => u.id !== user.id) ?? [] ;
-        if(remaining.length===0){
-            this.rooms.delete(spaceId)
+        const remaining = this.rooms.get(spaceId)?.filter((u) => u.id !== user.id) ?? [];
+        if (remaining.length === 0) {
+            this.rooms.delete(spaceId);
+            CacheManager.getInstance().clearSpaceCache(spaceId);
         }
-        else{
+        else {
             this.rooms.set(spaceId, remaining);
         }
     }
@@ -48,4 +51,5 @@ export class RoomManager {
             }
         })
     }
+
 }

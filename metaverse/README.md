@@ -47,6 +47,14 @@ DIRECT_URL="your-direct-postgresql-connection-string"
 JWT_SECRET="your-jwt-secret"
 ALLOWED_ORIGINS="*"
 GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"
+WS_INTERNAL_URL="http://127.0.0.1:3002"
+```
+
+**WebSocket Service (`apps/ws-service/.env`):**
+```env
+PORT=3001
+JWT_SECRET="your-jwt-secret"
+WS_INTERNAL_URL="http://127.0.0.1:3002"
 ```
 
 **Frontend (`apps/frontend/.env`):**
@@ -56,20 +64,15 @@ VITE_WS_URL=ws://localhost:3001
 VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 ```
 
-### 3. Database Migration
-```bash
-npx prisma db push --schema=packages/db/prisma/schema.prisma
-```
+---
 
-### 4. Running the Project
+## 🚀 Performance & Architecture
 
-Run all services concurrently using Turborepo:
-```bash
-npm run dev
-```
-- **Frontend**: `http://localhost:5173`
-- **HTTP API**: `http://localhost:3000`
-- **WS Service**: `ws://localhost:3001`
+### In-Memory Caching & Server-Authoritative Physics
+- **Zero-DB Movement**: Player tile movements are validated against a high-performance in-memory cache (`CacheManager` in `ws-service/src/caching.ts`), eliminating database queries during active player movement.
+- **Shared Space Cache**: Elements and space metadata are loaded into memory once per active space and shared across all connected players in that space.
+- **Service-to-Service Cache Invalidation**: When elements are added or removed via the HTTP API, `http-service` sends a non-blocking notification to `ws-service` via `WS_INTERNAL_URL` (`http://127.0.0.1:3002/internal/invalidate-space-elements`), instantly updating the WebSocket server's collision map in real time.
+- **Automatic Garbage Collection**: When a space becomes empty (0 connected players), `clearSpaceCache` evicts space data from RAM to maintain a minimal memory footprint.
 
 ---
 
@@ -107,3 +110,4 @@ If using Google Sign-In over ngrok:
 3. Add your frontend ngrok origin to **Authorized JavaScript origins**:
    `https://<your-frontend-ngrok-id>.ngrok-free.app`
 4. Save the configuration.
+

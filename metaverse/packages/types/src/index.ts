@@ -137,6 +137,11 @@ export interface SpaceElement {
   element?: Element;
 }
 
+export type SpaceSettings = {
+  weather: string;
+  timeOfDay: string;
+};
+
 export type ServerMessage =
   | {
       type: 'space-joined';
@@ -153,7 +158,49 @@ export type ServerMessage =
   | { type: 'movement-rejected'; payload: { x: number; y: number } }
   | { type: 'user-left'; payload: { userId: string } }
   | { type: 'emote'; payload: { userId: string; emote: string } }
-  | { type: 'settings-changed'; payload: { weather: string; timeOfDay: string } }
+  | { type: 'settings-changed'; payload: SpaceSettings }
   | { type: 'element-added'; payload: SpaceElement }
   | { type: 'element-deleted'; payload: { id: string } }
-  | { type: 'event-rejected';payload:{message:string;code?:number; event?:string;} };
+  | { type: 'event-rejected'; payload: { message: string; code?: number; event?: string } };
+
+export type CachedElement = {
+  id: string;
+  x: number;
+  y: number;
+  element: { width: number; height: number; static: boolean };
+};
+
+export type CachedSpaceMetadata = SpaceSettings & {
+  creatorId: string;
+  width: number;
+  height: number;
+};
+
+export const CacheInvalidationPayloadSchema = z.discriminatedUnion("action", [
+  z.object({
+    action: z.literal("add"),
+    spaceId: z.string(),
+    element: z.object({
+      id: z.string(),
+      x: z.number(),
+      y: z.number(),
+      element: z.object({
+        width: z.number(),
+        height: z.number(),
+        static: z.boolean()
+      })
+    })
+  }),
+  z.object({
+    action: z.literal("remove"),
+    spaceId: z.string(),
+    elementId: z.string()
+  }),
+  z.object({
+    action: z.literal("full"),
+    spaceId: z.string()
+  })
+]);
+
+export type CacheInvalidationPayload = z.infer<typeof CacheInvalidationPayloadSchema>;
+

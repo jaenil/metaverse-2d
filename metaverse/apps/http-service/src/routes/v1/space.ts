@@ -3,6 +3,7 @@ import { CreateSpaceSchema, AddElementSchema, DeleteElementSchema } from '@repo/
 import client from "@repo/db";
 import { adminMiddleware } from '../../middleware/admin.js';
 import { userMiddleware } from '../../middleware/user.js';
+import { notifyWsCache } from '../../wsNotifier.js';
 export const spaceRouter = Router();
 
 spaceRouter.post('/', userMiddleware, async (req, res) => {
@@ -141,8 +142,15 @@ spaceRouter.post('/element', userMiddleware, async (req, res) => {
             elementId: parsedData.data.elementId,
             x: parsedData.data.x,
             y: parsedData.data.y,
-        }
+        },
+        include:{element:true}
     })
+    const updateCache = notifyWsCache({
+        action: "add",
+        spaceId: parsedData.data.spaceId,
+        element: createdElement
+    })
+    
     res.status(200).json({ element:createdElement })
 })
 
@@ -170,6 +178,13 @@ spaceRouter.delete('/element', userMiddleware, async (req, res) => {
         if (!element) {
             return res.status(404).json({ message: "Element not found" })
         }
+        const updateCache = notifyWsCache(
+            {
+                action: "remove",
+                spaceId: parsedData.data.spaceId,
+                elementId: parsedData.data.elementId
+            }
+        )
         return res.status(200).json({ message: "Element deleted successfully" })
     }
     catch (e) {
@@ -197,6 +212,12 @@ spaceRouter.delete('/:spaceId', userMiddleware, async (req, res) => {
                 id: spaceId
             }
         })
+        const updateCache = notifyWsCache(
+            {
+                action: "full",
+                spaceId: spaceId,
+            }
+        )
         return res.status(200).json({ message: "Space deleted successfully" })
     }
     catch (e) {

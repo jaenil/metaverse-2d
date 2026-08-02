@@ -1,8 +1,10 @@
 import './dotenv-setup.js';
 import { WebSocketServer } from 'ws';
 import { User } from './User.js';
+import { startCacheInvalidationServer } from './cacheInvalidation.js';
 
 const wss = new WebSocketServer({ port: 3001 });
+startCacheInvalidationServer(Number(process.env.WS_INTERNAL_PORT) || 3002);
 
 wss.on('connection', function connection(ws) {
   const user = new User(ws);
