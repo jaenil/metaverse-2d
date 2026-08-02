@@ -41,8 +41,8 @@ spaceRouter.post('/', userMiddleware, async (req, res) => {
             if (!map) {
                 return res.status(400).json({ message: "Map not found" });
             }
-            let space = await client.$transaction(async () => {
-                const currSpace = await client.space.create({
+            let space = await client.$transaction(async (tx) => {
+                const currSpace = await tx.space.create({
                     data: {
                         name: parsedData.data.name,
                         width: map.width, //if map is present we will use maps dimension only
@@ -51,7 +51,7 @@ spaceRouter.post('/', userMiddleware, async (req, res) => {
                         creatorId: req.userId as string,
                     }
                 });
-                await client.spaceElements.createMany({
+                await tx.spaceElements.createMany({
                     data: map.mapElements.map(e => ({
                         spaceId: currSpace.id,
                         elementId: e.elementId,
@@ -98,13 +98,14 @@ spaceRouter.post('/element', userMiddleware, async (req, res) => {
     const space = await client.space.findUnique({
         where: {
             id: parsedData.data.spaceId,
-            creatorId: req.userId!
         }, select: {
             width: true,
-            height: true
+            height: true,
+            creatorId: true
         }
     })
     if (!space) return res.status(404).json({ message: "Space not found" });
+    if (space.creatorId !== req.userId) return res.status(403).json({ message: "Unauthorized" });
     const element = await client.element.findUnique({
         where:{
             id:parsedData.data.elementId

@@ -12,6 +12,8 @@ export class User{
     public x:number;
     public y:number;
     public spaceId?:string;
+    public spaceWidth?:number;
+    public spaceHeight?:number;
 
     public id:string;
     constructor(ws:WebSocket){
@@ -68,11 +70,23 @@ export class User{
                         id:spaceId
                     }
                 })
-                if(!space) return ;
-                this.spaceId =spaceId 
+                if(!space){
+                    this.send({
+                        type:"event-rejected",
+                        payload:{
+                        message:"Space not found",
+                        code:404,
+                        }
+                    });
+                    this.ws.close()
+                    return 
+                }
+                this.spaceId =spaceId ;
+                this.spaceWidth = space.width;
+                this.spaceHeight = space.height;
                 
-                this.x = Math.floor(Math.random() * space?.width );
-                this.y = Math.floor(Math.random() * space?.height );
+                this.x = Math.floor(Math.random() * space.width );
+                this.y = Math.floor(Math.random() * space.height );
                 this.send({
                     type:"space-joined",
                     payload:{
@@ -104,6 +118,20 @@ export class User{
                 if(!this.spaceId) return ;
                 const x = validatedData.payload.x ;
                 const y = validatedData.payload.y ;
+                
+                if (this.spaceWidth !== undefined && this.spaceHeight !== undefined) {
+                    if (x < 0 || x >= this.spaceWidth || y < 0 || y >= this.spaceHeight) {
+                        this.send({
+                            type: "movement-rejected",
+                            payload: {
+                                x: this.x,
+                                y: this.y
+                            }
+                        });
+                        return;
+                    }
+                }
+
                 //handle movement logic here 
                 const disX = Math.abs(this.x - x) ;
                 const disY = Math.abs(this.y - y) ;
@@ -221,6 +249,9 @@ export class User{
         }
     }
     destroy(){
+        if(!this.spaceId){
+            return;
+        }
         RoomManager.getInstance().broadcast({
             type:"user-left",
             payload:{

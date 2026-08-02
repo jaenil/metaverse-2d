@@ -297,7 +297,8 @@ describe("Websocket tests", () => {
             JSON.stringify({ type: "join", payload: { spaceId: "invalid-space-id", token: userToken } })
         );
 
-        await expect(waitForAndPopLatestMessage(ws4Messages, 1000)).rejects.toThrow();
+        const message = await waitForAndPopLatestMessage(ws4Messages, 1000);
+        expect(message.type).toBe("event-rejected");    
         ws4.close();
     });
 

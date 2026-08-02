@@ -17,8 +17,13 @@ export class RoomManager {
         if (!this.rooms.has(spaceId)) {
             return;
         }
-        this.rooms.set(spaceId, (this.rooms.get(spaceId)?.filter((u) => u.id !== user.id)) ?? []);
-
+        const remaining = this.rooms.get(spaceId)?.filter((u) => u.id !== user.id) ?? [] ;
+        if(remaining.length===0){
+            this.rooms.delete(spaceId)
+        }
+        else{
+            this.rooms.set(spaceId, remaining);
+        }
     }
     static getInstance() {
         if (!this.instance) {
