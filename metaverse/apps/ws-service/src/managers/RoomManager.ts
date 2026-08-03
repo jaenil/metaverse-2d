@@ -1,6 +1,7 @@
 import type { User } from "../models/User.js";
 import type { ServerMessage as OutgoingMessage } from "@repo/types";
 import { CacheManager } from "../managers/CacheManager.js";
+import { ChatManager } from "./ChatManager.js";
 //we have added getinstance because for our entire application we need only one room manager
 //no new room manager instances must be allowed 
 //so we made the constructor private and are returning the same instance again and again
@@ -34,6 +35,7 @@ export class RoomManager {
     public getRoom(spaceId: string): ReadonlyArray<User> {
         return this.rooms.get(spaceId) ?? [];
     }
+
     public removeUser(user: User, spaceId: string) {
         if (!this.rooms.has(spaceId)) {
             return;
@@ -43,12 +45,14 @@ export class RoomManager {
             this.rooms.delete(spaceId);
             this.playerGrid.delete(spaceId);
             CacheManager.getInstance().clearSpaceCache(spaceId);
+            ChatManager.getInstance().clearRoom(spaceId) ;
         }
         else {
             this.rooms.set(spaceId, remaining);
             this.removeFromGrid(spaceId, user);
         }
     }
+
     static getInstance() {
         if (!this.instance) {
             this.instance = new RoomManager();
@@ -80,6 +84,7 @@ export class RoomManager {
             this.addToGrid(spaceId, user);
         }
     }
+
     public broadcast(message: OutgoingMessage, user: User, roomId: string) {
         if (!this.rooms.has(roomId)) {
             return;
@@ -91,4 +96,9 @@ export class RoomManager {
         })
     }
 
+    public broadcastAll(message:OutgoingMessage,roomId:string){
+        this.rooms.get(roomId)?.forEach((u)=>{
+            u.send(message);
+        })
+    }
 }

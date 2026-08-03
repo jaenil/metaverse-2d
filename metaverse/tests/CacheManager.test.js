@@ -1,9 +1,6 @@
 const WebSocket = require("ws");
 const { axios } = require("./helpers/axios");
-const { createAdminAndUser, createMapWithElements, BACKEND_URL } = require("./helpers/setup");
-
-const WS_URL = "ws://localhost:3001";
-const INTERNAL_CACHE_URL = "http://localhost:3002";
+const { createAdminAndUser, createMapWithElements, BACKEND_URL,WS_URL,INTERNAL_CACHE_URL } = require("./helpers/setup");
 
 function waitForAndPopMessage(messageArray, timeoutMs = 4000) {
     return new Promise((resolve, reject) => {

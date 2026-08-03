@@ -1,6 +1,8 @@
 const { axios } = require("./axios");
 
 const BACKEND_URL = "http://localhost:3000";
+const WS_URL = "ws://localhost:3001";
+const INTERNAL_CACHE_URL = "http://localhost:3002";
 
 /**
  * Signs up and signs in a single admin user.
@@ -150,4 +152,4 @@ async function createMapWithElements(adminToken) {
     };
 }
 
-module.exports = { createAdmin, createAdminAndUser, createMapWithElements, createUserWithEmail, BACKEND_URL };
+module.exports = { createAdmin, createAdminAndUser, createMapWithElements, createUserWithEmail, BACKEND_URL, WS_URL, INTERNAL_CACHE_URL };
