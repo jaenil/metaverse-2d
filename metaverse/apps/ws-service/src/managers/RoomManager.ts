@@ -1,7 +1,6 @@
-import type { User } from "./User.js";
-import type { ServerMessage as OutgoingMessage, CoordinateKey } from "@repo/types";
-import { toCoordinateKey } from "@repo/types";
-import { CacheManager } from "./CacheManager.js";
+import type { User } from "../models/User.js";
+import type { ServerMessage as OutgoingMessage } from "@repo/types";
+import { CacheManager } from "../managers/CacheManager.js";
 //we have added getinstance because for our entire application we need only one room manager
 //no new room manager instances must be allowed 
 //so we made the constructor private and are returning the same instance again and again

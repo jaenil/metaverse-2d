@@ -1,12 +1,13 @@
 import { WebSocket } from "ws";
 import jwt from "jsonwebtoken";
 import type { JwtPayload } from "jsonwebtoken";
-import { JWT_SECRET } from './config.js';
-import { RoomManager } from "./RoomManager.js"
+import { JWT_SECRET } from '../config.js';
+import { RoomManager } from "../managers/RoomManager.js"
 import client from "@repo/db"
 import type { ServerMessage } from "@repo/types";
 import { IncomingClientMessageSchema } from "@repo/types";
-import { CacheManager } from "./CacheManager.js";
+import { CacheManager } from "../managers/CacheManager.js";
+import { RateLimiter } from "../utils/RateLimiter.js";
 
 export class User {
     private ws: WebSocket;
@@ -15,6 +16,7 @@ export class User {
     public spaceId?: string;
     public spaceWidth?: number;
     public spaceHeight?: number;
+    private readonly chatRateLimiter = new RateLimiter(5, 3000);
 
     public id: string;
     constructor(ws: WebSocket) {
@@ -241,7 +243,7 @@ export class User {
                 break;
             case "update-settings":
                 {
-                    if (!this.spaceId) return; 
+                    if (!this.spaceId) return;
                     const metadata = CacheManager.getInstance().getSpaceMetadata(this.spaceId);
                     if (!metadata) {
                         this.send(
@@ -312,6 +314,7 @@ export class User {
                 }, this, this.spaceId);
                 break;
             }
+
         }
     }
     destroy() {

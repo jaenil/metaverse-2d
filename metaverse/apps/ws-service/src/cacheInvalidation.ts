@@ -1,6 +1,6 @@
 import express from 'express';
 import { CacheInvalidationPayloadSchema } from '@repo/types';
-import { CacheManager } from './CacheManager.js';
+import { CacheManager } from './managers/CacheManager.js';
 
 const app = express();
 app.use(express.json());

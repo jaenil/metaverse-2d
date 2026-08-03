@@ -1,5 +1,8 @@
 ## HTTP Endpoints
 
+### Global
+- **GET** `/` - Health check endpoint returning the current time (e.g. "Backend is running currently at time...").
+
 ### Authentication & User
 - **POST** `/api/v1/signup` - Creates a new user account (admin or standard user).
 - **POST** `/api/v1/signin` - Authenticates a user (via username or email) and returns a JWT token, user ID, and role.
@@ -32,6 +35,9 @@
 
 *(Note: All authenticated endpoints require an `Authorization: Bearer <token>` header)*
 
+### Internal Service APIs (ws-service)
+- **POST** `/internal/invalidate-space-elements` - Internal endpoint used by `http-service` to invalidate or update the WS in-memory cache when elements are added, deleted, or when a space is deleted.
+
 ## WebSocket Events
 
 ### Client Sent Events
@@ -41,6 +47,7 @@
 - **update-settings** - Updates space environment settings (`weather`: `"none"` | `"rain"` | `"snow"`, `timeOfDay`: `"day"` | `"night"`). *(Space creator only)*
 - **element-added** - Broadcasts a newly placed element (`id`, `elementId`, `spaceId`, `x`, `y`) to clients in the space.
 - **element-deleted** - Broadcasts an element removal (`id`) to clients in the space.
+- **chat-message** - Sends a text message to be broadcasted to all users in the space (`text`).
 
 ### Server Sent Events
 - **space-joined** - Acknowledges space join, returning spawn coordinates, existing room users, and space settings (`weather`, `timeOfDay`).
@@ -52,4 +59,5 @@
 - **settings-changed** - Broadcasts updated space settings (`weather`, `timeOfDay`) to all users in the space.
 - **element-added** - Broadcasts a newly added space element to all users in the space.
 - **element-deleted** - Broadcasts a deleted space element ID to all users in the space.
+- **chat-message** - Broadcasts a chat message to all users in the space (`id`, `senderId`, `text`, `timestamp`).
 - **event-rejected** - Sent if an event fails parsing, validation, or authorization (`message`, `code`, `event`).
