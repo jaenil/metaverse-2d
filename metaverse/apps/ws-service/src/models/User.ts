@@ -4,10 +4,13 @@ import type { JwtPayload } from "jsonwebtoken";
 import { JWT_SECRET } from '../config.js';
 import { RoomManager } from "../managers/RoomManager.js"
 import client from "@repo/db"
-import type { ServerMessage } from "@repo/types";
+import type { ChatMessage, ServerMessage } from "@repo/types";
 import { IncomingClientMessageSchema } from "@repo/types";
 import { CacheManager } from "../managers/CacheManager.js";
 import { RateLimiter } from "../utils/RateLimiter.js";
+import { sanitizeText } from "../utils/sanitizer.js";
+import {randomUUID} from 'crypto';
+import { ChatManager } from "../managers/ChatManager.js";
 
 export class User {
     private ws: WebSocket;
@@ -153,7 +156,8 @@ export class User {
                             y: usr.y
                         })) ?? [],
                         weather: metadata.weather,
-                        timeOfDay: metadata.timeOfDay
+                        timeOfDay: metadata.timeOfDay,
+                        chatHistory: [...ChatManager.getInstance().getHistory(spaceId)]
                     }
                 })
                 RoomManager.getInstance().addUser(spaceId, this);
@@ -297,7 +301,7 @@ export class User {
                     this.send(broadcastPayload);
                     RoomManager.getInstance().broadcast(broadcastPayload, this, this.spaceId);
                     break;
-                }
+            }
             case "element-added": {
                 if (!this.spaceId) return;
                 RoomManager.getInstance().broadcast({
@@ -314,7 +318,44 @@ export class User {
                 }, this, this.spaceId);
                 break;
             }
-
+            case "chat-message": {
+                if (!this.spaceId) return;
+                if (!this.chatRateLimiter.isAllowed()) {
+                    this.send({
+                        type: "event-rejected",
+                        payload: {
+                            message: "Chat rate limit exceeded",
+                            code: 429,
+                            event: "chat-message"
+                        }
+                    });
+                    return;
+                }
+                const sanitized = sanitizeText(validatedData.payload.text);
+                if (sanitized.length === 0) {
+                    this.send({
+                        type: "event-rejected",
+                        payload: {
+                            message: "Empty message",
+                            code: 422,
+                            event: "chat-message"
+                        }
+                    });
+                    return;
+                }
+                const message: ChatMessage = {
+                    id: randomUUID(),
+                    senderId: this.id,
+                    text: sanitized,
+                    timestamp: Date.now(),
+                };
+                ChatManager.getInstance().addMessage(this.spaceId, message);
+                RoomManager.getInstance().broadcastAll({
+                    type: "chat-message",
+                    payload: message
+                }, this.spaceId);
+                break;
+            }
         }
     }
     destroy() {

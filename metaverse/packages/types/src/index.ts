@@ -163,6 +163,7 @@ export type ServerMessage =
       users: { userId: string; x: number; y: number }[];
       weather?: string;
       timeOfDay?: string;
+      chatHistory:ChatMessage[];
     };
   }
   | { type: 'user-join'; payload: { userId: string; x: number; y: number } }
