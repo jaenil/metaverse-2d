@@ -1,1 +1,1 @@
-{"root":["./src/cacheinvalidation.ts","./src/dotenv-setup.ts","./src/index.ts","./src/managers/cachemanager.ts","./src/managers/chatmanager.ts","./src/managers/roommanager.ts","./src/models/user.ts","./src/utils/ratelimiter.ts","./src/utils/sanitizer.ts"],"version":"5.9.2"}
+{"root":["./src/cacheinvalidation.ts","./src/config.ts","./src/dotenv-setup.ts","./src/index.ts","./src/managers/cachemanager.ts","./src/managers/chatmanager.ts","./src/managers/roommanager.ts","./src/models/user.ts","./src/utils/ratelimiter.ts","./src/utils/sanitizer.ts"],"version":"5.9.2"}
