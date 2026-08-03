@@ -151,14 +151,15 @@ export type SpaceSettings = {
 
 export type ServerMessage =
   | {
-      type: 'space-joined';
-      payload: {
-        spawn: { x: number; y: number };
-        users: { userId: string; x: number; y: number }[];
-        weather?: string;
-        timeOfDay?: string;
-      };
-    }
+    type: 'space-joined';
+    payload: {
+      spawn: { x: number; y: number };
+      users: { userId: string; x: number; y: number }[];
+      weather?: string;
+      timeOfDay?: string;
+      chatHistory:ChatMessage[];
+    };
+  }
   | { type: 'user-join'; payload: { userId: string; x: number; y: number } }
   | { type: 'user-joined'; payload: { userId: string; x: number; y: number } }
   | { type: 'movement'; payload: { userId: string; x: number; y: number } }
