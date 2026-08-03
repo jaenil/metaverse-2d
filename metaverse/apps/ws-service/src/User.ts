@@ -105,8 +105,39 @@ export class User {
                 this.spaceWidth = metadata.width;
                 this.spaceHeight = metadata.height;
 
-                this.x = Math.floor(Math.random() * this.spaceWidth);
-                this.y = Math.floor(Math.random() * this.spaceHeight);
+                let spawnX = Math.floor(Math.random() * this.spaceWidth!);
+                let spawnY = Math.floor(Math.random() * this.spaceHeight!);
+                let foundSafeSpawn = false;
+                // Try random positions first (fast path)
+                for (let i = 0; i < 100; i++) {
+                    const playerOccupied = RoomManager.getInstance().isTileOccupiedByPlayer(spaceId, spawnX, spawnY);
+                    const spaceElements = CacheManager.getInstance().getElementCache(spaceId) ?? [];
+                    const elementOccupied = spaceElements.find(e => 
+                        (spawnX >= e.x && spawnX < e.x + e.element.width) &&
+                        (spawnY >= e.y && spawnY < e.y + e.element.height) && e.element.static
+                    );
+                    
+                    if (!playerOccupied && !elementOccupied) {
+                        foundSafeSpawn = true;
+                        break;
+                    }
+                    spawnX = Math.floor(Math.random() * this.spaceWidth!);
+                    spawnY = Math.floor(Math.random() * this.spaceHeight!);
+                }
+                if(!foundSafeSpawn){
+                    //leave the space with rejection 
+                    this.send({
+                        type: "event-rejected",
+                        payload: {
+                            message: "Space is full retry joining",
+                            code: 409,
+                        }
+                    });
+                    this.ws.close();
+                    return;
+                }
+                this.x = spawnX;
+                this.y = spawnY;
                 this.send({
                     type: "space-joined",
                     payload: {
@@ -156,9 +187,7 @@ export class User {
                     const disX = Math.abs(this.x - x);
                     const disY = Math.abs(this.y - y);
                     if ((disX == 1 && disY == 0) || (disX == 0 && disY == 1)) {
-                        const collision = RoomManager.getInstance().getRoom(this.spaceId!)?.find((u) => {
-                            return u.x === x && u.y === y
-                        })
+                        const collision = RoomManager.getInstance().isTileOccupiedByPlayer(this.spaceId,x,y) ;
                         const spaceElements = CacheManager.getInstance().getElementCache(this.spaceId) ?? [];
                         const elementCollision = spaceElements.find((e) => {
                             return (x >= e.x && x < e.x + e.element.width) &&
@@ -175,8 +204,11 @@ export class User {
                             })
                             return;
                         }
+                        const oldX = this.x;
+                        const oldY = this.y;
                         this.x = x;
                         this.y = y;
+                        RoomManager.getInstance().updatePlayerGridPosition(this.spaceId, this, oldX, oldY, x, y);
                         RoomManager.getInstance().broadcast({
                             type: "movement",
                             payload: {

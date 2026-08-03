@@ -1,33 +1,10 @@
 # Future Additions & Tech Debt
 
-This file tracks known optimisation opportunities and deferred improvements. None of these are blocking for the current phase, but they should be revisited before scaling or deploying.
+This file tracks known optimisation opportunities, deferred technical improvements, and planned features. None of these are blocking for the current phase, but they should be revisited before scaling or deploying.
 
 ---
 
-## 1. WebSocket — DB Load on Every Player Move
-
-**Location:** `metaverse/apps/ws-service/src/User.ts` — the `"move"` case
-
-**Current Behaviour:**
-Every time a player takes a single step, the WebSocket server fires a `client.spaceElements.findMany` query against the database to check for element collisions. If 10 players are moving at once, that's 10 DB queries per step per second.
-
-**Why It's a Problem at Scale:**
-Elements in a space only change when someone in Build Mode adds or deletes one. Between those events, the elements are completely static. There is no reason to re-query the database on every movement.
-
-**Recommended Solution — In-Memory Cache in `RoomManager`:**
-1. Add a `Map<spaceId, SpaceElement[]>` cache on the `RoomManager` singleton.
-2. When the first user joins a space (`"join"` event in `User.ts`), fetch all elements and store them in the cache.
-3. In the `"move"` handler, read from the in-memory cache instead of hitting the database.
-4. When an element is added or deleted via the HTTP API, emit an internal cache-invalidation event (or have the WS service expose a simple internal REST endpoint to invalidate the cache for a given space).
-
-**Reference:**
-- `RoomManager.ts` — where the cache `Map` should live
-- `User.ts` — the `"join"` case is where the initial fetch should happen
-- `space.ts` (HTTP) — the `POST /element` and `DELETE /element` routes are where cache invalidation should be triggered
-
----
-
-## 2. Admin Map Creation — No Collision Validation
+## 1. Admin Map Creation — No Collision Validation
 
 **Location:** `metaverse/apps/http-service/src/routes/v1/admin.ts` — `POST /admin/map`
 
@@ -42,14 +19,75 @@ Apply the same AABB (bounding box) collision check used in `POST /space/element`
 
 ---
 
-## 3. Frontend — Silent Failure on Element Placement Rejection
+## 2. Real-Time Group Text Chat System
 
-**Location:** `metaverse/apps/frontend/src/pages/SpacePage.tsx` — `handleCanvasClick`
+**Overview & Objective:**
+Implement a dual-mode real-time text chat system allowing users in a 2D space to communicatand **Space-Wide Global Chat** (messages broadcast to all users in the space), alongside floating speech bubbles above player avatars.
 
-**Current Behaviour:**
-When the backend rejects an element placement (e.g., collision detected), the `catch` block only calls `console.error`. The user sees no visual feedback — the canvas just does nothing.
+---
 
-**Recommended Solution:**
-Add a toast notification or a brief HUD banner that shows the rejection reason (e.g., "Can't place here — collision detected"). This gives the user clear feedback without interrupting their workflow.
+### Technical Specification & Architecture
+
+#### A. Schema & Type Definitions (`@repo/types`)
+
+1. **Incoming Client Message Schema:**
+```ts
+z.object({
+  type: z.literal("chat-message"),
+  payload: z.object({
+    text: z.string().min(1).max(300),
+    scope: z.enum(["proximity", "space"]),
+  })
+})
+```
+
+2. **Outgoing Server Broadcast Message:**
+```ts
+{
+  type: "chat-message",
+  payload: {
+    id: string;             // Unique message identifier
+    senderId: string;       // User ID of the sender
+    senderUsername: string; // Display name
+    text: string;           // Sanitized message content
+    scope: "proximity" | "space";
+    timestamp: number;      // Epoch timestamp in ms
+    senderPos?: { x: number; y: number }; // Coordinates for canvas speech bubble rendering
+  }
+}
+```
+
+---
+
+#### B. WebSocket Service (`apps/ws-service`)
+
+1. **Message Handler (`User.ts`):**
+   - Add a `case "chat-message"` block in `User.ts`.
+   - **Sanitization & Security:** Escape HTML tags to prevent XSS. Strip zero-width spaces and excessive line breaks.
+   - **Rate Limiting:** Implement a token-bucket or sliding window rate limiter per socket connection (e.g., max 5 messages per 3 seconds). Send an `"event-rejected"` frame if rate limit is exceeded.
+
+2. **Broadcasting Logic (`RoomManager.ts`):**
+   - **Space-Wide (`scope: "space"`):** Broadcast to all connected sockets in `rooms.get(spaceId)` via `RoomManager.broadcast()`.
+
+3. **Message Persistence (Optional DB Logging):**
+   - Add an asynchronous write queue to persist space chat logs to PostgreSQL (`ChatMessage` table in Prisma: `id`, `spaceId`, `senderId`, `content`, `scope`, `createdAt`) if chat history retention across user reconnects is desired.
+
+---
+
+#### C. Frontend Implementation (`apps/frontend`)
+
+1. **UI Components:**
+   - **Docked Chat Panel (`ChatPanel.tsx`):** A collapsible bottom-left overlay with tab switches (`Proximity` vs `Global`). Displays scrollable message history with timestamped sender tags and auto-scroll to bottom.
+   - **Canvas Speech Bubbles (`ArenaCanvas.tsx` / `SpeechBubble.tsx`):** Render dynamic floating text bubbles directly above player avatars on the 2D canvas for proximity messages. Auto-fade bubbles after 4–5 seconds using CSS animations or requestAnimationFrame timers.
+
+2. **Keyboard Focus & Controls Handling:**
+   - Pressing `Enter` opens and focuses the chat input field.
+   - When chat input is focused (`isChatFocused: true`), temporarily disable avatar movement listeners (`WASD` / arrow key events) in `SpacePage.tsx` so typing doesn't move the player avatar.
+   - Pressing `Escape` or `Enter` (on submit) blurs input and restores avatar movement controls.
+
+3. **Client-Side Throttling & UX:**
+   - Visual error toast if message send fails or gets rate limited by backend.
+   - Per-user client-side mute toggle to hide messages from specific disruptive users.
+
 
 ---
