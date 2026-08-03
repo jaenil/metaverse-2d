@@ -204,3 +204,5 @@ export const CacheInvalidationPayloadSchema = z.discriminatedUnion("action", [
 
 export type CacheInvalidationPayload = z.infer<typeof CacheInvalidationPayloadSchema>;
 
+export type CoordinateKey = `${number},${number}`;
+export const toCoordinateKey = (x:number , y:number) :CoordinateKey => `${x},${y}`;

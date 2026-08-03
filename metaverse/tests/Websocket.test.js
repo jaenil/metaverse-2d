@@ -48,8 +48,7 @@ describe("Websocket tests", () => {
     let adminY;
 
     async function setupHTTP() {
-        const { adminToken: at, adminId, userToken: ut, userId: uid } =
-            await createAdminAndUser();
+        const { adminToken: at, adminId, userToken: ut, userId: uid } = await createAdminAndUser();
         adminToken = at;
         adminUserId = adminId;
         userToken = ut;
@@ -140,7 +139,57 @@ describe("Websocket tests", () => {
         expect(message.payload.x).toBe(adminX);
         expect(message.payload.y).toBe(adminY);
     });
+    test("Spatial Grid Player Collision & Cleanup", async () => {
+        const spaceResponse = await axios.post(
+            `${BACKEND_URL}/api/v1/space`,
+            { name: "GridTestSpace", dimensions: "2x1" },
+            { headers: { authorization: `Bearer ${adminToken}` } }
+        );
+        const testSpaceId = spaceResponse.data.spaceId;
 
+        const wsA = new WebSocket(WS_URL);
+        const aMsgs = [];
+        wsA.on("message", (d) => aMsgs.push(JSON.parse(d.toString())));
+        await new Promise((r) => wsA.on("open", r));
+
+        const wsB = new WebSocket(WS_URL);
+        const bMsgs = [];
+        wsB.on("message", (d) => bMsgs.push(JSON.parse(d.toString())));
+        await new Promise((r) => wsB.on("open", r));
+
+        wsA.send(JSON.stringify({ type: "join", payload: { spaceId: testSpaceId, token: adminToken } }));
+        const joinA = await waitForAndPopLatestMessage(aMsgs);
+
+        wsB.send(JSON.stringify({ type: "join", payload: { spaceId: testSpaceId, token: userToken } }));
+        const joinB = await waitForAndPopLatestMessage(bMsgs);
+        await waitForAndPopLatestMessage(aMsgs);
+
+        const posA = joinA.payload.spawn;
+        const posB = joinB.payload.spawn;
+
+        wsA.send(JSON.stringify({ type: "move", payload: { x: posB.x, y: posB.y } }));
+        const rejectMsg = await waitForAndPopLatestMessage(aMsgs);
+        
+        expect(rejectMsg.type).toBe("movement-rejected");
+        expect(rejectMsg.payload.x).toBe(posA.x);
+        expect(rejectMsg.payload.y).toBe(posA.y);
+
+        wsB.close();
+        await new Promise((r) => setTimeout(r, 200));
+        await waitForAndPopLatestMessage(aMsgs);
+
+        wsA.send(JSON.stringify({ type: "move", payload: { x: posB.x, y: posB.y } }));
+        
+        let gotRejection = false;
+        try {
+            await waitForAndPopLatestMessage(aMsgs, 500); 
+            gotRejection = true;
+        } catch (err) { }
+        
+        expect(gotRejection).toBe(false);
+
+        wsA.close();
+    });
     test("User should not be able to move into a static element", async () => {
         const spaceResponse = await axios.post(
             `${BACKEND_URL}/api/v1/space`,
@@ -365,4 +414,5 @@ describe("Websocket tests", () => {
         global.wsNonCreator.close();
         await waitForAndPopLatestMessage(ws2Messages);
     });
+ 
 });
