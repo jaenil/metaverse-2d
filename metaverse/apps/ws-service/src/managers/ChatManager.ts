@@ -14,7 +14,7 @@ export class ChatManager{
     }
 
     addMessage(spaceId:string,message:ChatMessage):void{
-        if (!this.rooms.has(spaceId)) this.rooms.set(spaceId, []);
+         if (!this.rooms.has(spaceId)) this.rooms.set(spaceId, []);
         const history = this.rooms.get(spaceId)!;
         history.push(message);
         if (history.length > MAX_MESSAGES_PER_ROOM) history.shift();
