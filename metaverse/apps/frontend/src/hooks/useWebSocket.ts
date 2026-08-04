@@ -47,6 +47,10 @@ export function useWebSocket({
     send({ type: 'emote', payload: { emote } });
   }, [send]);
 
+  const sendChatMessage = useCallback((text: string) => {
+    send({ type: 'chat-message', payload: { text } });
+  }, [send]);
+
   const connect = useCallback(() => {
     const ws = new WebSocket(WS_URL);
     wsRef.current = ws;
@@ -98,5 +102,5 @@ export function useWebSocket({
     };
   }, [connect]);
 
-  return { sendMove, sendEmote, sendSettingsUpdate, sendElementAdded, sendElementDeleted };
+  return { sendMove, sendEmote, sendSettingsUpdate, sendElementAdded, sendElementDeleted, sendChatMessage };
 }

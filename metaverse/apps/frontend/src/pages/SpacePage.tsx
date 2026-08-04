@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getSpace, getElements, addSpaceElement, deleteSpaceElement } from '../api';
 import { useAuthStore } from '../store/authStore';
@@ -15,7 +15,7 @@ export function SpacePage() {
   const { spaceId } = useParams<{ spaceId: string }>();
   const navigate = useNavigate();
   const { token, userId } = useAuthStore();
-  
+
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const [spaceLoading, setSpaceLoading] = useState(true);
@@ -23,6 +23,8 @@ export function SpacePage() {
   const [isCreator, setIsCreator] = useState(false);
   const [placementError, setPlacementError] = useState<string | null>(null);
   const [worldReady, setWorldReady] = useState(false);
+  const [chatInput, setChatInput] = useState('');
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Auto-dismiss the placement error after 2.5 seconds
   useEffect(() => {
@@ -34,7 +36,7 @@ export function SpacePage() {
   const [buildMode, setBuildMode] = useState(false);
   const [availableElements, setAvailableElements] = useState<Element[]>([]);
   const [selectedElement, setSelectedElement] = useState<Element | null>(null);
-  
+
   const [showEmotes, setShowEmotes] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -82,6 +84,12 @@ export function SpacePage() {
 
   const { weather = 'none', timeOfDay = 'day' } = arenaState;
 
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [arenaState.chatMessages]);
+
   const [loadingProgress, setLoadingProgress] = useState(0);
 
   useEffect(() => {
@@ -89,19 +97,19 @@ export function SpacePage() {
       let startTime = performance.now();
       let raf: number;
       const duration = 1500;
-      
+
       const updateProgress = (now: number) => {
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
         setLoadingProgress(Math.floor(progress * 100));
-        
+
         if (progress < 1) {
           raf = requestAnimationFrame(updateProgress);
         } else {
           setWorldReady(true);
         }
       };
-      
+
       raf = requestAnimationFrame(updateProgress);
       return () => cancelAnimationFrame(raf);
     } else {
@@ -128,7 +136,7 @@ export function SpacePage() {
           width: res.data.space.width,
           height: res.data.space.height,
         });
-        if(res.data.space.creatorId === userId){
+        if (res.data.space.creatorId === userId) {
           setIsCreator(true);
         }
         setThumbnail(res.data.space.thumbnail || null);
@@ -148,7 +156,7 @@ export function SpacePage() {
     });
   }, [spaceId, userId, setElements]);
 
-  const { sendMove, sendEmote, sendSettingsUpdate, sendElementAdded, sendElementDeleted } = useWebSocket({
+  const { sendMove, sendEmote, sendSettingsUpdate, sendElementAdded, sendElementDeleted, sendChatMessage } = useWebSocket({
     spaceId: spaceId ?? '',
     token: token ?? '',
     onMessage: handleMessage,
@@ -180,7 +188,7 @@ export function SpacePage() {
 
   const handleCanvasClick = async (x: number, y: number) => {
     if (!buildMode || !selectedElement || !spaceId) return;
-    
+
     if (selectedElement.id === 'ERASER') {
       const target = arenaState.elements.find(el => {
         const ew = el.element?.width ?? 1;
@@ -204,18 +212,18 @@ export function SpacePage() {
         setPlacementError('Position out of bounds.');
         return;
       }
-      
-      const isColliding = arenaState.elements.some((e)=>{
+
+      const isColliding = arenaState.elements.some((e) => {
         if (!e.element) return false; // narrows the type, skips malformed entries
-        const overlapX = x < e.x + e.element.width && 
-                     x + (selectedElement?.width ?? 0) > e.x;
-    
-        const overlapY = y < e.y + e.element.height && 
-                     y + (selectedElement?.height ?? 0) > e.y;
-    
+        const overlapX = x < e.x + e.element.width &&
+          x + (selectedElement?.width ?? 0) > e.x;
+
+        const overlapY = y < e.y + e.element.height &&
+          y + (selectedElement?.height ?? 0) > e.y;
+
         return overlapX && overlapY && e.element.static;
       })
-      if(isColliding){
+      if (isColliding) {
         setPlacementError('Element is colliding with another element');
         return;
       }
@@ -271,7 +279,7 @@ export function SpacePage() {
 
       {/* HUD Layer */}
       <div className="hud-overlay">
-        
+
         {/* Top Left: Title & Actions */}
         <div className="hud-top-left">
           <div className="space-title">
@@ -319,8 +327,8 @@ export function SpacePage() {
             {showEmotes && (
               <div style={{ position: 'absolute', bottom: '110%', left: '50%', transform: 'translateX(-50%)', background: 'rgba(0,0,0,0.8)', padding: '0.5rem', borderRadius: '8px', display: 'flex', gap: '0.5rem', border: '1px solid var(--border)', pointerEvents: 'auto' }}>
                 {['👋', '😂', '❤️', '❓'].map(emoji => (
-                  <div 
-                    key={emoji} 
+                  <div
+                    key={emoji}
                     style={{ fontSize: '1.5rem', cursor: 'pointer', padding: '0.2rem', transition: 'transform 0.1s' }}
                     onMouseOver={e => e.currentTarget.style.transform = 'scale(1.2)'}
                     onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
@@ -338,9 +346,9 @@ export function SpacePage() {
           </div>
           {isCreator && (
             <div className="action-slot clickable" onClick={openSettings}>
-            <span className="slot-icon">⚙</span>
-            <span className="slot-label">Settings</span>
-          </div>
+              <span className="slot-icon">⚙</span>
+              <span className="slot-label">Settings</span>
+            </div>
           )
           }
         </div>
@@ -353,12 +361,12 @@ export function SpacePage() {
                 <h2 style={{ margin: 0, color: 'var(--text-bright)' }}>SETTINGS</h2>
                 <button onClick={() => setShowSettings(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem' }}>✕</button>
               </div>
-              
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Invite Link / Space ID</label>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <input type="text" readOnly value={spaceId} style={{ flex: 1, padding: '0.5rem', background: '#000', border: '1px solid var(--border)', color: 'var(--text-main)' }} />
-                  <button 
+                  <button
                     onClick={handleCopy}
                     style={{ padding: '0.5rem 1rem', background: copied ? 'var(--online)' : 'var(--accent)', border: 'none', color: '#000', cursor: 'pointer', fontWeight: 'bold', transition: 'background 0.2s' }}>
                     {copied ? 'COPIED!' : 'COPY'}
@@ -389,11 +397,11 @@ export function SpacePage() {
 
               <div style={{ height: '1px', background: 'var(--border)' }} />
 
-              <button 
+              <button
                 onClick={() => {
                   sendSettingsUpdate(draftWeather, draftTimeOfDay);
                   setShowSettings(false);
-                }} 
+                }}
                 style={{ padding: '0.75rem', background: 'var(--accent)', border: 'none', color: '#000', cursor: 'pointer', fontWeight: 'bold' }}>
                 SAVE SETTINGS
               </button>
@@ -412,7 +420,7 @@ export function SpacePage() {
             {onlineCount} ONLINE
           </div>
           {dimensions.width > 0 && (
-            <MiniMap 
+            <MiniMap
               width={dimensions.width}
               height={dimensions.height}
               thumbnail={thumbnail}
@@ -424,50 +432,10 @@ export function SpacePage() {
           )}
         </div>
 
-        {/* Bottom Left: Players List */}
-        <div className="hud-panel hud-bottom-left">
-          <span className="hud-panel-label">Players in space</span>
-          <div className="player-list">
-            <div className="player-item me">
-              <span className="player-pip" />
-              <span className="player-name">You ({userId?.slice(-4)})</span>
-              {arenaState.myPos && (
-                <span className="player-pos">({arenaState.myPos.x},{arenaState.myPos.y})</span>
-              )}
-            </div>
-            {[...arenaState.users.values()].map((u) => (
-              <div key={u.userId} className="player-item">
-                <span className="player-pip" />
-                <span className="player-name">{u.userId.slice(-4)}</span>
-                <span className="player-pos">({u.x},{u.y})</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom Right: Controls & Position */}
-        <div className="hud-panel hud-bottom-right">
-          {buildMode ? (
-            <>
-              <span className="hud-panel-label">Build Mode</span>
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem', maxHeight: '150px', overflowY: 'auto' }}>
-                {availableElements.map(el => (
-                  <div 
-                    key={el.id} 
-                    onClick={() => setSelectedElement(el)}
-                    style={{ 
-                      width: 40, height: 40, 
-                      border: selectedElement?.id === el.id ? '2px solid var(--accent)' : '1px solid var(--border)',
-                      cursor: 'pointer', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                    <img src={el.imageUrl} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-                  </div>
-                ))}
-              </div>
-              {selectedElement ? <div style={{marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--accent)'}}>Click canvas to place</div> : <div style={{marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)'}}>Select an element</div>}
-            </>
-          ) : (
-            <>
+        {/* Bottom Left: Players List & Controls */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} className="hud-bottom-left">
+          {!buildMode && (
+            <div className="hud-panel">
               <div className="pos-readout">
                 <div className="pos-coord">
                   <span className="pos-coord-axis">X</span>
@@ -489,7 +457,151 @@ export function SpacePage() {
                 <div className="key-cap">D</div>
                 <div className="key-cap wide">ARROW KEYS ALSO WORK</div>
               </div>
+            </div>
+          )}
+          <div className="hud-panel">
+            <span className="hud-panel-label">Players in space</span>
+            <div className="player-list">
+              <div className="player-item me">
+                <span className="player-pip" />
+                <span className="player-name">You ({userId?.slice(-4)})</span>
+                {arenaState.myPos && (
+                  <span className="player-pos">({arenaState.myPos.x},{arenaState.myPos.y})</span>
+                )}
+              </div>
+              {[...arenaState.users.values()].map((u) => (
+                <div key={u.userId} className="player-item">
+                  <span className="player-pip" />
+                  <span className="player-name">{u.userId.slice(-4)}</span>
+                  <span className="player-pos">({u.x},{u.y})</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Right: Build Mode or Chat */}
+        <div className="hud-panel hud-bottom-right" style={{ width: '300px' }}>
+          {buildMode ? (
+            <>
+              <span className="hud-panel-label">Build Mode</span>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem', maxHeight: '150px', overflowY: 'auto' }}>
+                {availableElements.map(el => (
+                  <div
+                    key={el.id}
+                    onClick={() => setSelectedElement(el)}
+                    style={{
+                      width: 40, height: 40,
+                      border: selectedElement?.id === el.id ? '2px solid var(--accent)' : '1px solid var(--border)',
+                      cursor: 'pointer', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}>
+                    <img src={el.imageUrl} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                  </div>
+                ))}
+              </div>
+              {selectedElement ? <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--accent)' }}>Click canvas to place</div> : <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>Select an element</div>}
             </>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', height: '300px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                <span className="material-symbols-outlined" style={{ color: 'var(--accent)', fontSize: '16px' }}>forum</span>
+                <span className="hud-panel-label" style={{ margin: 0 }}>Space Chat</span>
+              </div>
+
+              <div ref={chatContainerRef} className="chat-scrollbar" style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '0.75rem', paddingRight: '0.25rem' }}>
+                {arenaState.chatMessages?.map((msg, i) => {
+                  const isMe = msg.senderId === userId;
+                  return (
+                    <div key={i} style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: isMe ? 'flex-end' : 'flex-start',
+                      width: '100%'
+                    }}>
+                      <div style={{
+                        fontSize: '9px',
+                        color: isMe ? 'var(--accent)' : 'rgba(255,255,255,0.5)',
+                        marginBottom: '3px',
+                        padding: '0 4px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                      }}>
+                        {isMe ? 'You' : msg.senderId.slice(-4)}
+                      </div>
+                      <div style={{
+                        background: isMe ? 'var(--accent)' : 'rgba(255,255,255,0.05)',
+                        color: isMe ? '#000' : 'var(--text-main)',
+                        padding: '0.5rem 0.75rem',
+                        borderRadius: isMe ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
+                        border: isMe ? 'none' : '1px solid rgba(255,255,255,0.1)',
+                        maxWidth: '85%',
+                        fontSize: '13px',
+                        fontFamily: 'Inter, system-ui, sans-serif',
+                        wordBreak: 'break-word',
+                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                      }}>
+                        {msg.text}
+                      </div>
+                    </div>
+                  );
+                })}
+                {(!arenaState.chatMessages || arenaState.chatMessages.length === 0) && (
+                  <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', textAlign: 'center', margin: 'auto', fontStyle: 'italic' }}>
+                    No messages yet... Be the first to say hi!
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.5rem', background: 'rgba(0,0,0,0.4)', padding: '0.35rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={e => setChatInput(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && chatInput.trim()) {
+                      sendChatMessage(chatInput.trim());
+                      setChatInput('');
+                    }
+                  }}
+                  className="flex-1"
+                  style={{
+                    padding: '0.25rem 0.75rem',
+                    fontFamily: 'Inter, system-ui, sans-serif',
+                    background: 'transparent',
+                    border: 'none',
+                    outline: 'none',
+                    boxShadow: 'none',
+                    color: 'white'
+                  }}
+                  placeholder="Type a message..."
+                />
+                <button
+                  onClick={() => {
+                    if (chatInput.trim()) {
+                      sendChatMessage(chatInput.trim());
+                      setChatInput('');
+                    }
+                  }}
+                  style={{
+                    background: 'var(--accent)',
+                    color: '#000',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '32px',
+                    height: '32px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s',
+                  }}
+                  onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                  onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px', marginLeft: '2px' }}>send</span>
+                </button>
+              </div>
+            </div>
           )}
         </div>
 
