@@ -1,5 +1,5 @@
 import type {SignupSchema, SigninSchema,SpaceElement} from '@repo/types';
-export type { IncomingClientMessage as ClientMessage, ServerMessage } from '@repo/types';
+export type { IncomingClientMessage as ClientMessage, ServerMessage, ChatMessage } from '@repo/types';
 import type {z} from 'zod';
 // ─── Auth ────────────────────────────────────────────────────────────────────
 

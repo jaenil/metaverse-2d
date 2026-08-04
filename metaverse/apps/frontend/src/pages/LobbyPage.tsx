@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export function LobbyPage() {
   const [selectedNode, setSelectedNode] = useState('NODE_7A');
@@ -140,12 +140,6 @@ export function LobbyPage() {
                 </div>
               </div>
             </div>
-          </div>
-          
-          <div className="mt-6 glass-panel rounded-xl p-4 border border-outline-variant/30 flex items-center gap-4">
-             <span className="material-symbols-outlined text-on-surface-variant">chat</span>
-             <input type="text" className="flex-1 bg-transparent border-none outline-none font-technical-data text-[12px] text-on-background placeholder:text-on-surface-variant/50" placeholder="BROADCAST_MESSAGE_TO_LOBBY..." />
-             <button className="px-4 py-2 bg-surface-container-highest text-on-surface-variant font-technical-data text-[10px] hover:text-primary hover:bg-surface-container-high transition-colors rounded">SEND</button>
           </div>
       </div>
     </>

@@ -666,6 +666,15 @@ export function ArenaCanvas({
 
   // ── Keyboard Input ──
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    const target = e.target as HTMLElement;
+    if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+    
+    // Prevent default browser scrolling for game movement keys
+    const isMovementKey = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(e.key);
+    if (isMovementKey) {
+      e.preventDefault();
+    }
+
     const now = Date.now();
     if (now - lastMoveRef.current < 140) return;
     lastMoveRef.current = now;

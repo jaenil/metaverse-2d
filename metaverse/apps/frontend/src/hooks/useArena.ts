@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { getBulkAvatars } from '../api';
-import type { ServerMessage, ArenaUser, SpaceElement } from '../types';
+import type { ServerMessage, ArenaUser, SpaceElement, ChatMessage } from '../types';
 
 interface ArenaState {
   myPos: { x: number; y: number } | null;
@@ -12,6 +12,7 @@ interface ArenaState {
   weather?: 'none' | 'rain' | 'snow';
   timeOfDay?: 'day' | 'night';
   elements: SpaceElement[];
+  chatMessages: ChatMessage[];
 }
 
 export function useArena(_myUserId: string) {
@@ -20,6 +21,7 @@ export function useArena(_myUserId: string) {
     users: new Map(),
     connected: false,
     elements: [],
+    chatMessages: [],
   });
 
   const setElements = useCallback((elements: SpaceElement[]) => {
@@ -46,7 +48,8 @@ export function useArena(_myUserId: string) {
           users: userMap,
           connected: true,
           weather: payload.weather,
-          timeOfDay: payload.timeOfDay
+          timeOfDay: payload.timeOfDay,
+          chatMessages: payload.chatHistory || []
         }));
         break;
       }
@@ -122,6 +125,11 @@ export function useArena(_myUserId: string) {
       case 'element-deleted': {
         const { id } = msg.payload as any;
         setState(prev => ({ ...prev, elements: prev.elements.filter(e => e.id !== id) }));
+        break;
+      }
+      case 'chat-message': {
+        const chatMsg = msg.payload as ChatMessage;
+        setState(prev => ({ ...prev, chatMessages: [...prev.chatMessages, chatMsg] }));
         break;
       }
     }
