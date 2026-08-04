@@ -26,6 +26,10 @@ export function SpacePage() {
   const [chatInput, setChatInput] = useState('');
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatNotification, setChatNotification] = useState<{ text: string, senderId: string } | null>(null);
+  const [isFading, setIsFading] = useState(false);
+
   // Auto-dismiss the placement error after 2.5 seconds
   useEffect(() => {
     if (!placementError) return;
@@ -85,10 +89,31 @@ export function SpacePage() {
   const { weather = 'none', timeOfDay = 'day' } = arenaState;
 
   useEffect(() => {
-    if (chatContainerRef.current) {
+    if (isChatOpen && chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [arenaState.chatMessages]);
+  }, [arenaState.chatMessages, isChatOpen]);
+
+  useEffect(() => {
+    if (arenaState.chatMessages && arenaState.chatMessages.length > 0) {
+      const latest = arenaState.chatMessages[arenaState.chatMessages.length - 1];
+      if (!isChatOpen) {
+        setChatNotification(latest);
+        setIsFading(false);
+        
+        const fadeTimer = setTimeout(() => setIsFading(true), 3000);
+        const removeTimer = setTimeout(() => {
+          setChatNotification(null);
+          setIsFading(false);
+        }, 3500);
+        
+        return () => {
+          clearTimeout(fadeTimer);
+          clearTimeout(removeTimer);
+        };
+      }
+    }
+  }, [arenaState.chatMessages, isChatOpen]);
 
   const [loadingProgress, setLoadingProgress] = useState(0);
 
@@ -433,9 +458,28 @@ export function SpacePage() {
         </div>
 
         {/* Bottom Left: Players List & Controls */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} className="hud-bottom-left">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', position: 'absolute', pointerEvents: 'auto' }} className="hud-bottom-left">
+          <div className="hud-panel" style={{ position: 'relative' }}>
+            <span className="hud-panel-label">Players in space</span>
+            <div className="player-list">
+              <div className="player-item me">
+                <span className="player-pip" />
+                <span className="player-name">You ({userId?.slice(-4)})</span>
+                {arenaState.myPos && (
+                  <span className="player-pos">({arenaState.myPos.x},{arenaState.myPos.y})</span>
+                )}
+              </div>
+              {[...arenaState.users.values()].map((u) => (
+                <div key={u.userId} className="player-item">
+                  <span className="player-pip" />
+                  <span className="player-name">{u.userId.slice(-4)}</span>
+                  <span className="player-pos">({u.x},{u.y})</span>
+                </div>
+              ))}
+            </div>
+          </div>
           {!buildMode && (
-            <div className="hud-panel">
+            <div className="hud-panel" style={{ position: 'relative' }}>
               <div className="pos-readout">
                 <div className="pos-coord">
                   <span className="pos-coord-axis">X</span>
@@ -459,29 +503,10 @@ export function SpacePage() {
               </div>
             </div>
           )}
-          <div className="hud-panel">
-            <span className="hud-panel-label">Players in space</span>
-            <div className="player-list">
-              <div className="player-item me">
-                <span className="player-pip" />
-                <span className="player-name">You ({userId?.slice(-4)})</span>
-                {arenaState.myPos && (
-                  <span className="player-pos">({arenaState.myPos.x},{arenaState.myPos.y})</span>
-                )}
-              </div>
-              {[...arenaState.users.values()].map((u) => (
-                <div key={u.userId} className="player-item">
-                  <span className="player-pip" />
-                  <span className="player-name">{u.userId.slice(-4)}</span>
-                  <span className="player-pos">({u.x},{u.y})</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Bottom Right: Build Mode or Chat */}
-        <div className="hud-panel hud-bottom-right" style={{ width: '300px' }}>
+        <div className={`hud-bottom-right ${buildMode || isChatOpen ? 'hud-panel' : ''}`} style={{ position: 'absolute', width: buildMode || isChatOpen ? '300px' : 'auto', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', background: buildMode || isChatOpen ? '' : 'transparent', border: buildMode || isChatOpen ? '' : 'none', boxShadow: buildMode || isChatOpen ? '' : 'none', pointerEvents: 'none' }}>
           {buildMode ? (
             <>
               <span className="hud-panel-label">Build Mode</span>
@@ -502,11 +527,24 @@ export function SpacePage() {
               {selectedElement ? <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--accent)' }}>Click canvas to place</div> : <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>Select an element</div>}
             </>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', height: '300px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                <span className="material-symbols-outlined" style={{ color: 'var(--accent)', fontSize: '16px' }}>forum</span>
-                <span className="hud-panel-label" style={{ margin: 0 }}>Space Chat</span>
-              </div>
+            <>
+              {!isChatOpen && chatNotification && (
+                <div style={{ pointerEvents: 'auto', marginBottom: '1rem', background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.75rem 1rem', borderRadius: '16px', maxWidth: '280px', display: 'flex', flexDirection: 'column', gap: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.5)', animation: 'fadeIn 0.3s', opacity: isFading ? 0 : 1, transition: 'opacity 0.5s ease-out' }}>
+                  <span style={{ fontSize: '10px', color: 'var(--accent)', fontWeight: 'bold' }}>{chatNotification.senderId.slice(-4)} says:</span>
+                  <span style={{ fontSize: '13px', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{chatNotification.text}</span>
+                </div>
+              )}
+              {isChatOpen ? (
+                <div style={{ display: 'flex', flexDirection: 'column', height: '300px', width: '100%', pointerEvents: 'auto' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span className="material-symbols-outlined" style={{ color: 'var(--accent)', fontSize: '16px' }}>forum</span>
+                      <span className="hud-panel-label" style={{ margin: 0 }}>Space Chat</span>
+                    </div>
+                    <button onClick={() => setIsChatOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex' }}>
+                      <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>remove</span>
+                    </button>
+                  </div>
 
               <div ref={chatContainerRef} className="chat-scrollbar" style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '0.75rem', paddingRight: '0.25rem' }}>
                 {arenaState.chatMessages?.map((msg, i) => {
@@ -602,6 +640,12 @@ export function SpacePage() {
                 </button>
               </div>
             </div>
+            ) : (
+                <button onClick={() => setIsChatOpen(true)} style={{ pointerEvents: 'auto', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50%', width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.5)', transition: 'transform 0.2s', color: 'var(--accent)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>chat</span>
+                </button>
+            )}
+            </>
           )}
         </div>
 
