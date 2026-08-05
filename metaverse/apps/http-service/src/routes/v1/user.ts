@@ -1,5 +1,5 @@
 import { Router } from 'express' ;
-import { userMiddleware } from '../../middleware/user.js';
+import { userMiddleware } from '../../middleware/makeAuthMiddleware.js';
 import { UpdateMetadataSchema } from '@repo/types';
 import client from "@repo/db" ;
 export const userRouter = Router() ;

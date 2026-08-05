@@ -1,5 +1,5 @@
 import {Router} from 'express' ;
-import { adminMiddleware } from '../../middleware/admin.js';
+import { adminMiddleware } from '../../middleware/makeAuthMiddleware.js';
 import { CreateAvatarSchema, CreateElementSchema, CreateMapSchema, UpdateElementSchema } from '@repo/types';
 import client from "@repo/db" ;
 
@@ -28,18 +28,23 @@ adminRouter.post('/element', adminMiddleware, async (req, res) => {
 })
 
 adminRouter.put('/element/:elementId', adminMiddleware, async (req, res) => {
-    const parsedData = UpdateElementSchema.safeParse(req.body)
-    if (!parsedData.success) {
-        return res.status(400).json({ message: "Invalid data" })
+    try {
+        const parsedData = UpdateElementSchema.safeParse(req.body)
+        if (!parsedData.success) {
+            return res.status(400).json({ message: "Invalid data" })
+        }
+        if(typeof req.params.elementId !== "string"){
+            return res.status(400).json({ message: "Invalid element id" })
+        }
+        await client.element.update({
+            where: { id: req.params.elementId },
+            data: { imageUrl: parsedData.data.imageUrl }
+        })
+        return res.json({ message: "Element updated" })
+    } catch (e) {
+        console.error("Element update error", e);
+        return res.status(500).json({ message: "Failed to update element" });
     }
-    if(typeof req.params.elementId !== "string"){
-        return res.status(400).json({ message: "Invalid element id" })
-    }
-    await client.element.update({
-        where: { id: req.params.elementId },
-        data: { imageUrl: parsedData.data.imageUrl }
-    })
-    return res.json({ message: "Element updated" })
 })
 
 adminRouter.delete('/element/:elementId', adminMiddleware, async (req, res) => {

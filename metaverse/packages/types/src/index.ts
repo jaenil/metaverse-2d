@@ -92,7 +92,7 @@ export const IncomingClientMessageSchema = z.discriminatedUnion("type", [
     type: z.literal("emote"),
     payload: z.object({
       userId: z.string().optional(), // Adding optional userId because frontend doesn't send it, but backend adds it
-      emote: z.string()
+      emote: z.string().max(10)
     })
   }),
   z.object({

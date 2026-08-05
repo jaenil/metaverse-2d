@@ -16,9 +16,8 @@ export async function notifyWsCache(payload:CacheInvalidationPayload):Promise<vo
     } catch (e:any) {
         if(e.name === 'AbortError'){
             console.warn("[wsNotifer] Timeout (2000ms) while notifyining WS service cache") ;
-        }
-        if(e.name === 'RejectionError'){
-            console.warn("[wsNotifer] while notifying WS service cache",e.message) ;
+        } else {
+            console.warn("[wsNotifer] while notifying WS service cache", e.message) ;
         }
     }
     finally{

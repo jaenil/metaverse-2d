@@ -211,7 +211,7 @@ export function SpacePage() {
     setSelectedElement(null);
   };
 
-  const handleCanvasClick = async (x: number, y: number) => {
+  const handleCanvasClick = useCallback(async (x: number, y: number) => {
     if (!buildMode || !selectedElement || !spaceId) return;
 
     if (selectedElement.id === 'ERASER') {
@@ -266,7 +266,7 @@ export function SpacePage() {
       console.error("Failed to place element", e);
       setPlacementError('Failed to place element. Try again.');
     }
-  };
+  }, [buildMode, selectedElement, spaceId, dimensions, arenaState.elements, sendElementDeleted, sendElementAdded]);
 
   if (!token) {
     navigate('/');
