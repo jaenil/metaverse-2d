@@ -74,48 +74,54 @@ export const CreateMapSchema = z.object({
 })
 
 export const IncomingClientMessageSchema = z.discriminatedUnion("type", [
-    z.object({
-        type: z.literal("join"),
-        payload: z.object({ 
-            spaceId: z.string(), 
-            token: z.string() 
-        })
-    }),
-    z.object({
-        type: z.literal("move"),
-        payload: z.object({ 
-            x: z.number(), 
-            y: z.number() 
-        })
-    }),
-    z.object({
-        type: z.literal("emote"),
-        payload: z.object({
-            userId: z.string().optional(), // Adding optional userId because frontend doesn't send it, but backend adds it
-            emote: z.string()
-        })
-    }),
-    z.object({
-        type: z.literal("update-settings"),
-        payload: z.object({
-            weather: z.enum(["none","rain","snow"]),
-            timeOfDay: z.enum(["day","night"])
-        })
-    }),
-    z.object({
-        type: z.literal("element-added"),
-        payload: z.object({
-            id: z.string(),
-            elementId: z.string(),
-            spaceId: z.string(),
-            x: z.number(),
-            y: z.number()
-        })
-    }),
-    z.object({
-        type: z.literal("element-deleted"),
-        payload: z.object({ id: z.string() })
+  z.object({
+    type: z.literal("join"),
+    payload: z.object({
+      spaceId: z.string(),
+      token: z.string()
     })
+  }),
+  z.object({
+    type: z.literal("move"),
+    payload: z.object({
+      x: z.number(),
+      y: z.number()
+    })
+  }),
+  z.object({
+    type: z.literal("emote"),
+    payload: z.object({
+      userId: z.string().optional(), // Adding optional userId because frontend doesn't send it, but backend adds it
+      emote: z.string().max(10)
+    })
+  }),
+  z.object({
+    type: z.literal("update-settings"),
+    payload: z.object({
+      weather: z.enum(["none", "rain", "snow"]),
+      timeOfDay: z.enum(["day", "night"])
+    })
+  }),
+  z.object({
+    type: z.literal("element-added"),
+    payload: z.object({
+      id: z.string(),
+      elementId: z.string(),
+      spaceId: z.string(),
+      x: z.number(),
+      y: z.number()
+    })
+  }),
+  z.object({
+    type: z.literal("element-deleted"),
+    payload: z.object({ id: z.string() })
+  }),
+  z.object({
+    type: z.literal("chat-message"),
+    payload: z.object({
+      text: z.string().min(1).max(400),
+    })
+  })
 ]);
 
 export type ChatMessage= {
