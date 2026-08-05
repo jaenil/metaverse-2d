@@ -6,8 +6,11 @@ import { SigninSchema, SignupSchema } from "@repo/types";
 import client from "@repo/db";
 import { compare, hash } from '../../scrypt.js';
 import jwt from "jsonwebtoken"
-import { JWT_SECRET } from '../../config.js';
-import { userMiddleware } from '../../middleware/user.js';
+import { userMiddleware } from '../../middleware/makeAuthMiddleware.js';
+
+const JWT_SECRET = process.env.JWT_SECRET as string;
+if (!JWT_SECRET) throw new Error("JWT_SECRET env variable is not set");
+
 import { OAuth2Client } from 'google-auth-library';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);

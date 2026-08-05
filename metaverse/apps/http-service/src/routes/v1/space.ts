@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import { CreateSpaceSchema, AddElementSchema, DeleteElementSchema } from '@repo/types';
 import client from "@repo/db";
-import { adminMiddleware } from '../../middleware/admin.js';
-import { userMiddleware } from '../../middleware/user.js';
+import { userMiddleware } from '../../middleware/makeAuthMiddleware.js';
 import { notifyWsCache } from '../../wsNotifier.js';
 export const spaceRouter = Router();
 
@@ -145,7 +144,7 @@ spaceRouter.post('/element', userMiddleware, async (req, res) => {
         },
         include:{element:true}
     })
-    const updateCache = notifyWsCache({
+    await notifyWsCache({
         action: "add",
         spaceId: parsedData.data.spaceId,
         element: createdElement
@@ -178,7 +177,7 @@ spaceRouter.delete('/element', userMiddleware, async (req, res) => {
         if (!element) {
             return res.status(404).json({ message: "Element not found" })
         }
-        const updateCache = notifyWsCache(
+        await notifyWsCache(
             {
                 action: "remove",
                 spaceId: parsedData.data.spaceId,
@@ -212,7 +211,7 @@ spaceRouter.delete('/:spaceId', userMiddleware, async (req, res) => {
                 id: spaceId
             }
         })
-        const updateCache = notifyWsCache(
+        await notifyWsCache(
             {
                 action: "full",
                 spaceId: spaceId,

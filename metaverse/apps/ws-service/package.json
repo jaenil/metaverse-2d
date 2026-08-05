@@ -7,9 +7,11 @@
     "test": "vitest run --passWithNoTests",
     "build": "npx esbuild src/index.ts --format=esm --bundle --packages=external --outfile=dist/index.js --platform=node --tsconfig=tsconfig.json",
     "start": "node --env-file=.env dist/index.js",
+    "predev": "npx kill-port 3001",
     "dev:build": "tsc -b -w",
-    "dev:start": "nodemon --watch src --exec \"tsx --env-file=.env\" src/index.ts",
-    "dev": "concurrently \"npm run dev:build\" \"npm run dev:start\""
+    "dev:start": "tsx watch --env-file=.env src/index.ts",
+    "dev": "concurrently --kill-others \"npm run dev:build\" \"npm run dev:start\"",
+    "postdev": "npx kill-port 3001"
   },
   "keywords": [],
   "author": "",

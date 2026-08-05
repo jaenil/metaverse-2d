@@ -34,22 +34,22 @@ export function useArena(_myUserId: string) {
   const handleMessage = useCallback((msg: ServerMessage) => {
     switch (msg.type) {
       case 'space-joined': {
-        const payload = msg.payload as any;
-        myPosRef.current = payload.spawn;
+        const { spawn, users, weather, timeOfDay, chatHistory } = msg.payload;
+        myPosRef.current = spawn;
         const userMap = new Map<string, ArenaUser>();
         // Backend sends { id, x, y } in space-joined
-        payload.users.forEach((u: any) => {
-          const uid = u.id || u.userId;
+        users.forEach((u: { id?: string; userId?: string; x: number; y: number }) => {
+          const uid = u.userId || u.id;
           if (uid && uid !== _myUserId) userMap.set(uid, { userId: uid, x: u.x, y: u.y });
         });
         setState(prev => ({
           ...prev,
-          myPos: payload.spawn,
+          myPos: spawn,
           users: userMap,
           connected: true,
-          weather: payload.weather,
-          timeOfDay: payload.timeOfDay,
-          chatMessages: payload.chatHistory || []
+          weather: weather as 'none' | 'rain' | 'snow',
+          timeOfDay: timeOfDay as 'day' | 'night',
+          chatMessages: chatHistory || []
         }));
         break;
       }
@@ -97,7 +97,7 @@ export function useArena(_myUserId: string) {
       }
 
       case 'emote': {
-        const { userId, emote } = msg.payload as any;
+        const { userId, emote } = msg.payload;
         if (userId === _myUserId) return;
         setState((prev) => {
           const next = new Map(prev.users);

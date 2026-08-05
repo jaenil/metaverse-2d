@@ -33,7 +33,7 @@ model Space {
   thumbnail String?
   creatorId String
   timeOfDay String @default("day")
-  weather String @default("clear")
+  weather String @default("none")
   creator     User    @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   elements  SpaceElements[]
 }

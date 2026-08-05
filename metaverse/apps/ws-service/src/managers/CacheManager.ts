@@ -32,12 +32,7 @@ export class CacheManager{
             return;
         }
         const remaining = this.elementCache.get(spaceId)?.filter((e) => e.id !== elementId) ?? [];
-        if (remaining.length === 0) {
-            this.elementCache.delete(spaceId)
-        }
-        else {
-            this.elementCache.set(spaceId, remaining);
-        }
+        this.elementCache.set(spaceId, remaining);
     }
     public setSpaceMetadata(spaceId:string,metadata:CachedSpaceMetadata):void{
         this.spaceMetaCache.set(spaceId,metadata);

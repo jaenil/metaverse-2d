@@ -1,8 +1,11 @@
 import { WebSocket } from "ws";
 import jwt from "jsonwebtoken";
 import type { JwtPayload } from "jsonwebtoken";
-import { JWT_SECRET } from '../config.js';
 import { RoomManager } from "../managers/RoomManager.js"
+
+const JWT_SECRET = process.env.JWT_SECRET as string;
+if (!JWT_SECRET) throw new Error("JWT_SECRET env variable is not set");
+
 import client from "@repo/db"
 import type { ChatMessage, ServerMessage } from "@repo/types";
 import { IncomingClientMessageSchema } from "@repo/types";
@@ -92,7 +95,7 @@ export class User {
                         creatorId: space.creatorId,
                         width: space.width,
                         height: space.height,
-                        weather: space.weather ?? "clear",
+                        weather: space.weather ?? "none",
                         timeOfDay: space.timeOfDay ?? "day",
                     };
                     CacheManager.getInstance().setSpaceMetadata(spaceId, metadata);
