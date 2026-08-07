@@ -154,18 +154,23 @@ export function useArena(_myUserId: string) {
     setState((prev) => ({ ...prev, myPos: { x, y } }));
   }, []);
 
+  const fetchedAvatarIds = useRef<Set<string>>(new Set());
+
   // Fetch missing avatars
   useEffect(() => {
+    if (!state.connected) return;
     const missingAvatarUserIds: string[] = [];
     
     // Check if my avatar is missing
-    if (state.connected && !state.myAvatarUrl) {
+    if (!state.myAvatarUrl && !fetchedAvatarIds.current.has(_myUserId)) {
       missingAvatarUserIds.push(_myUserId);
+      fetchedAvatarIds.current.add(_myUserId);
     }
 
     state.users.forEach((user, id) => {
-      if (!user.avatarUrl && !missingAvatarUserIds.includes(id)) {
+      if (!user.avatarUrl && !fetchedAvatarIds.current.has(id)) {
         missingAvatarUserIds.push(id);
+        fetchedAvatarIds.current.add(id);
       }
     });
 
@@ -192,7 +197,11 @@ export function useArena(_myUserId: string) {
             return { ...prev, myAvatarUrl, users: nextUsers };
           });
         }
-      }).catch(err => console.error("Failed to fetch avatars", err));
+      }).catch(err => {
+        console.error("Failed to fetch avatars", err);
+        // On error, we could remove them from the set to retry later, 
+        // but for now we just skip retrying to prevent loop.
+      });
     }
   }, [state.connected, state.users, _myUserId, state.myAvatarUrl]);
 
