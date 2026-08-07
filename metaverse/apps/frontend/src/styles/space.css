@@ -166,9 +166,13 @@
 }
 
 .hud-bottom-left {
+  position: absolute;
   bottom: 1.5rem;
   left: 1.5rem;
   width: 230px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .hud-bottom-right {

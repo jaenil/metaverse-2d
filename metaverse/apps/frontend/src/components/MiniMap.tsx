@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, memo } from 'react';
 import type { SpaceElement, ArenaUser } from '../types';
 
 interface MiniMapProps {
@@ -11,7 +11,7 @@ interface MiniMapProps {
   myUserId: string;
 }
 
-export function MiniMap({ width, height, thumbnail, elements, users, myPos, myUserId }: MiniMapProps) {
+export const MiniMap = memo(function MiniMap({ width, height, thumbnail, elements, users, myPos, myUserId }: MiniMapProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const usersRef = useRef(users);
   const myPosRef = useRef(myPos);
@@ -118,4 +118,4 @@ export function MiniMap({ width, height, thumbnail, elements, users, myPos, myUs
       />
     </div>
   );
-}
+});

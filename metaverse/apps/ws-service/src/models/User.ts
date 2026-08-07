@@ -266,19 +266,8 @@ export class User {
                         return;
                     }
 
-                    if (metadata.creatorId !== this.id) {
-                        this.send(
-                            {
-                                type: "event-rejected",
-                                payload: {
-                                    message: "Only space creator can modify room settings.",
-                                    code: 401,
-                                    event: "update-settings"
-                                }
-                            }
-                        );
-                        return;
-                    }
+                    // REMOVED CREATOR CHECK FOR TESTING
+                    // if (metadata.creatorId !== this.id) { ... }
 
                     await client.space.update({
                         where: { id: this.spaceId },

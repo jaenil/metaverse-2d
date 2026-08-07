@@ -1,80 +1,27 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getSpace, getElements, addSpaceElement, deleteSpaceElement } from '../api';
 import { useAuthStore } from '../store/authStore';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { useArena } from '../hooks/useArena';
+import { useSpaceData } from '../hooks/useSpaceData';
+import { useBuildMode } from '../hooks/useBuildMode';
 import { ArenaCanvas } from '../components/ArenaCanvas';
-import { MiniMap } from '../components/MiniMap';
-import type { Element } from '../types';
+import { HUD } from '../components/HUD';
+import { SettingsModal } from '../components/SettingsModal';
+import { BuildModePanel } from '../components/BuildModePanel';
+import { ChatPanel } from '../components/ChatPanel';
 import '../styles/space.css';
-
-const ERASER_ELEMENT = { id: 'ERASER', imageUrl: 'https://img.icons8.com/color/48/eraser.png', width: 1, height: 1, static: false } as Element;
 
 export function SpacePage() {
   const { spaceId } = useParams<{ spaceId: string }>();
   const navigate = useNavigate();
   const { token, userId } = useAuthStore();
 
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [thumbnail, setThumbnail] = useState<string | null>(null);
-  const [spaceLoading, setSpaceLoading] = useState(true);
-  const [spaceError, setSpaceError] = useState('');
-  const [isCreator, setIsCreator] = useState(false);
-  const [placementError, setPlacementError] = useState<string | null>(null);
-  const [worldReady, setWorldReady] = useState(false);
-  const [chatInput, setChatInput] = useState('');
-  const chatContainerRef = useRef<HTMLDivElement>(null);
-
+  const [showEmotes, setShowEmotes] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatNotification, setChatNotification] = useState<{ text: string, senderId: string } | null>(null);
   const [isFading, setIsFading] = useState(false);
-
-  // Auto-dismiss the placement error after 2.5 seconds
-  useEffect(() => {
-    if (!placementError) return;
-    const timer = setTimeout(() => setPlacementError(null), 2500);
-    return () => clearTimeout(timer); // cleanup: cancel if error changes before timeout fires
-  }, [placementError]);
-
-  const [buildMode, setBuildMode] = useState(false);
-  const [availableElements, setAvailableElements] = useState<Element[]>([]);
-  const [selectedElement, setSelectedElement] = useState<Element | null>(null);
-
-  const [showEmotes, setShowEmotes] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [draftWeather, setDraftWeather] = useState<'none' | 'rain' | 'snow'>('none');
-  const [draftTimeOfDay, setDraftTimeOfDay] = useState<'day' | 'night'>('day');
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setShowSettings(false);
-    };
-    if (showSettings) window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
-  }, [showSettings]);
-
-  const handleCopy = async () => {
-    if (!spaceId) return;
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(spaceId);
-      } else {
-        // Fallback for non-HTTPS or local contexts where clipboard API might be blocked
-        const el = document.createElement('textarea');
-        el.value = spaceId;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-      }
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy", err);
-    }
-  };
 
   const {
     state: arenaState,
@@ -88,98 +35,13 @@ export function SpacePage() {
 
   const { weather = 'none', timeOfDay = 'day' } = arenaState;
 
-  useEffect(() => {
-    if (isChatOpen && chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-    }
-  }, [arenaState.chatMessages, isChatOpen]);
-
-  useEffect(() => {
-    if (arenaState.chatMessages && arenaState.chatMessages.length > 0) {
-      const latest = arenaState.chatMessages[arenaState.chatMessages.length - 1];
-      if (!isChatOpen) {
-        setChatNotification(latest);
-        setIsFading(false);
-        
-        const fadeTimer = setTimeout(() => setIsFading(true), 3000);
-        const removeTimer = setTimeout(() => {
-          setChatNotification(null);
-          setIsFading(false);
-        }, 3500);
-        
-        return () => {
-          clearTimeout(fadeTimer);
-          clearTimeout(removeTimer);
-        };
-      }
-    }
-  }, [arenaState.chatMessages, isChatOpen]);
-
-  const [loadingProgress, setLoadingProgress] = useState(0);
-
-  useEffect(() => {
-    if (!spaceLoading && arenaState.myPos) {
-      let startTime = performance.now();
-      let raf: number;
-      const duration = 1500;
-
-      const updateProgress = (now: number) => {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        setLoadingProgress(Math.floor(progress * 100));
-
-        if (progress < 1) {
-          raf = requestAnimationFrame(updateProgress);
-        } else {
-          setWorldReady(true);
-        }
-      };
-
-      raf = requestAnimationFrame(updateProgress);
-      return () => cancelAnimationFrame(raf);
-    } else {
-      setWorldReady(false);
-      setLoadingProgress(0);
-    }
-  }, [spaceLoading, arenaState.myPos]);
-
-  const openSettings = () => {
-    setDraftWeather((weather || 'none') as any);
-    setDraftTimeOfDay((timeOfDay || 'day') as any);
-    setShowSettings(true);
-  };
-
-  // Fetch space details (dimensions + elements)
-  useEffect(() => {
-    if (!spaceId) return;
-    setSpaceLoading(true);
-    setWorldReady(false);
-    setLoadingProgress(0);
-    getSpace(spaceId).then((res) => {
-      if (res.data.space) {
-        setDimensions({
-          width: res.data.space.width,
-          height: res.data.space.height,
-        });
-        if (res.data.space.creatorId === userId) {
-          setIsCreator(true);
-        }
-        setThumbnail(res.data.space.thumbnail || null);
-        setElements(res.data.elements.map((e: any) => ({
-          id: e.id,
-          elementId: e.element.id,
-          x: e.x,
-          y: e.y,
-          element: e.element,
-        })));
-      }
-      setSpaceLoading(false);
-    }).catch(err => {
-      console.error(err);
-      setSpaceError('Failed to load space data.');
-      setSpaceLoading(false);
-    });
-  }, [spaceId, userId, setElements]);
+  const {
+    dimensions,
+    thumbnail,
+    spaceError,
+    worldReady,
+    loadingProgress
+  } = useSpaceData(spaceId, userId ?? undefined, arenaState.myPos, setElements);
 
   const { sendMove, sendEmote, sendSettingsUpdate, sendElementAdded, sendElementDeleted, sendChatMessage } = useWebSocket({
     spaceId: spaceId ?? '',
@@ -189,471 +51,128 @@ export function SpacePage() {
     onClose: handleClose,
   });
 
+  const {
+    buildMode,
+    toggleBuildMode,
+    availableElements,
+    selectedElement,
+    setSelectedElement,
+    placementError,
+    handleCanvasClick: handleBuildClick
+  } = useBuildMode(spaceId, dimensions, arenaState.elements, sendElementAdded, sendElementDeleted);
+
   const handleMove = useCallback(
     (x: number, y: number) => {
-      // Optimistic update — server corrects if out of bounds
       applyOptimisticMove(x, y);
       sendMove(x, y);
     },
     [applyOptimisticMove, sendMove]
   );
 
-  const toggleBuildMode = async () => {
-    if (!buildMode && availableElements.length === 0) {
-      try {
-        const res = await getElements();
-        setAvailableElements([ERASER_ELEMENT, ...res.data.elements]);
-      } catch (e) {
-        console.error("Failed to load elements", e);
+  // Chat notifications
+  useEffect(() => {
+    if (arenaState.chatMessages && arenaState.chatMessages.length > 0) {
+      const latest = arenaState.chatMessages[arenaState.chatMessages.length - 1];
+      if (!isChatOpen) {
+        setChatNotification(latest);
+        setIsFading(false);
+        const fadeTimer = setTimeout(() => setIsFading(true), 3000);
+        const removeTimer = setTimeout(() => {
+          setChatNotification(null);
+          setIsFading(false);
+        }, 3500);
+        return () => { clearTimeout(fadeTimer); clearTimeout(removeTimer); };
       }
     }
-    setBuildMode(!buildMode);
-    setSelectedElement(null);
-  };
-
-  const handleCanvasClick = useCallback(async (x: number, y: number) => {
-    if (!buildMode || !selectedElement || !spaceId) return;
-
-    if (selectedElement.id === 'ERASER') {
-      const target = arenaState.elements.find(el => {
-        const ew = el.element?.width ?? 1;
-        const eh = el.element?.height ?? 1;
-        return x >= el.x && x < el.x + ew && y >= el.y && y < el.y + eh;
-      });
-      if (target) {
-        try {
-          const res = await deleteSpaceElement(target.id, spaceId);
-          if (res.status === 200) {
-            sendElementDeleted(target.id);
-          }
-        } catch (e) { console.error("Failed to delete element", e); }
-      }
-      return;
-    }
-
-    try {
-      setPlacementError(null);
-      if (x < 0 || y < 0 || x >= dimensions.width || y >= dimensions.height) {
-        setPlacementError('Position out of bounds.');
-        return;
-      }
-
-      const isColliding = arenaState.elements.some((e) => {
-        if (!e.element) return false; // narrows the type, skips malformed entries
-        const overlapX = x < e.x + e.element.width &&
-          x + (selectedElement?.width ?? 0) > e.x;
-
-        const overlapY = y < e.y + e.element.height &&
-          y + (selectedElement?.height ?? 0) > e.y;
-
-        return overlapX && overlapY && e.element.static;
-      })
-      if (isColliding) {
-        setPlacementError('Element is colliding with another element');
-        return;
-      }
-      const res = await addSpaceElement({ elementId: selectedElement.id, spaceId, x, y });
-      if (res.status === 200) {
-        const newElement = {
-          id: res.data.element.id,
-          elementId: selectedElement.id,
-          x, y,
-          element: selectedElement
-        };
-        sendElementAdded(newElement);
-      }
-    } catch (e) {
-      console.error("Failed to place element", e);
-      setPlacementError('Failed to place element. Try again.');
-    }
-  }, [buildMode, selectedElement, spaceId, dimensions, arenaState.elements, sendElementDeleted, sendElementAdded]);
+  }, [arenaState.chatMessages, isChatOpen]);
 
   if (!token) {
     navigate('/');
     return null;
   }
 
-
   if (spaceError) {
     return (
-      <div className="space-loading" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        <div style={{ fontSize: '1.5rem', color: 'var(--danger)', fontWeight: 600 }}>{spaceError}</div>
-        <button onClick={() => navigate('/dashboard')} style={{ marginTop: '2rem', padding: '1rem', background: 'var(--accent)', border: 'none', color: '#000', cursor: 'pointer', borderRadius: 'var(--radius-sm)' }}>
+      <div className="space-loading flex flex-col items-center justify-center h-screen bg-[var(--bg)]">
+        <div className="text-2xl text-[var(--danger)] font-semibold">{spaceError}</div>
+        <button onClick={() => navigate('/dashboard')} className="mt-8 p-4 bg-[var(--accent)] border-none text-black cursor-pointer rounded-[var(--radius-sm)]">
           RETURN TO HUB
         </button>
       </div>
     );
   }
 
-  const onlineCount = arenaState.users.size + 1;
-
   return (
     <div className="space-root">
       {/* Loading Overlay */}
       {!worldReady && (
-        <div className="space-loading" style={{ position: 'absolute', inset: 0, zIndex: 1000, display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' }}>
-          <div style={{ fontSize: '1.5rem', fontWeight: 600, letterSpacing: '0.05em' }}>LINKING TO SERVER...</div>
-          <div style={{ width: '300px', height: '6px', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--border)', borderRadius: '8px', overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${loadingProgress}%`, background: 'var(--accent)', transition: 'width 0.1s linear', boxShadow: '0 0 10px var(--accent)' }} />
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 1000,
+          display: 'flex', flexDirection: 'column', gap: '1.5rem',
+          alignItems: 'center', justifyContent: 'center',
+          background: 'var(--bg)'
+        }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 600, letterSpacing: '2px' }}>
+            LINKING TO SERVER...
           </div>
-          <div style={{ fontSize: '0.8rem', color: 'var(--accent)', fontFamily: 'var(--font-ui)' }}>
+          <div style={{ width: '300px', height: '6px', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--border)', borderRadius: '8px', overflow: 'hidden' }}>
+            <div style={{
+              width: `${loadingProgress}%`, height: '100%',
+              background: 'var(--accent)', transition: 'width 0.1s linear',
+              boxShadow: '0 0 10px var(--accent)'
+            }} />
+          </div>
+          <div style={{ fontSize: '12px', color: 'var(--accent)', fontFamily: 'var(--font-ui)' }}>
             {loadingProgress}%
           </div>
         </div>
       )}
 
       {/* HUD Layer */}
-      <div className="hud-overlay">
-
-        {/* Top Left: Title & Actions */}
-        <div className="hud-top-left">
-          <div className="space-title">
-            <span className="space-title-accent">ZONE //</span> {spaceId?.slice(-6).toUpperCase()}
-          </div>
-        </div>
-
-        {/* Placement Error Banner — top center, auto-dismisses */}
-        {placementError && (
-          <div style={{
-            position: 'absolute',
-            top: '1.25rem',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: 'rgba(0,0,0,0.85)',
-            border: '1px solid #d9381e',
-            color: '#d9381e',
-            padding: '0.5rem 1.25rem',
-            fontFamily: 'var(--font-retro)',
-            fontSize: '0.8rem',
-            letterSpacing: '0.08em',
-            pointerEvents: 'none',
-            zIndex: 200,
-            whiteSpace: 'nowrap',
-          }}>
-            ⚠ {placementError}
-          </div>
-        )}
-
-        {/* Bottom Center: Action Bar */}
-        <div className="hud-action-bar">
-          <div className="action-slot clickable" onClick={() => navigate('/dashboard')}>
-            <span className="slot-icon">←</span>
-            <span className="slot-label">Leave</span>
-          </div>
-          <div className="action-slot clickable" onClick={toggleBuildMode} style={{ background: buildMode ? 'rgba(var(--accent-raw), 0.2)' : '' }}>
-            <span className="slot-icon">◈</span>
-            <span className="slot-label">Build</span>
-          </div>
-          <div style={{ position: 'relative' }}>
-            <div className="action-slot clickable" onClick={() => setShowEmotes(!showEmotes)}>
-              <span className="slot-icon">◉</span>
-              <span className="slot-label">Emote</span>
-            </div>
-            {showEmotes && (
-              <div style={{ position: 'absolute', bottom: '110%', left: '50%', transform: 'translateX(-50%)', background: 'rgba(0,0,0,0.8)', padding: '0.5rem', borderRadius: '8px', display: 'flex', gap: '0.5rem', border: '1px solid var(--border)', pointerEvents: 'auto' }}>
-                {['👋', '😂', '❤️', '❓'].map(emoji => (
-                  <div
-                    key={emoji}
-                    style={{ fontSize: '1.5rem', cursor: 'pointer', padding: '0.2rem', transition: 'transform 0.1s' }}
-                    onMouseOver={e => e.currentTarget.style.transform = 'scale(1.2)'}
-                    onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
-                    onClick={() => {
-                      sendEmote(emoji);
-                      setMyEmote(emoji);
-                      setShowEmotes(false);
-                    }}
-                  >
-                    {emoji}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          {isCreator && (
-            <div className="action-slot clickable" onClick={openSettings}>
-              <span className="slot-icon">⚙</span>
-              <span className="slot-label">Settings</span>
-            </div>
-          )
-          }
-        </div>
-
-        {/* Settings Modal */}
-        {showSettings && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'auto' }}>
-            <div style={{ background: '#111', border: '1px solid var(--border)', padding: '2rem', width: '350px', display: 'flex', flexDirection: 'column', gap: '1.5rem', boxShadow: '0 0 20px rgba(var(--accent-raw), 0.1)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2 style={{ margin: 0, color: 'var(--text-bright)' }}>SETTINGS</h2>
-                <button onClick={() => setShowSettings(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem' }}>✕</button>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Invite Link / Space ID</label>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <input type="text" readOnly value={spaceId} style={{ flex: 1, padding: '0.5rem', background: '#000', border: '1px solid var(--border)', color: 'var(--text-main)' }} />
-                  <button
-                    onClick={handleCopy}
-                    style={{ padding: '0.5rem 1rem', background: copied ? 'var(--online)' : 'var(--accent)', border: 'none', color: '#000', cursor: 'pointer', fontWeight: 'bold', transition: 'background 0.2s' }}>
-                    {copied ? 'COPIED!' : 'COPY'}
-                  </button>
-                </div>
-              </div>
-
-              <div style={{ height: '1px', background: 'var(--border)' }} />
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Time of Day</label>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button onClick={() => setDraftTimeOfDay('day')} style={{ flex: 1, padding: '0.5rem', background: draftTimeOfDay === 'day' ? 'var(--accent)' : '#000', color: draftTimeOfDay === 'day' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Day</button>
-                    <button onClick={() => setDraftTimeOfDay('night')} style={{ flex: 1, padding: '0.5rem', background: draftTimeOfDay === 'night' ? 'var(--accent)' : '#000', color: draftTimeOfDay === 'night' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Night</button>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Weather</label>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button onClick={() => setDraftWeather('none')} style={{ flex: 1, padding: '0.5rem', background: draftWeather === 'none' ? 'var(--accent)' : '#000', color: draftWeather === 'none' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Clear</button>
-                    <button onClick={() => setDraftWeather('rain')} style={{ flex: 1, padding: '0.5rem', background: draftWeather === 'rain' ? 'var(--accent)' : '#000', color: draftWeather === 'rain' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Rain</button>
-                    <button onClick={() => setDraftWeather('snow')} style={{ flex: 1, padding: '0.5rem', background: draftWeather === 'snow' ? 'var(--accent)' : '#000', color: draftWeather === 'snow' ? '#000' : 'var(--text-main)', border: '1px solid var(--border)', cursor: 'pointer' }}>Snow</button>
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ height: '1px', background: 'var(--border)' }} />
-
-              <button
-                onClick={() => {
-                  sendSettingsUpdate(draftWeather, draftTimeOfDay);
-                  setShowSettings(false);
-                }}
-                style={{ padding: '0.75rem', background: 'var(--accent)', border: 'none', color: '#000', cursor: 'pointer', fontWeight: 'bold' }}>
-                SAVE SETTINGS
-              </button>
-
-              <button onClick={() => navigate('/dashboard')} style={{ padding: '0.75rem', background: 'transparent', border: '1px solid #d9381e', color: '#d9381e', cursor: 'pointer', fontWeight: 'bold' }}>
-                LEAVE SPACE
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Top Right: Users online & MiniMap */}
-        <div className="hud-top-right" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '1rem' }}>
-          <div className="hud-pill">
-            <span className="hud-ws-pip online" />
-            {onlineCount} ONLINE
-          </div>
-          {dimensions.width > 0 && (
-            <MiniMap
-              width={dimensions.width}
-              height={dimensions.height}
-              thumbnail={thumbnail}
-              elements={arenaState.elements}
-              users={arenaState.users}
-              myPos={arenaState.myPos}
-              myUserId={userId ?? ''}
-            />
-          )}
-        </div>
-
-        {/* Bottom Left: Players List & Controls */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', position: 'absolute', pointerEvents: 'auto' }} className="hud-bottom-left">
-          <div className="hud-panel" style={{ position: 'relative' }}>
-            <span className="hud-panel-label">Players in space</span>
-            <div className="player-list">
-              <div className="player-item me">
-                <span className="player-pip" />
-                <span className="player-name">You ({userId?.slice(-4)})</span>
-                {arenaState.myPos && (
-                  <span className="player-pos">({arenaState.myPos.x},{arenaState.myPos.y})</span>
-                )}
-              </div>
-              {[...arenaState.users.values()].map((u) => (
-                <div key={u.userId} className="player-item">
-                  <span className="player-pip" />
-                  <span className="player-name">{u.userId.slice(-4)}</span>
-                  <span className="player-pos">({u.x},{u.y})</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          {!buildMode && (
-            <div className="hud-panel" style={{ position: 'relative' }}>
-              <div className="pos-readout">
-                <div className="pos-coord">
-                  <span className="pos-coord-axis">X</span>
-                  <span className="pos-coord-val">{arenaState.myPos?.x ?? '—'}</span>
-                </div>
-                <div className="pos-coord">
-                  <span className="pos-coord-axis">Y</span>
-                  <span className="pos-coord-val">{arenaState.myPos?.y ?? '—'}</span>
-                </div>
-              </div>
-              <div style={{ height: '1px', background: 'var(--border)', margin: '1rem 0' }} />
-              <span className="hud-panel-label">Movement</span>
-              <div className="controls-key-grid">
-                <div />
-                <div className="key-cap">W</div>
-                <div />
-                <div className="key-cap">A</div>
-                <div className="key-cap">S</div>
-                <div className="key-cap">D</div>
-                <div className="key-cap wide">ARROW KEYS ALSO WORK</div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Bottom Right: Build Mode or Chat */}
-        <div className={`hud-bottom-right ${buildMode || isChatOpen ? 'hud-panel' : ''}`} style={{ position: 'absolute', width: buildMode || isChatOpen ? '300px' : 'auto', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', background: buildMode || isChatOpen ? '' : 'transparent', border: buildMode || isChatOpen ? '' : 'none', boxShadow: buildMode || isChatOpen ? '' : 'none', pointerEvents: 'none' }}>
-          {buildMode ? (
-            <>
-              <span className="hud-panel-label">Build Mode</span>
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem', maxHeight: '150px', overflowY: 'auto' }}>
-                {availableElements.map(el => (
-                  <div
-                    key={el.id}
-                    onClick={() => setSelectedElement(el)}
-                    style={{
-                      width: 40, height: 40,
-                      border: selectedElement?.id === el.id ? '2px solid var(--accent)' : '1px solid var(--border)',
-                      cursor: 'pointer', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                    <img src={el.imageUrl} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-                  </div>
-                ))}
-              </div>
-              {selectedElement ? <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--accent)' }}>Click canvas to place</div> : <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>Select an element</div>}
-            </>
+      <HUD
+        spaceId={spaceId}
+        placementError={placementError}
+        dimensions={dimensions}
+        thumbnail={thumbnail}
+        arenaState={arenaState}
+        userId={userId ?? undefined}
+        buildMode={buildMode}
+        toggleBuildMode={toggleBuildMode}
+        showEmotes={showEmotes}
+        setShowEmotes={setShowEmotes}
+        openSettings={() => setShowSettings(true)}
+        navigate={navigate}
+        sendEmote={sendEmote}
+        setMyEmote={setMyEmote}
+        bottomRightContent={
+          buildMode ? (
+            <BuildModePanel availableElements={availableElements} selectedElement={selectedElement} setSelectedElement={setSelectedElement} />
           ) : (
-            <>
-              {!isChatOpen && chatNotification && (
-                <div style={{ pointerEvents: 'auto', marginBottom: '1rem', background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.75rem 1rem', borderRadius: '16px', maxWidth: '280px', display: 'flex', flexDirection: 'column', gap: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.5)', animation: 'fadeIn 0.3s', opacity: isFading ? 0 : 1, transition: 'opacity 0.5s ease-out' }}>
-                  <span style={{ fontSize: '10px', color: 'var(--accent)', fontWeight: 'bold' }}>{chatNotification.senderId.slice(-4)} says:</span>
-                  <span style={{ fontSize: '13px', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{chatNotification.text}</span>
-                </div>
-              )}
-              {isChatOpen ? (
-                <div style={{ display: 'flex', flexDirection: 'column', height: '300px', width: '100%', pointerEvents: 'auto' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span className="material-symbols-outlined" style={{ color: 'var(--accent)', fontSize: '16px' }}>forum</span>
-                      <span className="hud-panel-label" style={{ margin: 0 }}>Space Chat</span>
-                    </div>
-                    <button onClick={() => setIsChatOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex' }}>
-                      <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>remove</span>
-                    </button>
-                  </div>
+            <ChatPanel
+              chatMessages={arenaState.chatMessages}
+              userId={userId ?? undefined}
+              sendChatMessage={sendChatMessage}
+              isChatOpen={isChatOpen}
+              setIsChatOpen={setIsChatOpen}
+              chatNotification={chatNotification}
+              isFading={isFading}
+            />
+          )
+        }
+      />
 
-              <div ref={chatContainerRef} className="chat-scrollbar" style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '0.75rem', paddingRight: '0.25rem' }}>
-                {arenaState.chatMessages?.map((msg, i) => {
-                  const isMe = msg.senderId === userId;
-                  return (
-                    <div key={i} style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: isMe ? 'flex-end' : 'flex-start',
-                      width: '100%'
-                    }}>
-                      <div style={{
-                        fontSize: '9px',
-                        color: isMe ? 'var(--accent)' : 'rgba(255,255,255,0.5)',
-                        marginBottom: '3px',
-                        padding: '0 4px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                      }}>
-                        {isMe ? 'You' : msg.senderId.slice(-4)}
-                      </div>
-                      <div style={{
-                        background: isMe ? 'var(--accent)' : 'rgba(255,255,255,0.05)',
-                        color: isMe ? '#000' : 'var(--text-main)',
-                        padding: '0.5rem 0.75rem',
-                        borderRadius: isMe ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
-                        border: isMe ? 'none' : '1px solid rgba(255,255,255,0.1)',
-                        maxWidth: '85%',
-                        fontSize: '13px',
-                        fontFamily: 'Inter, system-ui, sans-serif',
-                        wordBreak: 'break-word',
-                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-                      }}>
-                        {msg.text}
-                      </div>
-                    </div>
-                  );
-                })}
-                {(!arenaState.chatMessages || arenaState.chatMessages.length === 0) && (
-                  <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', textAlign: 'center', margin: 'auto', fontStyle: 'italic' }}>
-                    No messages yet... Be the first to say hi!
-                  </div>
-                )}
-              </div>
+      {/* Settings Modal */}
+      {showSettings && (
+        <SettingsModal
+          spaceId={spaceId}
+          initialWeather={weather}
+          initialTimeOfDay={timeOfDay}
+          onClose={() => setShowSettings(false)}
+          onSave={sendSettingsUpdate}
+        />
+      )}
 
-              <div style={{ display: 'flex', gap: '0.5rem', background: 'rgba(0,0,0,0.4)', padding: '0.35rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                <input
-                  type="text"
-                  value={chatInput}
-                  onChange={e => setChatInput(e.target.value)}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter' && chatInput.trim()) {
-                      sendChatMessage(chatInput.trim());
-                      setChatInput('');
-                    }
-                  }}
-                  className="flex-1"
-                  style={{
-                    padding: '0.25rem 0.75rem',
-                    fontFamily: 'Inter, system-ui, sans-serif',
-                    background: 'transparent',
-                    border: 'none',
-                    outline: 'none',
-                    boxShadow: 'none',
-                    color: 'white'
-                  }}
-                  placeholder="Type a message..."
-                />
-                <button
-                  onClick={() => {
-                    if (chatInput.trim()) {
-                      sendChatMessage(chatInput.trim());
-                      setChatInput('');
-                    }
-                  }}
-                  style={{
-                    background: 'var(--accent)',
-                    color: '#000',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '32px',
-                    height: '32px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s',
-                  }}
-                  onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
-                  onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
-                >
-                  <span className="material-symbols-outlined" style={{ fontSize: '16px', marginLeft: '2px' }}>send</span>
-                </button>
-              </div>
-            </div>
-            ) : (
-                <button onClick={() => setIsChatOpen(true)} style={{ pointerEvents: 'auto', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50%', width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.5)', transition: 'transform 0.2s', color: 'var(--accent)' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}>
-                  <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>chat</span>
-                </button>
-            )}
-            </>
-          )}
-        </div>
-
-        {/* Ambient Vignette Overlay */}
-        <div className="hud-vignette" />
-      </div>
-
-      {/* ── Full-Screen Game Canvas ─────────────────────────────────────── */}
+      {/* Full-Screen Game Canvas */}
       <div className="arena-fullscreen-wrap">
         {dimensions.width > 0 && (
           <ArenaCanvas
@@ -668,14 +187,13 @@ export function SpacePage() {
             elements={arenaState.elements}
             myUserId={userId ?? ''}
             onMove={handleMove}
-            onCanvasClick={handleCanvasClick}
+            onCanvasClick={handleBuildClick}
             connected={arenaState.connected}
             weather={weather}
             timeOfDay={timeOfDay}
           />
         )}
       </div>
-
     </div>
   );
 }

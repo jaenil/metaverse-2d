@@ -1,5 +1,8 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import type { SpaceElement, ArenaUser } from '../types';
+import { drawPixelAvatar } from '../utils/drawPixelAvatar';
+import { updateAndDrawWeather, WeatherParticle } from '../utils/drawWeather';
+import { calculateCameraPosition } from '../utils/cameraUtils';
 
 const TILE = 44; // px per grid tile
 
@@ -131,6 +134,7 @@ export function ArenaCanvas({
 
     const renderState = new Map<string, RenderUser>();
     const particles: Particle[] = [];
+    const weatherParticles: WeatherParticle[] = [];
     const imageCache = new Map<string, HTMLImageElement>();
 
     const getCachedImage = (url?: string) => {
@@ -142,7 +146,6 @@ export function ArenaCanvas({
       return img;
     };
 
-    // Helper to spawn dust
     function spawnDust(gx: number, gy: number, color: string) {
       for (let i = 0; i < 2; i++) {
         particles.push({
@@ -157,11 +160,34 @@ export function ArenaCanvas({
       }
     }
 
-    // Weather particles
-    interface WeatherParticle {
-      x: number; y: number; vx: number; vy: number; type: 'rain' | 'snow'; life: number;
+    // PERF-02: Prepare Offscreen Canvas for Grid
+    let offscreenCanvas: HTMLCanvasElement | null = null;
+    const W = logicalWidth * TILE;
+    const H = logicalHeight * TILE;
+    if (W > 0 && H > 0) {
+      offscreenCanvas = document.createElement('canvas');
+      offscreenCanvas.width = W;
+      offscreenCanvas.height = H;
+      const oCtx = offscreenCanvas.getContext('2d');
+      if (oCtx) {
+        oCtx.fillStyle = 'rgba(0,0,0,0.04)';
+        for (let y = 0; y < H; y += 4) {
+          oCtx.fillRect(0, y, W, 1);
+        }
+        for (let x = 0; x <= logicalWidth; x++) {
+          oCtx.beginPath(); oCtx.moveTo(x * TILE, 0); oCtx.lineTo(x * TILE, H);
+          oCtx.strokeStyle = x % 5 === 0 ? GRID_ACCENT : GRID_LINE;
+          oCtx.lineWidth = x % 5 === 0 ? 1 : 0.5;
+          oCtx.stroke();
+        }
+        for (let y = 0; y <= logicalHeight; y++) {
+          oCtx.beginPath(); oCtx.moveTo(0, y * TILE); oCtx.lineTo(W, y * TILE);
+          oCtx.strokeStyle = y % 5 === 0 ? GRID_ACCENT : GRID_LINE;
+          oCtx.lineWidth = y % 5 === 0 ? 1 : 0.5;
+          oCtx.stroke();
+        }
+      }
     }
-    const weatherParticles: WeatherParticle[] = [];
 
     function draw(time: number) {
       if (!ctx || !canvas) return;
@@ -176,7 +202,6 @@ export function ArenaCanvas({
       // ── 1. Update Render State (Lerp) ──
       const activeIds = new Set<string>();
 
-      // Update My Player
       if (myPosRef.current) {
         activeIds.add(myUserId);
         let ru = renderState.get(myUserId);
@@ -188,31 +213,18 @@ export function ArenaCanvas({
           const dx = lx - ru.x;
           const dy = ly - ru.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          
           if (dist > 2) {
-            // Teleport threshold: if distance > 2 tiles, snap immediately
-            ru.x = lx;
-            ru.y = ly;
-            ru.vx = 0;
-            ru.walkCycle = 0;
-            ru.lastLogicalX = lx;
-            ru.lastLogicalY = ly;
+            ru.x = lx; ru.y = ly; ru.vx = 0; ru.walkCycle = 0; ru.lastLogicalX = lx; ru.lastLogicalY = ly;
           } else if (dist > 0.01) {
-            ru.vx = dx * 12 * dt;
-            ru.x += ru.vx;
-            ru.y += dy * 12 * dt;
-            ru.walkCycle += dist * 8 * dt; // bobbing speed
+            ru.vx = dx * 12 * dt; ru.x += ru.vx; ru.y += dy * 12 * dt; ru.walkCycle += dist * 8 * dt;
             if (ru.vx > 0.1) ru.facing = 1;
             if (ru.vx < -0.1) ru.facing = -1;
             if (ru.lastLogicalX !== lx || ru.lastLogicalY !== ly) {
               spawnDust(ru.x, ru.y, 'rgba(var(--accent-raw),0.4)');
-              ru.lastLogicalX = lx;
-              ru.lastLogicalY = ly;
+              ru.lastLogicalX = lx; ru.lastLogicalY = ly;
             }
           } else {
-            ru.x = lx;
-            ru.y = ly;
-            ru.walkCycle = 0; // stop bobbing
+            ru.x = lx; ru.y = ly; ru.walkCycle = 0;
           }
         }
         ru.avatarUrl = myAvatarRef.current;
@@ -220,7 +232,6 @@ export function ArenaCanvas({
         ru.emoteExpiresAt = myEmoteExpiresRef.current;
       }
 
-      // Update Other Players
       usersRef.current.forEach((u) => {
         if (u.userId === myUserId) return;
         activeIds.add(u.userId);
@@ -232,30 +243,18 @@ export function ArenaCanvas({
           const dx = u.x - ru.x;
           const dy = u.y - ru.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-
           if (dist > 2) {
-            ru.x = u.x;
-            ru.y = u.y;
-            ru.vx = 0;
-            ru.walkCycle = 0;
-            ru.lastLogicalX = u.x;
-            ru.lastLogicalY = u.y;
+            ru.x = u.x; ru.y = u.y; ru.vx = 0; ru.walkCycle = 0; ru.lastLogicalX = u.x; ru.lastLogicalY = u.y;
           } else if (dist > 0.01) {
-            ru.vx = dx * 12 * dt;
-            ru.x += ru.vx;
-            ru.y += dy * 12 * dt;
-            ru.walkCycle += dist * 8 * dt;
+            ru.vx = dx * 12 * dt; ru.x += ru.vx; ru.y += dy * 12 * dt; ru.walkCycle += dist * 8 * dt;
             if (ru.vx > 0.1) ru.facing = 1;
             if (ru.vx < -0.1) ru.facing = -1;
             if (ru.lastLogicalX !== u.x || ru.lastLogicalY !== u.y) {
               spawnDust(ru.x, ru.y, 'rgba(96,165,250,0.4)');
-              ru.lastLogicalX = u.x;
-              ru.lastLogicalY = u.y;
+              ru.lastLogicalX = u.x; ru.lastLogicalY = u.y;
             }
           } else {
-            ru.x = u.x;
-            ru.y = u.y;
-            ru.walkCycle = 0;
+            ru.x = u.x; ru.y = u.y; ru.walkCycle = 0;
           }
           ru.avatarUrl = u.avatarUrl;
           ru.emote = u.emote;
@@ -263,42 +262,13 @@ export function ArenaCanvas({
         }
       });
 
-      // Cleanup disconnected players from render state
       for (const [id] of renderState) {
         if (!activeIds.has(id)) renderState.delete(id);
       }
 
       // ── 2. Camera Calculation ──
-      let targetCamX = sw / 2;
-      let targetCamY = sh / 2;
       const myRender = renderState.get(myUserId);
-      if (myRender) {
-        targetCamX -= myRender.x * TILE + TILE / 2;
-        targetCamY -= myRender.y * TILE + TILE / 2;
-      } else if (myPosRef.current) {
-        targetCamX -= myPosRef.current.x * TILE + TILE / 2;
-        targetCamY -= myPosRef.current.y * TILE + TILE / 2;
-      }
-
-      const W = logicalWidth * TILE;
-      const H = logicalHeight * TILE;
-
-      let camX = targetCamX;
-      let camY = targetCamY;
-
-      // Clamp Camera to Map Boundaries
-      if (W <= sw) {
-        camX = (sw - W) / 2; // Center horizontally if map is smaller than screen
-      } else {
-        camX = Math.max(sw - W, Math.min(0, camX));
-      }
-
-      if (H <= sh) {
-        camY = (sh - H) / 2; // Center vertically if map is smaller than screen
-      } else {
-        camY = Math.max(sh - H, Math.min(0, camY));
-      }
-
+      const { camX, camY } = calculateCameraPosition(sw, sh, logicalWidth, logicalHeight, TILE, myRender, myPosRef.current);
       camPosRef.current.x = camX;
       camPosRef.current.y = camY;
 
@@ -310,34 +280,15 @@ export function ArenaCanvas({
       ctx.translate(Math.round(camX), Math.round(camY));
 
       // ── 3. Draw Grid & Background ──
-
-      // Draw Map Background Image if available
+      const mapW = logicalWidth * TILE;
+      const mapH = logicalHeight * TILE;
       if (bgImageRef.current) {
-        ctx.drawImage(bgImageRef.current, 0, 0, W, H);
+        ctx.drawImage(bgImageRef.current, 0, 0, mapW, mapH);
+      }
+      if (offscreenCanvas) {
+        ctx.drawImage(offscreenCanvas, 0, 0);
       }
 
-      // Scanlines (only within logical bounds)
-      ctx.fillStyle = 'rgba(0,0,0,0.04)';
-      for (let y = 0; y < H; y += 4) {
-        ctx.fillRect(0, y, W, 1);
-      }
-
-      // Lines
-      for (let x = 0; x <= logicalWidth; x++) {
-        ctx.beginPath(); ctx.moveTo(x * TILE, 0); ctx.lineTo(x * TILE, H);
-        ctx.strokeStyle = x % 5 === 0 ? GRID_ACCENT : GRID_LINE;
-        ctx.lineWidth = x % 5 === 0 ? 1 : 0.5;
-        ctx.stroke();
-      }
-      for (let y = 0; y <= logicalHeight; y++) {
-        ctx.beginPath(); ctx.moveTo(0, y * TILE); ctx.lineTo(W, y * TILE);
-        ctx.strokeStyle = y % 5 === 0 ? GRID_ACCENT : GRID_LINE;
-        ctx.lineWidth = y % 5 === 0 ? 1 : 0.5;
-        ctx.stroke();
-      }
-
-      // Abyss overlay (out of bounds dimming)
-      // Since background is BG, we just draw the grid. If we want out of bounds to look different, we could draw a dark border.
       ctx.strokeStyle = '#2e1f1d';
       ctx.lineWidth = 4;
       ctx.strokeRect(0, 0, W, H);
@@ -347,7 +298,9 @@ export function ArenaCanvas({
         const p = particles[i]!;
         p.life -= dt;
         if (p.life <= 0) {
-          particles.splice(i, 1);
+          // PERF-03: Swap and pop instead of splice
+          particles[i] = particles[particles.length - 1];
+          particles.pop();
           continue;
         }
         p.x += p.vx * dt * 60;
@@ -360,60 +313,7 @@ export function ArenaCanvas({
       ctx.globalAlpha = 1.0;
 
       // ── 4b. Draw Weather ──
-      const MAX_WEATHER = 200;
-      if (weather === 'rain' && weatherParticles.length < MAX_WEATHER) {
-        for (let i = 0; i < 5; i++) {
-          weatherParticles.push({
-            x: -camX + Math.random() * sw * 1.5 - sw * 0.25,
-            y: -camY - 50 - Math.random() * 200,
-            vx: 80 + Math.random() * 40,
-            vy: 600 + Math.random() * 200,
-            type: 'rain',
-            life: 1
-          });
-        }
-      } else if (weather === 'snow' && weatherParticles.length < MAX_WEATHER) {
-        for (let i = 0; i < 2; i++) {
-          weatherParticles.push({
-            x: -camX + Math.random() * sw * 1.5 - sw * 0.25,
-            y: -camY - 50 - Math.random() * 200,
-            vx: Math.random() * 20 - 10,
-            vy: 80 + Math.random() * 60,
-            type: 'snow',
-            life: Math.random() * Math.PI * 2 // use life for sine wave phase
-          });
-        }
-      }
-
-      ctx.fillStyle = 'rgba(255,255,255,0.6)';
-      for (let i = weatherParticles.length - 1; i >= 0; i--) {
-        const wp = weatherParticles[i]!;
-        wp.x += wp.vx * dt;
-        wp.y += wp.vy * dt;
-        if (wp.type === 'snow') {
-          wp.life += dt * 2;
-          wp.x += Math.sin(wp.life) * 30 * dt;
-        }
-
-        if (wp.y > -camY + sh + 50 || wp.x < -camX - 100 || wp.x > -camX + sw + 100 || weather === 'none') {
-          weatherParticles.splice(i, 1);
-          continue;
-        }
-
-        if (wp.type === 'rain') {
-          ctx.strokeStyle = 'rgba(150, 200, 255, 0.5)';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(wp.x, wp.y);
-          ctx.lineTo(wp.x - wp.vx * 0.05, wp.y - wp.vy * 0.05);
-          ctx.stroke();
-        } else {
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-          ctx.beginPath();
-          ctx.arc(wp.x, wp.y, 2.5, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
+      updateAndDrawWeather(ctx, weatherParticles, weather, dt, camX, camY, sw, sh);
 
       // ── 5. Static Elements ──
       elements.forEach((el) => {
@@ -426,23 +326,15 @@ export function ArenaCanvas({
         if (img && img.complete && img.naturalHeight !== 0) {
           ctx.drawImage(img, px, py, ew, eh);
         } else {
-          // Fallback box while loading or if no image
-          const boxPx = px + 1;
-          const boxPy = py + 1;
-          const boxEw = ew - 2;
-          const boxEh = eh - 2;
-
+          const boxPx = px + 1; const boxPy = py + 1; const boxEw = ew - 2; const boxEh = eh - 2;
           ctx.shadowColor = 'rgba(var(--accent-raw),0.06)';
           ctx.shadowBlur = 10;
           ctx.fillStyle = STATIC_FILL;
           ctx.fillRect(boxPx, boxPy, boxEw, boxEh);
           ctx.shadowBlur = 0;
-
           ctx.strokeStyle = STATIC_BORDER;
           ctx.lineWidth = 1;
           ctx.strokeRect(boxPx, boxPy, boxEw, boxEh);
-
-          // Hatch pattern
           ctx.save();
           ctx.beginPath(); ctx.rect(boxPx, boxPy, boxEw, boxEh); ctx.clip();
           ctx.strokeStyle = 'rgba(46,31,29,0.5)';
@@ -472,44 +364,32 @@ export function ArenaCanvas({
         }
         const lcanvas = lightCanvasRef.current;
         if (lcanvas.width !== sw || lcanvas.height !== sh) {
-          lcanvas.width = sw;
-          lcanvas.height = sh;
+          lcanvas.width = sw; lcanvas.height = sh;
         }
         const lctx = lcanvas.getContext('2d');
         if (lctx) {
-          // Fill screen with deep night color
           lctx.globalCompositeOperation = 'source-over';
           lctx.fillStyle = 'rgba(5, 5, 20, 0.85)';
           lctx.fillRect(0, 0, sw, sh);
-
-          // Punch holes for light
           lctx.globalCompositeOperation = 'destination-out';
 
-          // Light for my player
           if (myRender) {
             const sx = (myRender.x * TILE + TILE / 2) + camX;
             const sy = (myRender.y * TILE + TILE / 2) + camY;
             const grad = lctx.createRadialGradient(sx, sy, 0, sx, sy, 220);
-            grad.addColorStop(0, 'rgba(0,0,0,1)');
-            grad.addColorStop(0.5, 'rgba(0,0,0,0.6)');
-            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            grad.addColorStop(0, 'rgba(0,0,0,1)'); grad.addColorStop(0.5, 'rgba(0,0,0,0.6)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
             lctx.fillStyle = grad;
             lctx.beginPath(); lctx.arc(sx, sy, 220, 0, Math.PI * 2); lctx.fill();
           }
-
-          // Light for other players (smaller)
           renderState.forEach((ru, id) => {
             if (id === myUserId) return;
             const ox = (ru.x * TILE + TILE / 2) + camX;
             const oy = (ru.y * TILE + TILE / 2) + camY;
             const grad = lctx.createRadialGradient(ox, oy, 0, ox, oy, 120);
-            grad.addColorStop(0, 'rgba(0,0,0,0.8)');
-            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            grad.addColorStop(0, 'rgba(0,0,0,0.8)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
             lctx.fillStyle = grad;
             lctx.beginPath(); lctx.arc(ox, oy, 120, 0, Math.PI * 2); lctx.fill();
           });
-
-          // Draw the lighting layer over the game
           ctx.globalCompositeOperation = 'source-over';
           ctx.drawImage(lcanvas, -camX, -camY);
         }
@@ -546,130 +426,11 @@ export function ArenaCanvas({
     return () => cancelAnimationFrame(raf);
   }, [logicalWidth, logicalHeight, elements, myUserId, connected, weather, timeOfDay]);
 
-  // ── Pixel-art avatar renderer ──
-  function drawPixelAvatar(
-    ctx: CanvasRenderingContext2D,
-    gx: number,
-    gy: number,
-    walkCycle: number,
-    vx: number,
-    facing: number,
-    color: string,
-    label: string,
-    isMe: boolean,
-    img?: HTMLImageElement,
-    emote?: string,
-    emoteExpiresAt?: number
-  ) {
-    const cx = gx * TILE + TILE / 2;
-    const cy = gy * TILE + TILE / 2;
-    const S = TILE * 0.28;
-    const bob = Math.sin(walkCycle * Math.PI * 2) * (S * 0.15); // bounce offset
-
-    // Drop Shadow (Grounded)
-    ctx.fillStyle = 'rgba(0,0,0,0.5)';
-    ctx.beginPath();
-    ctx.ellipse(cx, cy + S * 1.5, S * 1.4, S * 0.6, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.save();
-    
-    // Move to center of avatar base
-    ctx.translate(cx, cy);
-
-    // Momentum tilt (max +/- 0.15 rads)
-    const tilt = Math.max(-0.15, Math.min(0.15, vx * 0.4));
-    ctx.rotate(tilt);
-    
-    // Directional facing
-    ctx.scale(facing, 1);
-
-    let topY = -S * 2.0 + bob;
-
-    if (img && img.complete && img.naturalHeight !== 0) {
-      // Draw image sprite instead of block character
-      const spriteW = TILE * 1.2;
-      const spriteH = TILE * 1.2;
-      const drawY = -spriteH + bob + S * 0.5;
-      ctx.drawImage(img, -spriteW / 2, drawY, spriteW, spriteH);
-      topY = drawY;
-    } else {
-      // Fallback: draw blocky character relative to 0,0
-      const headW = S * 1.6;
-      const headH = S * 1.4;
-      const headX = -headW / 2;
-      const headY = -S * 2.0 + bob;
-
-      const bodyW = S * 1.2;
-      const bodyH = S * 1.4;
-      const bodyX = -bodyW / 2;
-      const bodyY = headY + headH;
-      const legY = bodyY + bodyH;
-      const legH = S * 0.85;
-
-      // Torso
-      ctx.fillStyle = color;
-      ctx.fillRect(Math.round(bodyX), Math.round(bodyY), Math.round(bodyW), Math.round(bodyH));
-      
-      // Head
-      ctx.fillStyle = '#e8dddb';
-      ctx.fillRect(Math.round(headX), Math.round(headY), Math.round(headW), Math.round(headH));
-      
-      // Eyes
-      ctx.fillStyle = '#0c0808';
-      const eyeY = headY + headH * 0.35;
-      const eyeSize = Math.max(1, Math.round(S * 0.25));
-      ctx.fillRect(Math.round(headX + headW * 0.2), Math.round(eyeY), eyeSize, eyeSize);
-      ctx.fillRect(Math.round(headX + headW * 0.6), Math.round(eyeY), eyeSize, eyeSize);
-
-      // Legs (Alternate leg height based on walk cycle)
-      const legW = S * 0.55;
-      
-      const leg1Bob = Math.max(0, Math.sin(walkCycle * Math.PI * 2) * (S * 0.3));
-      const leg2Bob = Math.max(0, Math.sin(walkCycle * Math.PI * 2 + Math.PI) * (S * 0.3));
-
-      ctx.fillStyle = '#1c1311'; // darker legs
-      ctx.fillRect(Math.round(bodyX), Math.round(legY - leg1Bob), Math.round(legW), Math.round(legH));
-      ctx.fillRect(Math.round(bodyX + bodyW - legW), Math.round(legY - leg2Bob), Math.round(legW), Math.round(legH));
-      
-      topY = headY;
-    }
-
-    ctx.restore();
-
-    // Label tag (UI elements remain un-rotated and un-flipped)
-    const tagY = cy + topY - 14;
-    const tagPad = 4;
-    ctx.font = `bold ${Math.max(8, Math.round(TILE * 0.22))}px monospace`;
-    ctx.textAlign = 'center';
-    const textW = ctx.measureText(label).width;
-    const tagX = cx - textW / 2 - tagPad;
-    const tagWidth = textW + tagPad * 2;
-    const tagHeight = Math.round(TILE * 0.28);
-
-    ctx.fillStyle = isMe ? 'rgba(217,56,30,0.85)' : 'rgba(96,165,250,0.75)';
-    ctx.beginPath(); ctx.roundRect(tagX, tagY, tagWidth, tagHeight, 3); ctx.fill();
-
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(label, cx, tagY + tagHeight * 0.75);
-
-    // Emote
-    if (emote && emoteExpiresAt && Date.now() < emoteExpiresAt) {
-      ctx.font = `26px sans-serif`;
-      ctx.textAlign = 'center';
-      const emoteY = tagY - 14; 
-      ctx.fillText(emote, cx, emoteY);
-    }
-    
-    ctx.textAlign = 'left';
-  }
-
   // ── Keyboard Input ──
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const target = e.target as HTMLElement;
     if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
     
-    // Prevent default browser scrolling for game movement keys
     const isMovementKey = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(e.key);
     if (isMovementKey) {
       e.preventDefault();
@@ -689,7 +450,6 @@ export function ArenaCanvas({
     else if (e.key === 'ArrowRight' || e.key === 'd') x += 1;
     else return;
 
-    // Boundary check (prevent moving past logical grid bounds)
     if (x < 0 || y < 0 || x >= logicalWidth || y >= logicalHeight) return;
 
     e.preventDefault();
