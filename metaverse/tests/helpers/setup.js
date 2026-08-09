@@ -251,6 +251,7 @@ async function cleanupTestArtifacts() {
     await client.avatar.deleteMany({
         where: { name: { startsWith: "test-" } },
     });
+    
 }
 
 module.exports = {

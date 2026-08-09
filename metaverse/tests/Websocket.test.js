@@ -1,6 +1,6 @@
 const WebSocket = require("ws");
 const { axios } = require("./helpers/axios");
-const { createTestContext, cleanupTestArtifacts, BACKEND_URL } = require("./helpers/setup");
+const { createTestContext, createSpace, cleanupTestArtifacts, BACKEND_URL } = require("./helpers/setup");
 
 const WS_URL = "ws://localhost:3001";
 
@@ -364,15 +364,18 @@ describe("Websocket tests", () => {
         await waitForAndPopLatestMessage(ws2Messages);
     });
 
+    let settingsTestSpaceId;
+
     test("Update Settings: Non-creator attempting settings change receives event-rejected", async () => {
+        settingsTestSpaceId = await createSpace(userToken, globalMapId);
+
         const wsNonCreator = new WebSocket(WS_URL);
         const msgs = [];
         wsNonCreator.on("message", (event) => msgs.push(JSON.parse(event.toString())));
         await new Promise((r) => wsNonCreator.on("open", r));
 
-        wsNonCreator.send(JSON.stringify({ type: "join", payload: { spaceId, token: adminToken } }));
+        wsNonCreator.send(JSON.stringify({ type: "join", payload: { spaceId: settingsTestSpaceId, token: adminToken } }));
         await waitForAndPopLatestMessage(msgs);
-        await waitForAndPopLatestMessage(ws2Messages);
 
         wsNonCreator.send(
             JSON.stringify({
@@ -386,13 +389,21 @@ describe("Websocket tests", () => {
         expect(message.payload.code).toBe(401);
         expect(message.payload.event).toBe("update-settings");
 
-
         global.wsNonCreator = wsNonCreator;
         global.wsNonCreatorMsgs = msgs;
     });
 
     test("Update Settings: Space creator updating settings broadcasts settings-changed", async () => {
-        ws2.send(
+        const wsCreator = new WebSocket(WS_URL);
+        const creatorMsgs = [];
+        wsCreator.on("message", (event) => creatorMsgs.push(JSON.parse(event.toString())));
+        await new Promise((r) => wsCreator.on("open", r));
+
+        wsCreator.send(JSON.stringify({ type: "join", payload: { spaceId: settingsTestSpaceId, token: userToken } }));
+        await waitForAndPopLatestMessage(creatorMsgs);
+        await waitForAndPopLatestMessage(global.wsNonCreatorMsgs);
+
+        wsCreator.send(
             JSON.stringify({
                 type: "update-settings",
                 payload: { weather: "snow", timeOfDay: "night" },
@@ -404,8 +415,8 @@ describe("Websocket tests", () => {
         expect(message.payload.weather).toBe("snow");
         expect(message.payload.timeOfDay).toBe("night");
 
+        wsCreator.close();
         global.wsNonCreator.close();
-        await waitForAndPopLatestMessage(ws2Messages);
     });
  
 });

@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "node --experimental-vm-modules ../node_modules/.bin/jest --runInBand"
+    "test": "node --experimental-vm-modules ../node_modules/.bin/jest --runInBand --forceExit"
   },
   "dependencies": {
     "@repo/types": "*",
