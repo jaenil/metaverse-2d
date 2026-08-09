@@ -1,6 +1,6 @@
 const WebSocket = require("ws");
 const { axios } = require("./helpers/axios");
-const { createAdminAndUser, createMapWithElements, BACKEND_URL } = require("./helpers/setup");
+const { createTestContext, cleanupTestArtifacts, BACKEND_URL } = require("./helpers/setup");
 
 const WS_URL = "ws://localhost:3001";
 
@@ -48,22 +48,14 @@ describe("Websocket tests", () => {
     let adminY;
 
     async function setupHTTP() {
-        const { adminToken: at, adminId, userToken: ut, userId: uid } = await createAdminAndUser();
-        adminToken = at;
-        adminUserId = adminId;
-        userToken = ut;
-        userId = uid;
-
-        const { mapId, element1Id } = await createMapWithElements(adminToken);
-        globalElementId = element1Id;
-        globalMapId = mapId;
-
-        const spaceResponse = await axios.post(
-            `${BACKEND_URL}/api/v1/space`,
-            { name: "Test", dimensions: "100x200", mapId },
-            { headers: { authorization: `Bearer ${userToken}` } }
-        );
-        spaceId = spaceResponse.data.spaceId;
+        const ctx = await createTestContext({ withSpace: true });
+        adminToken   = ctx.adminToken;
+        adminUserId  = ctx.adminId;
+        userToken    = ctx.userToken;
+        userId       = ctx.userId;
+        globalElementId = ctx.element1Id;
+        globalMapId     = ctx.mapId;
+        spaceId         = ctx.spaceId;
     }
 
     async function setupWs() {
@@ -88,9 +80,10 @@ describe("Websocket tests", () => {
         console.log("[WS beforeAll] Both WS connections open.");
     }, 30000);
 
-    afterAll(() => {
-        ws1.close();
-        ws2.close();
+    afterAll(async () => {
+        ws1?.close();
+        ws2?.close();
+        await cleanupTestArtifacts();
     });
 
     test("Get back for joining the space", async () => {

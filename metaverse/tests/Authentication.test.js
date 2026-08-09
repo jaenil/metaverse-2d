@@ -1,5 +1,5 @@
 const { axios } = require("./helpers/axios");
-const { BACKEND_URL, createUserWithEmail } = require("./helpers/setup");
+const { BACKEND_URL, createUserWithEmail, cleanupTestArtifacts } = require("./helpers/setup");
 
 describe("Authentication", () => {
     test("User is able to sign up only once", async () => {
@@ -119,6 +119,10 @@ describe("Authentication", () => {
             password: "wrongpassword",
         });
         expect(response.status).toBe(403);
+    });
+
+    afterAll(async () => {
+        await cleanupTestArtifacts();
     });
 
 });

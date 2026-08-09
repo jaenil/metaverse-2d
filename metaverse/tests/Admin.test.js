@@ -1,5 +1,5 @@
 const { axios } = require("./helpers/axios");
-const { createAdminAndUser, BACKEND_URL } = require("./helpers/setup");
+const { createAdminAndUser, cleanupTestArtifacts, BACKEND_URL } = require("./helpers/setup");
 
 describe("Admin Endpoints", () => {
     let adminToken;
@@ -8,6 +8,10 @@ describe("Admin Endpoints", () => {
     let mapResponse;
     beforeAll(async () => {
         ({ adminToken, userToken } = await createAdminAndUser());
+    });
+
+    afterAll(async () => {
+        await cleanupTestArtifacts();
     });
 
     test("User is not able to hit admin endpoints", async () => {

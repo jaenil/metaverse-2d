@@ -1,5 +1,5 @@
 const { axios } = require("./helpers/axios");
-const { createAdminAndUser, createMapWithElements, BACKEND_URL } = require("./helpers/setup");
+const { createTestContext, cleanupTestArtifacts, BACKEND_URL } = require("./helpers/setup");
 
 describe("Arena endpoints", () => {
     let element1Id;
@@ -9,15 +9,12 @@ describe("Arena endpoints", () => {
     let spaceId;
 
     beforeAll(async () => {
-        ({ adminToken, userToken } = await createAdminAndUser());
-        ({ element1Id, element2Id, mapId } = await createMapWithElements(adminToken));
+        ({ adminToken, userToken, element1Id, element2Id, spaceId }
+            = await createTestContext({ withSpace: true }));
+    });
 
-        const spaceResponse = await axios.post(
-            `${BACKEND_URL}/api/v1/space`,
-            { name: "Test", dimensions: "100x200", mapId },
-            { headers: { authorization: `Bearer ${userToken}` } }
-        );
-        spaceId = spaceResponse.data.spaceId;
+    afterAll(async () => {
+        await cleanupTestArtifacts();
     });
 
     test("Incorrect spaceId returns a 404", async () => {

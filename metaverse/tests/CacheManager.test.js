@@ -1,6 +1,6 @@
 const WebSocket = require("ws");
 const { axios } = require("./helpers/axios");
-const { createAdminAndUser, createMapWithElements, BACKEND_URL,WS_URL,INTERNAL_CACHE_URL } = require("./helpers/setup");
+const { createTestContext, cleanupTestArtifacts, BACKEND_URL, WS_URL, INTERNAL_CACHE_URL } = require("./helpers/setup");
 
 function waitForAndPopMessage(messageArray, timeoutMs = 4000) {
     return new Promise((resolve, reject) => {
@@ -35,19 +35,25 @@ describe("Cache Manager & Invalidation Tests", () => {
     let spaceId;
     let element1Id;
     let mapId;
+    // Loaded once in beforeAll to avoid repeated dynamic imports per test
+    let Types;
 
     beforeAll(async () => {
-        ({ adminToken, userToken } = await createAdminAndUser());
-        ({ element1Id, mapId } = await createMapWithElements(adminToken));
+        ({ adminToken, userToken, element1Id, mapId } = await createTestContext());
+        Types = await import("@repo/types");
     }, 30000);
 
     beforeEach(async () => {
         const spaceResponse = await axios.post(
             `${BACKEND_URL}/api/v1/space`,
-            { name: `CacheTest-${Math.random()}`, dimensions: "100x200", mapId },
+            { name: `test-cache-${Math.random().toString(36).substring(2)}`, dimensions: "100x200", mapId },
             { headers: { authorization: `Bearer ${adminToken}` } }
         );
         spaceId = spaceResponse.data.spaceId;
+    });
+
+    afterAll(async () => {
+        await cleanupTestArtifacts();
     });
 
     test("Test 1: Verifying WS server is active and joining populates cache", async () => {

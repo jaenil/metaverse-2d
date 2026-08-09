@@ -1,5 +1,5 @@
 const { axios } = require("./helpers/axios");
-const { createAdminAndUser, createMapWithElements, BACKEND_URL } = require("./helpers/setup");
+const { createTestContext, cleanupTestArtifacts, BACKEND_URL } = require("./helpers/setup");
 
 describe("Space information", () => {
     let mapId;
@@ -11,8 +11,12 @@ describe("Space information", () => {
     let userId;
 
     beforeAll(async () => {
-        ({ adminToken, adminId, userToken, userId } = await createAdminAndUser());
-        ({ element1Id, element2Id, mapId } = await createMapWithElements(adminToken));
+        ({ adminToken, adminId, userToken, userId, element1Id, element2Id, mapId }
+            = await createTestContext());
+    });
+
+    afterAll(async () => {
+        await cleanupTestArtifacts();
     });
 
     test("User is able to create a space", async () => {
@@ -136,5 +140,4 @@ describe("Space information", () => {
         expect(Array.isArray(response.data.elements)).toBe(true);
         expect(response.data.elements.length).toBe(3);
     });
-
 });

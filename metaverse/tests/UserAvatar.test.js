@@ -1,5 +1,5 @@
 const { axios } = require("./helpers/axios");
-const { createAdmin, BACKEND_URL } = require("./helpers/setup");
+const { createAdmin, cleanupTestArtifacts, BACKEND_URL } = require("./helpers/setup");
 
 describe("User avatar information", () => {
     let avatarId;
@@ -43,5 +43,9 @@ describe("User avatar information", () => {
         expect(response.data.avatars.length).not.toBe(0);
         const currentAvatar = response.data.avatars.find((x) => x.id === avatarId);
         expect(currentAvatar).toBeDefined();
+    });
+
+    afterAll(async () => {
+        await cleanupTestArtifacts();
     });
 });

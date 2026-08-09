@@ -1,5 +1,5 @@
 const { axios } = require("./helpers/axios");
-const { createAdmin, BACKEND_URL } = require("./helpers/setup");
+const { createAdmin, cleanupTestArtifacts, BACKEND_URL } = require("./helpers/setup");
 
 describe("User metadata endpoint", () => {
     let token;
@@ -68,5 +68,9 @@ describe("User metadata endpoint", () => {
         });
         expect(response.status).toBe(401);
     })
+
+    afterAll(async () => {
+        await cleanupTestArtifacts();
+    });
     
 });

@@ -1,6 +1,5 @@
 const { WebSocket } = require("ws");
-const { BACKEND_URL, WS_URL, createAdminAndUser, createMapWithElements } = require("./helpers/setup");
-// Destructure — axios.js exports { axios }, NOT the object directly
+const { BACKEND_URL, WS_URL, createTestContext, createAdminAndUser, createMapWithElements, cleanupTestArtifacts } = require("./helpers/setup");
 const { axios } = require("./helpers/axios");
 
 // Polls every 50ms. Rejects after 4s to avoid hanging test suite.
@@ -32,29 +31,28 @@ describe("Chat feature tests", () => {
     const userMessages = [];
 
     async function setupHTTP() {
-        const users = await createAdminAndUser();
-        adminToken = users.adminToken;
-        adminId    = users.adminId;
-        userToken  = users.userToken;
-        userId     = users.userId;
-
-        const mapData = await createMapWithElements(adminToken);
-        const spaceRes = await axios.post(
-            `${BACKEND_URL}/api/v1/space`,
-            { name: "Chat Space", dimensions: "10x10", mapId: mapData.mapId },
-            { headers: { authorization: `Bearer ${adminToken}` } }
-        );
-        spaceId = spaceRes.data.spaceId;
+        const ctx = await createTestContext({ withSpace: true, dimensions: "10x10" });
+        adminToken = ctx.adminToken;
+        adminId    = ctx.adminId;
+        userToken  = ctx.userToken;
+        userId     = ctx.userId;
+        spaceId    = ctx.spaceId;
     }
 
     async function setupWs() {
         wsAdmin = new WebSocket(WS_URL);
         wsAdmin.on("message", data => adminMessages.push(JSON.parse(data.toString())));
-        await new Promise(r => wsAdmin.on("open", r));
+        await new Promise((resolve, reject) => {
+            wsAdmin.on("open", resolve);
+            wsAdmin.on("error", reject);
+        });
 
         wsUser = new WebSocket(WS_URL);
         wsUser.on("message", data => userMessages.push(JSON.parse(data.toString())));
-        await new Promise(r => wsUser.on("open", r));
+        await new Promise((resolve, reject) => {
+            wsUser.on("open", resolve);
+            wsUser.on("error", reject);
+        });
     }
 
     beforeAll(async () => {
@@ -62,9 +60,10 @@ describe("Chat feature tests", () => {
         await setupWs();
     }, 30000);
 
-    afterAll(() => {
+    afterAll(async () => {
         wsAdmin?.close();
         wsUser?.close();
+        await cleanupTestArtifacts();
     });
 
     // ─── FUNCTIONALITY TESTS 

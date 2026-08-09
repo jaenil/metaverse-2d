@@ -444,10 +444,10 @@ export function ArenaCanvas({
     if (!pos || !connected) return;
 
     let { x, y } = pos;
-    if      (e.key === 'ArrowUp'    || e.key === 'w') y -= 1;
-    else if (e.key === 'ArrowDown'  || e.key === 's') y += 1;
-    else if (e.key === 'ArrowLeft'  || e.key === 'a') x -= 1;
-    else if (e.key === 'ArrowRight' || e.key === 'd') x += 1;
+    if      (e.key === 'ArrowUp'    || e.key === 'w'|| e.key==='W') y -= 1;
+    else if (e.key === 'ArrowDown'  || e.key === 's'|| e.key==='S') y += 1;
+    else if (e.key === 'ArrowLeft'  || e.key === 'a'|| e.key==='A') x -= 1;
+    else if (e.key === 'ArrowRight' || e.key === 'd'|| e.key==='D') x += 1;
     else return;
 
     if (x < 0 || y < 0 || x >= logicalWidth || y >= logicalHeight) return;
